@@ -1,0 +1,30 @@
+
+# Virtual environments
+venv/
+.venv/
+env/
+RetailEdge_AI_venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Logs
+*.log
+
+

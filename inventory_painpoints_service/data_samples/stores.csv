@@ -1,0 +1,21 @@
+id,name,location,store_type,created_at
+MUM-001,Mumbai - Andheri West,Mumbai,Hypermarket,2022-01-01T09:00:00
+MUM-002,Mumbai - Thane,Mumbai,Hypermarket,2022-01-01T09:00:00
+MUM-003,Mumbai - Navi Mumbai,Mumbai,Supermarket,2022-01-01T09:00:00
+DEL-001,Delhi - Rohini,Delhi,Hypermarket,2022-01-01T09:00:00
+DEL-002,Delhi - Dwarka,Delhi,Supermarket,2022-01-01T09:00:00
+BLR-001,Bengaluru - Koramangala,Bengaluru,Hypermarket,2022-01-01T09:00:00
+BLR-002,Bengaluru - Whitefield,Bengaluru,Supermarket,2022-01-01T09:00:00
+HYD-001,Hyderabad - Kukatpally,Hyderabad,Hypermarket,2022-01-01T09:00:00
+HYD-002,Hyderabad - Gachibowli,Hyderabad,Supermarket,2022-01-01T09:00:00
+CHE-001,Chennai - T. Nagar,Chennai,Hypermarket,2022-01-01T09:00:00
+CHE-002,Chennai - Velachery,Chennai,Supermarket,2022-01-01T09:00:00
+PUN-001,Pune - Hinjewadi,Pune,Supermarket,2022-01-01T09:00:00
+PUN-002,Pune - Kothrud,Pune,Supermarket,2022-01-01T09:00:00
+AHM-001,Ahmedabad - SG Highway,Ahmedabad,Hypermarket,2022-01-01T09:00:00
+AHM-002,Ahmedabad - Vastrapur,Ahmedabad,Supermarket,2022-01-01T09:00:00
+KOL-001,Kolkata - New Town,Kolkata,Hypermarket,2022-01-01T09:00:00
+KOL-002,Kolkata - Dumdum,Kolkata,Supermarket,2022-01-01T09:00:00
+JAI-001,Jaipur - Vaishali Nagar,Jaipur,Supermarket,2022-01-01T09:00:00
+LUC-001,Lucknow - Gomti Nagar,Lucknow,Supermarket,2022-01-01T09:00:00
+NGP-001,Nagpur - Dharampeth,Nagpur,Supermarket,2022-01-01T09:00:00
