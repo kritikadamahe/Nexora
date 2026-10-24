@@ -1,0 +1,84 @@
+{
+  "description": "Small initial experiment: 1 clean and 2 imperfect event-information conditions.",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "world": {
+    "n_sku": 40,
+    "n_days": 730,
+    "base_mean": 12.0,
+    "base_log_sd": 0.6,
+    "weekday_log_sd": 0.15,
+    "trend_sd": 0.2,
+    "nb_dispersion": 8.0,
+    "n_event_types": 3,
+    "event_type_log_uplift": [
+      0.4,
+      0.8,
+      1.2
+    ],
+    "event_sku_log_sd": 0.3,
+    "frac_sku_unresponsive": 0.2,
+    "event_min_days": 1,
+    "event_max_days": 3,
+    "event_gap_min": 7,
+    "event_gap_max": 21
+  },
+  "split": {
+    "train_end": 420,
+    "val_end": 560
+  },
+  "lead_time": 2,
+  "shelf_life": 4,
+  "costs": {
+    "holding": 0.05,
+    "shortage": 1.0,
+    "waste": 0.6
+  },
+  "warmup_days": 7,
+  "clean_lead_days": 14,
+  "quantile_grid": [
+    0.5,
+    0.65,
+    0.8,
+    0.9
+  ],
+  "model_params": {
+    "max_iter": 150,
+    "learning_rate": 0.08,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 40
+  },
+  "conditions": {
+    "clean": {
+      "p_miss": 0.0,
+      "p_late": 0.0,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.0,
+      "p_misleading": 0.0
+    },
+    "imperfect": {
+      "p_miss": 0.3,
+      "p_late": 0.3,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.04,
+      "p_misleading": 0.5
+    },
+    "false_alarm": {
+      "p_miss": 0.1,
+      "p_late": 0.0,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.08,
+      "p_misleading": 0.8
+    }
+  },
+  "bootstrap_reps": 2000,
+  "bootstrap_seed": 12345
+}
