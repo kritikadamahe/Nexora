@@ -27,4 +27,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Coverage / packaging
+.coverage
+htmlcov/
+*.egg-info/
+
 

@@ -19,8 +19,6 @@
 #   PMS = (recommended_price - base_price * 1.3) / base_price
 #   If PMS > 0.1 → clip to base * 1.3, flag as fairness-constrained
 
-from pyexpat import features
-
 import numpy as np
 from app.decision_engine.unified_signal import UnifiedSignal
 from app.core.config import PRICING_MODEL_PATH

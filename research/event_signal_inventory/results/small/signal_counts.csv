@@ -1,0 +1,16 @@
+seed,condition,true_events_test,announcements_test
+0,clean,11,11
+0,imperfect,11,15
+0,false_alarm,11,21
+1,clean,9,9
+1,imperfect,9,8
+1,false_alarm,9,26
+2,clean,9,9
+2,imperfect,9,14
+2,false_alarm,9,25
+3,clean,11,11
+3,imperfect,11,16
+3,false_alarm,11,29
+4,clean,10,10
+4,imperfect,10,13
+4,false_alarm,10,31

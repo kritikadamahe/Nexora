@@ -127,6 +127,14 @@ Once the server starts, open:
 
 The application also defines endpoints for running the inventory pipeline, retrieving analysis results, obtaining product-level decisions, and viewing recommendations.
 
+## Reproducibility and Tests
+
+- **Baseline snapshot:** the git tag `nexora-v0` marks the code before the research refactor. Check it out with `git checkout nexora-v0` to reproduce the original behaviour.
+- **Exact environment:** `pip install -r requirements-lock.txt` (verified on Python 3.13, Linux). For a looser install use `pip install -r requirements.txt -r requirements-dev.txt`.
+- **Configuration:** copy `.env.example` to `.env`. The `.env` file is git-ignored; never commit API keys.
+- **External signal mode:** set `NEXORA_EXTERNAL_SIGNAL_MODE` to `synthetic` (default, seeded), `reddit` (live), or `legacy_neutral` (reproduces nexora-v0, where urgency was always 0.25 and sentiment always NEUTRAL). `NEXORA_SEED` seeds all synthetic randomness.
+- **Run the tests:** `python -m pytest` from the repository root. Tests write only to temporary folders and never call an LLM or Reddit.
+
 ## Research and Evaluation Direction
 
 The broader project direction includes evaluating the value of external signals for demand forecasting and inventory decisions.
