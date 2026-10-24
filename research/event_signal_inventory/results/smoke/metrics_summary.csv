@@ -1,0 +1,12 @@
+,,tau_selected,tau_selected,val_cost,val_cost,total_cost,total_cost,holding_cost,holding_cost,shortage_cost,shortage_cost,waste_cost,waste_cost,lost_units,lost_units,waste_units,waste_units,fill_rate,fill_rate,waste_rate,waste_rate,cost_event_window,cost_event_window,cost_other_days,cost_other_days,wape_median,wape_median,pinball_tau_norm,pinball_tau_norm
+,,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std
+condition,arm,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+clean,A_blind,0.8,,1620.85,,795.1,,353.5,,315.0,,126.6,,315.0,,211.0,,0.932,,0.0454,,406.7,,388.4,,0.2755,,0.1491,
+clean,B_clean_trained,0.8,,1217.0,,629.55,,186.15,,438.0,,5.4,,438.0,,9.0,,0.9055,,0.0021,,369.05,,260.5,,0.2306,,0.0977,
+clean,C_asavailable_trained,0.8,,1217.0,,629.55,,186.15,,438.0,,5.4,,438.0,,9.0,,0.9055,,0.0021,,369.05,,260.5,,0.2306,,0.0977,
+false_alarm,A_blind,0.8,,1620.85,,795.1,,353.5,,315.0,,126.6,,315.0,,211.0,,0.932,,0.0454,,406.7,,388.4,,0.2755,,0.1491,
+false_alarm,B_clean_trained,0.8,,2055.5,,1279.8,,420.6,,258.0,,601.2,,258.0,,1002.0,,0.9443,,0.1846,,634.6,,645.2,,0.3975,,0.1392,
+false_alarm,C_asavailable_trained,0.8,,1654.9,,888.3,,300.9,,345.0,,242.4,,345.0,,404.0,,0.9256,,0.0856,,495.55,,392.75,,0.2678,,0.1219,
+imperfect,A_blind,0.8,,1620.85,,795.1,,353.5,,315.0,,126.6,,315.0,,211.0,,0.932,,0.0454,,406.7,,388.4,,0.2755,,0.1491,
+imperfect,B_clean_trained,0.8,,1217.0,,675.2,,210.4,,403.0,,61.8,,403.0,,103.0,,0.9131,,0.0236,,366.3,,308.9,,0.2521,,0.1011,
+imperfect,C_asavailable_trained,0.8,,1572.4,,727.65,,296.05,,341.0,,90.6,,341.0,,151.0,,0.9264,,0.0335,,385.3,,342.35,,0.2691,,0.1324,
