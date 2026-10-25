@@ -69,7 +69,7 @@ async def lifespan(app: FastAPI):
     yield   # server runs here
 
     # Shutdown
-    print("RetailEdge AI shutting down.")
+    print("Nexora shutting down.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -77,8 +77,8 @@ async def lifespan(app: FastAPI):
 # ─────────────────────────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title       = "RetailEdge AI",
-    description = "Retail Inventory Intelligence System for D-Mart",
+    title       = "Nexora",
+    description = "Nexora — AI-Powered Retail Inventory Intelligence for D-Mart",
     version     = "1.0.0",
     lifespan    = lifespan,
 )
@@ -126,7 +126,7 @@ def _pain_point_summary(df: pd.DataFrame) -> dict:
 def health():
     return {
         "status":          "ok",
-        "service":         "Predictify AI",
+        "service":         "Nexora",
         "decision_engine": "ready" if decision_engine else "not initialised — run /run-pipeline first",
         "pipeline_output": os.path.exists(PRODUCT_ANALYSIS_PATH),
     }
@@ -141,9 +141,16 @@ def health():
 
 @app.post("/run-pipeline")
 def run_pipeline():
+    global decision_engine
+
     result = run_nightly_pipeline(
         data_dir   = DATA_DIR,
         output_dir = OUTPUT_DIR,
+    )
+
+    decision_engine = DecisionEngine(
+        product_analysis_path=PRODUCT_ANALYSIS_PATH,
+        products_path=PRODUCTS_PATH,
     )
 
     flagged = result[result["pain_points_triggered"] != "[]"].copy()
