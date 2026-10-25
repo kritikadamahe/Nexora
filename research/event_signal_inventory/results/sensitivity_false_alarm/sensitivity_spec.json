@@ -1,0 +1,18 @@
+{
+  "description": "False-alarm sensitivity: vary spurious_rate (expected spurious event announcements per day) from the clean condition; every other setting comes unchanged from configs/small.json.",
+  "base_config": "configs/small.json",
+  "base_condition": "clean",
+  "parameter": "spurious_rate",
+  "values": [
+    0.0,
+    0.04,
+    0.08,
+    0.12,
+    0.2
+  ],
+  "baseline_check": {
+    "condition": "spurious_rate=0",
+    "baseline_metrics": "results/small/metrics_by_seed.csv",
+    "baseline_condition": "clean"
+  }
+}

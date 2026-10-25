@@ -6,13 +6,40 @@ This directory is self-contained. It does not import from or modify the RetailEd
 
 ## Setup and execution
 
+**Requirements.** Python 3.11 or newer, because the pinned numpy 2.4 and pandas 3.0 need it. The recorded runs used Python 3.12.3. Use a **separate virtual environment**: `requirements.txt` here pins versions that can differ from the main application's dependencies.
+
+Windows (PowerShell), from the Nexora repository root:
+
+```powershell
+cd research\event_signal_inventory
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Linux/macOS:
+
 ```bash
 cd research/event_signal_inventory
-python3 -m venv .venv && . .venv/bin/activate      # optional
-pip install -r requirements.txt
-python -m pytest -q tests                                                  # 16 unit tests
-python -m esi.experiment --config configs/smoke.json --out results/smoke   # ~3 s end-to-end check
-python -m esi.experiment --config configs/small.json --out results/small   # ~100 s on 1 CPU
+python3 -m venv .venv && . .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Then, from `research/event_signal_inventory` with the environment active:
+
+```bash
+python -m pytest -q tests                                                  # 16 unit tests, ~2 s
+python -m esi.experiment --config configs/smoke.json --out results/smoke   # end-to-end check, ~3 s
+python -m esi.experiment --config configs/small.json --out results/small   # main experiment, ~100 s on 1 CPU
+```
+
+The main command overwrites `results/small/`. To compare a re-run with the committed results, write to a different folder, for example `--out results/rerun`.
+
+The final 20-seed experiment can be reproduced from its recorded configuration. Its seed-level uncertainty analysis is produced by `esi/clustered_ci.py`. Write to new directories so existing results are kept:
+
+```bash
+python -m esi.experiment --config results/rerun/config.json --out results/rerun_reproduction
+python -m esi.clustered_ci --results results/rerun --out results/validation_clustered_ci/rerun
 ```
 
 Every run writes the following files to `--out`:
@@ -20,15 +47,34 @@ Every run writes the following files to `--out`:
 | File | Contents |
 |---|---|
 | `config.json` | Exact configuration, including seeds |
-| `environment.json` | Library versions, git commit, whether the worktree was dirty |
+| `environment.json` | Python and library versions, git commit, and whether the worktree had uncommitted changes. The committed results show `git_worktree_dirty: true` because `research/` was not yet committed when they were produced. |
 | `metrics_by_seed.csv` | Per seed × condition × arm metrics |
 | `metrics_by_sku.csv` | Per-SKU metrics |
-| `metrics_summary.csv` | Summary statistics |
-| `paired_differences.csv` | Paired arm comparisons |
-| `signal_counts.csv` | Event and announcement counts |
-| `results.md` | The tables below |
+| `metrics_summary.csv` | Mean and standard deviation per condition × arm |
+| `paired_differences.csv` | Paired arm comparisons with bootstrap intervals |
+| `signal_counts.csv` | True events and announcements in the test period |
+| `results.md` | The tables reproduced in the Results section below |
 
-Runs are deterministic: the configured seeds determine the world, the signals, the models, and the bootstrap.
+`results/small_stdout.log` is the console output of the recorded main run.
+
+**Determinism.** All randomness comes from the seeds in the config: the world, the signals, the models, and the bootstrap. Re-running `configs/small.json` in the same environment reproduced `metrics_by_seed.csv` exactly. With different library versions or a different platform, the gradient-boosting models may produce slightly different numbers.
+
+## Sensitivity analysis: false-alarm rate
+
+```bash
+python -m esi.sensitivity --config configs/sensitivity_false_alarm.json --out results/sensitivity_false_alarm
+```
+
+This takes about 170 s on 1 CPU. `esi/sensitivity.py` builds one condition per value of `spurious_rate` (expected spurious event announcements per day: 0, 0.04, 0.08, 0.12, 0.20). It starts from the `clean` condition, so p_miss = p_late = p_misleading = 0, and takes every other setting unchanged from `configs/small.json`: the world, splits, arms, policy, costs, τ grid, and the 5 seeds. It then calls the unchanged `experiment.run`.
+
+These conditions isolate false alarms, so they are **not** the same as the earlier `false_alarm` condition. That condition also had 10% missed events and 80% misleading labels.
+
+Outputs:
+- the standard run files;
+- `sensitivity_results.md` (tables);
+- `per_seed_relative_cost.csv`;
+- `baseline_check.csv`, which compares the 0% condition with `clean` in `results/small/metrics_by_seed.csv`;
+- `sensitivity_spec.json`.
 
 ## What is implemented
 
@@ -52,14 +98,27 @@ Under the `clean` condition, B and C see identical features and must produce ide
 
 ### Protocol (small config)
 
+The final 20-seed run (`results/rerun/`) records its configuration in `results/rerun/config.json`. No 20-seed config is committed in `configs/`.
+
 - 5 seeds, 40 SKUs, 730 days.
 - Splits:
   - Train: days 28–417. Training targets end before day 420.
-  - Validation: days 420–559. The order-up-to quantile τ ∈ {0.5, 0.65, 0.8, 0.9} is chosen per arm by minimising validation simulation cost.
+  - Validation: days 420–559. The order-up-to quantile τ ∈ {0.5, 0.65, 0.8, 0.9} is chosen separately for each arm and condition by minimising validation simulation cost.
   - Test: days 560–727. Evaluated once with the selected τ; the first 7 days are excluded as warm-up.
 - Models are not refit on train+validation.
 - Lead time L = 2, shelf life 4 days. Costs: holding 0.05, shortage 1.0, waste 0.6 per unit.
 - Initial stock at the start of each segment is set from pre-segment history only.
+- Each day, the order is placed after the day's delivery is received and before that day's demand is served. Feature definitions are in `esi/forecasting.py`; the day sequence is in `esi/inventory.py`.
+
+Signal conditions (`configs/small.json`). One signal realisation per seed and condition covers the train, validation and test periods:
+
+| Condition | p_miss | p_late (announced on event start day) | spurious events per day | p_misleading |
+|---|---|---|---|---|
+| clean | 0 | 0 | 0 | 0 |
+| imperfect | 0.3 | 0.3 | 0.04 | 0.5 |
+| false_alarm | 0.1 | 0 | 0.08 | 0.8 |
+
+On-time announcements arrive 14 days before the event. Arm B's training calendar announces every true event 14 days ahead.
 
 ### Metrics
 
@@ -80,12 +139,45 @@ During development, two mutation checks confirmed the tests can fail: switching 
 - **Single SKU, single echelon.** No capacity or budget limits, no substitution, no ordering cost, no supplier variability.
 - **One event at a time.** True events don't overlap; spurious events can overlap true ones.
 - **Policy and τ.** The policy is one heuristic, and τ comes from a coarse 4-point grid. Several selected τ values sit at the top of the grid (0.9), so a wider grid could change the results.
-- **Small experiment.** Only 5 seeds, one setting of (L, shelf life, costs), and two imperfect conditions. No sensitivity analysis yet.
-- **Statistics.** The bootstrap CI treats (seed, SKU) units as independent, which is optimistic. The per-seed table is the more conservative view.
+- **Limited replication and scope.** The final experiment uses 20 independent seeds, one setting of (lead time, shelf life, costs), and two imperfect-signal conditions. The false-alarm sensitivity sweep has only 5 seeds.
+- **Statistics.** The bootstrap intervals in `paired_differences.csv` and `results.md` treat (seed, SKU) units as independent, which makes them too narrow. Primary evidence is the seed-level analysis from `esi/clustered_ci.py`: per-seed t-intervals and exact sign-flip tests. No correction for multiple comparisons is applied.
+- **No external validation.** Nothing has been tested on real retail data, and no claim of real-world effectiveness is made.
 
-## Results (copied verbatim from `results/small/results.md`, produced by the command above)
+## Results
 
-Seeds: [0, 1, 2, 3, 4] | SKUs: 40 | test days: 168 (first 7 excluded) | runtime 95s
+Full report: [`RESEARCH_REPORT.md`](RESEARCH_REPORT.md). The **final experiment is the 20-seed run** (`results/rerun/`, seeds 0–19). The 5-seed run and the false-alarm sensitivity sweep are earlier, descriptive-only experiments.
+
+### Final experiment: 20 seeds (`results/rerun/`)
+
+Sources: `results/rerun/results.md` and `results/validation_clustered_ci/rerun/clustered_ci.md`.
+
+The estimate is the relative difference in summed test cost; negative means C is cheaper. The primary evidence is the per-seed 95% t-interval and the exact sign-flip p-value. A comparison is "supported" only if the t-interval excludes 0 and p < 0.05.
+
+| Condition | Comparison | Estimate | Per-seed t-interval | Sign-flip p | Seeds C cheaper | Supported? |
+|---|---|---|---|---|---|---|
+| clean | C vs A (B is identical to C) | −36.9% | [−38.7%, −33.8%] | < 0.0005 (shown as 0.000) | 20/20 | Yes |
+| imperfect | C vs B | −4.8% | [−8.1%, −0.1%] | 0.047 | 15/20 | Marginal; does not survive a Holm correction |
+| imperfect | C vs A | −3.5% | [−7.7%, +0.3%] | 0.063 | 15/20 | **No** |
+| false_alarm | C vs B | −16.6% | [−19.6%, −12.6%] | < 0.0005 (shown as 0.000) | 20/20 | Yes |
+| false_alarm | C vs A | −3.5% | [−8.3%, +2.6%] | 0.287 | 15/20 | No |
+
+What these results show:
+- **Clean signals:** accurate event information clearly reduced cost.
+- **Training on as-available signals reduced the cost harm of imperfect signals** compared with training on the clean calendar. The evidence is firm for false-alarm-heavy signals and weak for mixed errors.
+- **Using imperfect signals was not shown to beat ignoring events.** Under imperfect signals, C cost more than A in 5 of 20 seeds, so the results do **not** show that C consistently beats A.
+- **Clean-calendar training with false-alarm-heavy signals was worse than ignoring events:** B vs A was +15.6%, t-interval [+8.2%, +25.6%].
+
+The unit-level bootstrap intervals in `results/rerun/results.md` overstate certainty. For example, they exclude 0 for both C vs A comparisons, whereas the seed-level intervals do not.
+
+Seeds 0–4 of the 20-seed run are not identical to the 5-seed run below. The cause has not been identified; `RESEARCH_REPORT.md` Section 9 lists the candidates.
+
+Simulation only; see the limitations above and in the report.
+
+### Earlier 5-seed run (`results/small/`, seeds 0–4; descriptive only)
+
+The tables below are copied verbatim from `results/small/results.md`. Their bootstrap intervals are unit-level and therefore too narrow. Seed-level intervals for this run are in `results/validation_clustered_ci/small/clustered_ci.md`. With 5 seeds, no comparison can reach p < 0.05 in the sign-flip test (minimum 0.0625).
+
+Seeds: [0, 1, 2, 3, 4] | SKUs: 40 | test days: 168 (first 7 excluded) | runtime 106s
 
 Test-period metrics, mean ± sd across seeds (cost summed over SKUs):
 
@@ -141,9 +233,9 @@ Mean event counts in the test period (announcements include spurious ones):
 - false_alarm: true events 10.0, announcements 26.4
 - imperfect: true events 10.0, announcements 13.2
 
-### Reading of these results (observations from this run only)
+#### Reading of the 5-seed results (descriptive, this run only)
 
 - With **clean** information, the event-aware arms (B = C) cost 31.4% less than the event-blind arm.
 - Under **imperfect** and **false_alarm** signals, arm C cost less than arm B in 5 of 5 seeds in each condition. Pooled differences were −8.8% and −17.1%. Arm B's losses come mainly from waste: it trusts spurious and misleading announcements and over-orders.
 - Compared with ignoring events (A), C was slightly cheaper under `imperfect` (−3.3% pooled; 4 of 5 seeds cheaper) but **more expensive under `false_alarm`** (+5.2% pooled; cheaper in only 1 of 5 seeds). Training on as-available signals reduced the harm from bad signals but did **not** make a high-false-alarm signal worth using in this setup.
-- These are preliminary simulation results and not confirmatory evidence.
+- These are preliminary simulation results and not confirmatory evidence. In the 20-seed run, the pooled false_alarm C vs A estimate was −3.5% instead of +5.2%, and neither is statistically supported.

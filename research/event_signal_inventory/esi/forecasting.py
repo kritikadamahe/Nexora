@@ -14,6 +14,9 @@ MIN_HISTORY = 28
 
 def base_features(demand, origins, L):
     """Return (X_base, scale) for every (sku, origin). Rows are ordered sku-major."""
+    if L + 1 > 7:
+        # the seasonal-naive window d[t-7 : t-7+L+1] would include day t or later
+        raise ValueError(f"lead time L={L} too long for the 7-day seasonal-naive feature (needs L <= 6)")
     n, _ = demand.shape
     rows, scales = [], []
     for i in range(n):
