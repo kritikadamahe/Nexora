@@ -9,14 +9,17 @@
 
 Every statement about the design in Sections 1–5 was checked against the code (`esi/*.py`) and `configs/small.json`. Numbers in Appendices A and B were generated directly from saved result files.
 
-**Sources for the 20-seed results (Section 6).** These come from the contents of two files in the project owner's repository, which the owner provided as text:
+**Sources for the 20-seed results (Section 6).** These come from three files in the project owner's repository:
 
-- `results/rerun/results.md`
-- `results/validation_clustered_ci/rerun/clustered_ci.md`
+- `results/rerun/results.md` (provided as text): operational metrics, the original unit-level intervals, and the per-seed table;
+- `results/validation_clustered_ci/rerun/clustered_ci.md` (provided as text);
+- `results/validation_clustered_ci/rerun/clustered_ci.csv` (provided as the file): **all statistics in Sections 6.2 and 6.3** are taken from this file at full precision.
 
-They are copied as displayed, so they carry the rounding of those Markdown files. The underlying CSVs (`metrics_by_seed.csv`, `paired_differences.csv`, `clustered_ci.csv`), `config.json` and `environment.json` were **not** available while writing this report.
+All nine rows of `clustered_ci.csv` were checked against the report. This covers the estimates, the per-seed t-intervals, the seed-cluster and two-stage bootstrap intervals, the seed counts, and the exact sign-flip p-values. All values rounded to one decimal agree with `clustered_ci.md`, and the Holm correction in Section 6.3 was computed from the CSV p-values.
 
-The two files were cross-checked against each other:
+Values from `results.md` carry that file's rounding. `metrics_by_seed.csv`, `paired_differences.csv`, `config.json` and `environment.json` from the 20-seed run were **not** available.
+
+The sources were also cross-checked against each other:
 - the pooled estimates agree;
 - the per-seed counts of "first arm cheaper" agree with the per-seed table in `results.md`;
 - cost components sum to the reported totals to within ±1 (rounding).
@@ -191,6 +194,8 @@ This method **ignores dependence within a seed**. All SKUs in one seed share the
 
 Seeds are the independent replications, so this report treats the **seed-level analysis as primary**. Specifically, the per-seed t-interval and sign-flip test are primary, and the two-stage bootstrap is secondary.
 
+The per-seed t-interval is centred on the **mean of the per-seed relative differences** (`seed_mean` in `clustered_ci.csv`). The headline estimate is the **pooled** relative difference in summed cost (`rel_cost_diff`). The two differ because seeds with higher total cost weigh more in the pooled figure, so Section 6.2 reports both.
+
 **Decision rule.** A comparison is called *statistically supported* only if the per-seed 95% t-interval excludes 0 **and** the sign-flip p-value is below 0.05. A pooled cost difference that doesn't meet this rule is reported as *descriptive only*.
 
 The rule's reachability depends on the number of seeds:
@@ -253,27 +258,27 @@ Mean event counts in the test period were 10.4 true events, with 10.4 / 13.8 / 2
 
 ### 6.2 Paired comparisons
 
-The estimate is the relative difference in summed test cost; negative means the first arm is cheaper.
+The pooled estimate is the relative difference in summed test cost; negative means the first arm is cheaper. The mean per-seed difference is the centre of the per-seed t-interval (Section 3.8).
 
-- **Primary evidence:** the per-seed 95% t-interval (19 degrees of freedom) and the exact sign-flip p-value, both from `clustered_ci.md`.
-- **Secondary:** the two-stage bootstrap, also from `clustered_ci.md`.
-- **Original method, for reference only:** the unit-level bootstrap from `results.md` (`paired_differences`).
+- **Primary evidence:** the per-seed 95% t-interval (19 degrees of freedom) and the exact sign-flip p-value, both from `results/validation_clustered_ci/rerun/clustered_ci.csv`.
+- **Secondary:** the two-stage bootstrap, from the same file.
+- **Original method, for reference only:** the unit-level bootstrap from `results/rerun/results.md` (`paired_differences`), as displayed there.
 
-"Supported" means the Section 3.8 rule is met: the t-interval excludes 0 **and** p < 0.05.
+"Supported" means the Section 3.8 rule is met: the t-interval excludes 0 **and** p < 0.05. Sign-flip p-values are multiples of 1/2²⁰ and are given exactly where they fall below 0.001.
 
-| Condition | Comparison | Estimate | Per-seed t-interval | Sign-flip p | Seeds first cheaper | Two-stage bootstrap | Original unit-level CI | Supported? |
-|---|---|---|---|---|---|---|---|---|
-| clean | C vs B | +0.0% | [+0.0%, +0.0%] | 1.000 | 0/20 (identical) | [+0.0%, +0.0%] | [+0.000%, +0.000%] | Consistency check, not a finding |
-| clean | C vs A | −36.9% | [−38.7%, −33.8%] | 0.000† | 20/20 | [−39.2%, −34.2%] | [−38.168%, −35.492%] | **Yes** |
-| clean | B vs A | −36.9% | [−38.7%, −33.8%] | 0.000† | 20/20 | [−39.1%, −34.4%] | [−38.222%, −35.483%] | **Yes** |
-| imperfect | C vs B | −4.8% | [−8.1%, −0.1%] | 0.047 | 15/20 | [−8.5%, −0.8%] | [−6.040%, −3.458%] | **Yes, marginally** (see 6.3) |
-| imperfect | C vs A | −3.5% | [−7.7%, +0.3%] | 0.063 | 15/20 | [−7.7%, +0.5%] | [−4.841%, −2.162%] | **No** |
-| imperfect | B vs A | +1.4% | [−4.4%, +6.3%] | 0.716 | 11/20 | [−4.0%, +7.1%] | [−0.292%, +3.101%] | No |
-| false_alarm | C vs B | −16.6% | [−19.6%, −12.6%] | 0.000† | 20/20 | [−20.5%, −13.3%] | [−17.947%, −15.141%] | **Yes** |
-| false_alarm | C vs A | −3.5% | [−8.3%, +2.6%] | 0.287 | 15/20 | [−7.7%, +1.9%] | [−4.982%, −2.085%] | **No** |
-| false_alarm | B vs A | +15.6% | [+8.2%, +25.6%] | 0.000† | 2/20 | [+8.2%, +23.8%] | [+13.066%, +18.303%] | **Yes** (B costs more than A) |
+| Condition | Comparison | Pooled estimate | Mean per-seed difference | Per-seed t-interval | Sign-flip p | Seeds first cheaper | Two-stage bootstrap | Original unit-level CI | Supported? |
+|---|---|---|---|---|---|---|---|---|---|
+| clean | C vs B | +0.0% | +0.00% | [+0.00%, +0.00%] | 1.000 | 0/20 | [+0.0%, +0.0%] | [+0.000%, +0.000%] | Consistency check, not a finding |
+| clean | C vs A | −36.9% | −36.21% | [−38.68%, −33.75%] | 1.9 × 10⁻⁶ (= 2/2²⁰) | 20/20 | [−39.2%, −34.2%] | [−38.168%, −35.492%] | **Yes** |
+| clean | B vs A | −36.9% | −36.21% | [−38.68%, −33.75%] | 1.9 × 10⁻⁶ (= 2/2²⁰) | 20/20 | [−39.1%, −34.4%] | [−38.222%, −35.483%] | **Yes** |
+| imperfect | C vs B | −4.8% | −4.09% | [−8.09%, −0.08%] | 0.047 | 15/20 | [−8.5%, −0.8%] | [−6.040%, −3.458%] | **Yes, marginally**; not after Holm (6.3) |
+| imperfect | C vs A | −3.5% | −3.73% | [−7.73%, +0.27%] | 0.063 | 15/20 | [−7.7%, +0.5%] | [−4.841%, −2.162%] | **No** |
+| imperfect | B vs A | +1.4% | +0.95% | [−4.38%, +6.29%] | 0.716 | 11/20 | [−4.0%, +7.1%] | [−0.292%, +3.101%] | No |
+| false_alarm | C vs B | −16.6% | −16.13% | [−19.63%, −12.64%] | 1.9 × 10⁻⁶ (= 2/2²⁰) | 20/20 | [−20.5%, −13.3%] | [−17.947%, −15.141%] | **Yes** |
+| false_alarm | C vs A | −3.5% | −2.85% | [−8.25%, +2.55%] | 0.287 | 15/20 | [−7.7%, +1.9%] | [−4.982%, −2.085%] | **No** |
+| false_alarm | B vs A | +15.6% | +16.91% | [+8.21%, +25.60%] | 1.5 × 10⁻⁴ (= 160/2²⁰) | 2/20 | [+8.2%, +23.8%] | [+13.066%, +18.303%] | **Yes** (B costs more than A) |
 
-† Displayed as 0.000 in `clustered_ci.md`, so p < 0.0005. The exact value is in `clustered_ci.csv`, which was not available.
+The three p-values of 2/2²⁰ ≈ 1.9 × 10⁻⁶ are the smallest attainable with 20 seeds. They occur because all 20 per-seed differences have the same sign. False-alarm B vs A has p = 160/2²⁰ ≈ 1.5 × 10⁻⁴, with B cheaper than A in only 2 of 20 seeds.
 
 ### 6.3 Statistical conclusions
 
@@ -284,13 +289,28 @@ The estimate is the relative difference in summed test cost; negative means the 
   - B cost more than A: +15.6%, B cheaper in only 2 of 20 seeds. Clean-calendar training combined with false-alarm-heavy signals was worse than ignoring events.
 
 **Marginal:**
-- **Imperfect signals, C vs B:** −4.8%, cheaper in 15 of 20 seeds. It meets the decision rule only narrowly: the t-interval's upper bound is −0.1% and p = 0.047.
-- The decision rule does not adjust for multiple comparisons. Applying Holm's step-down correction to the eight non-trivial comparisons (using the displayed p-values) leaves the four comparisons with p < 0.0005 significant. This comparison does not survive, because 0.047 is above its Holm threshold of 0.0125.
-- It should therefore be called *weak evidence* for H2 under imperfect signals, not a firm result.
+- **Imperfect signals, C vs B:** −4.8%, cheaper in 15 of 20 seeds. It meets the decision rule only narrowly: the t-interval is [−8.09%, −0.08%] and the exact p is 0.0470.
+- The decision rule does not adjust for multiple comparisons. The table below applies Holm's step-down correction (family-wise α = 0.05) to the eight non-trivial comparisons, using the exact p-values from `clustered_ci.csv`. Clean C vs B is excluded because the two arms are identical by design.
+
+| Holm rank | Comparison | Exact sign-flip p | Holm threshold 0.05 / (8 − rank + 1) | Holm-adjusted p | Decision |
+|---|---|---|---|---|---|
+| 1 | clean C vs A | 1.9 × 10⁻⁶ (= 2/2²⁰) | 0.00625 | 1.5 × 10⁻⁵ | Reject |
+| 2 | clean B vs A | 1.9 × 10⁻⁶ (= 2/2²⁰) | 0.00714 | 1.5 × 10⁻⁵ | Reject |
+| 3 | false_alarm C vs B | 1.9 × 10⁻⁶ (= 2/2²⁰) | 0.00833 | 1.5 × 10⁻⁵ | Reject |
+| 4 | false_alarm B vs A | 1.5 × 10⁻⁴ (= 160/2²⁰) | 0.01000 | 7.6 × 10⁻⁴ | Reject |
+| 5 | imperfect C vs B | 0.047 | 0.01250 | 0.188 | **Not rejected; the procedure stops here** |
+| 6 | imperfect C vs A | 0.063 | 0.01667 | 0.189 | Not rejected |
+| 7 | false_alarm C vs A | 0.287 | 0.02500 | 0.574 | Not rejected |
+| 8 | imperfect B vs A | 0.716 | 0.05000 | 0.716 | Not rejected |
+
+- Holm's procedure (family-wise α = 0.05), applied to the exact p-values from `clustered_ci.csv`, rejects the null hypothesis for exactly four comparisons: clean C vs A, clean B vs A, false-alarm C vs B, and false-alarm B vs A.
+- Imperfect C vs B is the first comparison not rejected. Its exact p = 0.0470 exceeds its threshold of 0.0125, and its Holm-adjusted p is 0.188.
+- Clean C vs A and clean B vs A are the same comparison here, so including both makes the correction slightly more conservative.
+- Imperfect C vs B should therefore be called *weak evidence* for H2 under imperfect signals, not a firm result.
 
 **Not supported:**
-- **C vs A under imperfect signals:** −3.5% pooled and cheaper in 15 of 20 seeds, but the t-interval [−7.7%, +0.3%] includes 0 and p = 0.063. C cost more than A in 5 of 20 seeds. **The results do not show that C consistently beats A under imperfect signals.** H3 is not supported.
-- **C vs A under false-alarm signals:** −3.5% pooled, t-interval [−8.3%, +2.6%], p = 0.287. Not supported.
+- **C vs A under imperfect signals:** −3.5% pooled and cheaper in 15 of 20 seeds, but the t-interval [−7.73%, +0.27%] includes 0 and p = 0.063. C cost more than A in 5 of 20 seeds. **The results do not show that C consistently beats A under imperfect signals.** H3 is not supported.
+- **C vs A under false-alarm signals:** −3.5% pooled, t-interval [−8.25%, +2.55%], p = 0.287. Not supported.
 - **B vs A under imperfect signals:** +1.4%, p = 0.716. No difference supported.
 
 **Original intervals overstated certainty.** For all three C vs A and B vs A comparisons under imperfect and false-alarm signals, the unit-level bootstrap intervals (`results.md`) excluded 0 or nearly did, while the seed-level intervals include 0. This happens because those intervals treat 800 correlated seed–SKU units as independent.
@@ -335,15 +355,15 @@ The 20-seed values for seeds 0–4 are not identical to the 5-seed run (Section 
 
 ## 9. Inconsistencies and open issues found while preparing this report
 
-1. **The 20-seed CSVs, configuration and environment record were not inspected.** Section 6 is based on the two Markdown files provided as text, so its values carry their rounding. `config.json`, `environment.json`, `metrics_by_seed.csv`, `paired_differences.csv` and `clustered_ci.csv` from the 20-seed run were not available. As a result:
-   - the exact sign-flip p-values shown as 0.000 are unknown;
+1. **Some 20-seed files were not inspected.** The statistics in Sections 6.2–6.3 were verified against `results/validation_clustered_ci/rerun/clustered_ci.csv`. However, `config.json`, `environment.json`, `metrics_by_seed.csv` and `paired_differences.csv` from the 20-seed run were not available. As a result:
+   - the operational metrics in Section 6.1 and the original unit-level intervals carry the rounding of `results.md`;
    - only the settings visible in `results.md` could be checked against `configs/small.json`: 40 SKUs, 168 test days, 7 warm-up days, and the three condition names. The remaining parameters were not confirmed.
 2. **Seed count, now resolved.** An earlier project message described `results/rerun/` as a five-seed run. `results/rerun/results.md` records seeds 0–19 (20 seeds).
 3. **Seeds 0–4 of the 20-seed run do not reproduce the 5-seed run.** With the same seeds and, apparently, the same configuration, the per-seed results should be identical, but they differ. For clean C vs A, seeds 0–4 give −31.7%, −31.5%, −30.9%, −36.8%, −25.0% in `results/rerun/results.md`, against −31.1%, −31.4%, −30.3%, −36.7%, −24.7% in `results/small/results.md`. False-alarm C vs B differs similarly (for example −20.5% vs −20.9% for seed 0).
    Possible causes are different library versions or platform (the 5-seed run used Python 3.12.3, numpy 2.4.4 and scikit-learn 1.8.0 on Linux), a changed configuration, or code changes between the runs. Comparing `results/rerun/environment.json` and `results/rerun/config.json` with `results/small/` would identify the cause. Until then, the two runs should be treated as separate experiments, not as a subset and a superset.
 4. **No 20-seed configuration is committed.** `configs/small.json` lists seeds 0–4, and there is no 20-seed config in `configs/`. The configuration used is recorded only in `results/rerun/config.json`.
 5. **Unit-level intervals appear in two places with slightly different values.** `clustered_ci.md` recomputes the original unit-level bootstrap with its own random stream. For example, imperfect B vs A is [−0.292%, +3.101%] in `results/rerun/results.md` and [−0.4%, +3.1%] in `clustered_ci.md`. The original method's official values are those in `results.md` / `paired_differences.csv`. Either way, these intervals are not the primary evidence.
-6. **No correction for multiple comparisons.** The Section 3.8 decision rule tests each comparison at 0.05. Section 6.3 reports the effect of a Holm correction on the imperfect C vs B result.
+6. **The per-comparison decision rule is unadjusted for multiple comparisons.** The Section 3.8 decision rule tests each comparison at 0.05. Section 6.3 applies a Holm correction to all eight non-trivial comparisons using the exact CSV p-values. Four comparisons survive it (exact p ≤ 1.5 × 10⁻⁴); imperfect C vs B (p = 0.0470) does not.
 7. **The root `README.md` still reports the 5-seed results.** The module README has been updated to the 20-seed results; the root README's "Research Contribution" section has not.
 8. **The sign-flip test enumerates every sign pattern.** `clustered_ci.signflip_p` builds all 2ⁿ patterns: about 1.05 million for 20 seeds. That is feasible, but a Monte Carlo version would be needed for many more seeds.
 9. **The 5-seed results were produced from an uncommitted worktree.** `results/small/environment.json` records commit `2eb21e3` with `git_worktree_dirty: true`. The 20-seed run's commit and worktree state were not checked.
@@ -359,10 +379,10 @@ python -m pytest -q tests
 # re-run the 20-seed experiment from its recorded configuration
 python -m esi.experiment --config results/rerun/config.json --out results/rerun_reproduction
 # seed-clustered analysis of a results directory
-python -m esi.clustered_ci --results results/rerun --out results/validation_clustered_ci/rerun
+python -m esi.clustered_ci --results results/rerun --out results/validation_clustered_ci/rerun_reproduction
 # earlier 5-seed run and its clustered analysis
 python -m esi.experiment --config configs/small.json --out results/small_reproduction
-python -m esi.clustered_ci --results results/small --out results/validation_clustered_ci/small
+python -m esi.clustered_ci --results results/small --out results/validation_clustered_ci/small_reproduction
 # false-alarm sensitivity sweep (5 seeds)
 python -m esi.sensitivity --config configs/sensitivity_false_alarm.json --out results/sensitivity_false_alarm_reproduction
 ```
@@ -377,8 +397,8 @@ All randomness comes from the configured seeds. Re-running `configs/small.json` 
 |---|---|---|
 | Implementation | `esi/generator.py`, `esi/signals.py`, `esi/forecasting.py`, `esi/inventory.py`, `esi/experiment.py`, `esi/clustered_ci.py`, `esi/sensitivity.py` | yes |
 | Configuration | `configs/small.json`, `configs/sensitivity_false_alarm.json` | yes |
-| 20-seed results (Section 6) | `results/rerun/results.md` | provided as text; CSVs, `config.json` and `environment.json` not inspected |
-| 20-seed clustered analysis (Section 6) | `results/validation_clustered_ci/rerun/clustered_ci.md` | provided as text; `clustered_ci.csv` not inspected |
+| 20-seed results (Section 6.1, original intervals) | `results/rerun/results.md` | provided as text; `metrics_by_seed.csv`, `paired_differences.csv`, `config.json` and `environment.json` not inspected |
+| 20-seed clustered analysis (Sections 6.2–6.3) | `results/validation_clustered_ci/rerun/clustered_ci.csv` (and `clustered_ci.md`) | yes: CSV provided; all values verified |
 | 5-seed results (Appendix A) | `results/small/metrics_by_seed.csv`, `results/small/signal_counts.csv`, `results/small/environment.json` | yes |
 | 5-seed clustered analysis (Appendix A) | `results/validation_clustered_ci/small/clustered_ci.csv` | yes |
 | Sensitivity clustered analysis (Appendix B) | `results/validation_clustered_ci/sensitivity_false_alarm/clustered_ci.csv` | yes |
