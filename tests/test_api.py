@@ -46,16 +46,18 @@ def test_pipeline_then_results(client):
     assert c.get("/results/999999").status_code == 404
 
 
+
 def test_decision_requires_engine_then_works_after_restart(client):
-    """Documented v0 behaviour: the engine only loads at startup, so after the first
-    /run-pipeline the server must be restarted (here: re-enter the lifespan)."""
+    """The decision engine is initialized after the pipeline runs."""
     c, main, _ = client
     c.post("/run-pipeline")
-    assert c.get("/decision/106").status_code == 503
-    with TestClient(main.app) as c2:             # a 'restart'
-        r = c2.get("/decision/106")
-        assert r.status_code == 200
-        assert r.json()["action_types"] == ["LOGISTICS"]
-        recs = c2.get("/recommendations")
-        assert recs.status_code == 200 and recs.json()["total"] >= 1
-        assert c2.get("/recommendations/106").status_code == 200
+
+    r = c.get("/decision/106")
+    assert r.status_code == 200
+    assert r.json()["action_types"] == ["LOGISTICS"]
+
+    recs = c.get("/recommendations")
+    assert recs.status_code == 200
+    assert recs.json()["total"] >= 1
+
+    assert c.get("/recommendations/106").status_code == 200
