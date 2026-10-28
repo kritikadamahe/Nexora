@@ -12,20 +12,22 @@ Target: units demanded over the next 7 days. Out-of-sample: last 12 weeks, three
 | moving_avg_28d | 0.117 | 13.65 | 129.0 | -0.005 | 0.108 |
 | moving_avg_91d | 0.129 | 15.08 | 103.1 | +0.055 | 0.109 |
 | nexora_heuristic | 0.134 | 15.70 | 122.2 | +0.001 | 0.123 |
-| gbm_no_calendar | 0.166 | 19.43 | 180.8 | +0.035 | 0.144 |
-| gbm | 0.074 | 8.64 | 59.0 | +0.023 | 0.098 |
+| gbm_no_calendar | 0.171 | 19.99 | 181.6 | +0.043 | 0.153 |
+| gbm | 0.082 | 9.59 | 74.1 | +0.031 | 0.097 |
 
-P90 forecast coverage: 0.908 (target 0.9); pinball loss 2.79.
+P90 forecast coverage: 0.884 (target 0.9); pinball loss 2.96.
 
 ## Paired bootstrap (resampling products)
 
-- WAPE(gbm) - WAPE(moving_avg_28d) = -0.0428, 95% CI [-0.0572, -0.0165]
-- WAPE(gbm) - WAPE(nexora_heuristic) = -0.0602, 95% CI [-0.0713, -0.0464]
+- WAPE(gbm) - WAPE(moving_avg_28d) = -0.0346, 95% CI [-0.0447, -0.0135]
+- WAPE(gbm) - WAPE(nexora_heuristic) = -0.0521, 95% CI [-0.0696, -0.0419]
 
 ## Replenishment simulation (same weeks, same starting stock)
 
+Scored days: 2025-12-08 to 2026-02-25 (stops where the last simulated review stops mattering; see `simulation.py`).
+
 | Policy | Fill rate | Avg on-hand units | Avg on-hand value at cost | Stock-out series-days |
 |---|---|---|---|---|
-| nexora_gbm | 0.964 | 17,215 | 588,908 | 539 |
-| textbook_ma28 | 0.963 | 17,257 | 585,343 | 452 |
-| legacy_rule | 0.899 | 11,958 | 409,553 | 2052 |
+| nexora_gbm | 0.993 | 17,815 | 601,000 | 158 |
+| textbook_ma28 | 0.982 | 17,879 | 605,322 | 177 |
+| legacy_rule | 0.930 | 12,406 | 424,565 | 1524 |

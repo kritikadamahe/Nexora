@@ -121,3 +121,114 @@ def test_simulation_with_perfect_forecast_reaches_full_fill_rate():
     r = sim.set_index("policy")
     assert r.loc["nexora_gbm", "fill_rate"] == pytest.approx(1.0)
     assert r.loc["nexora_gbm", "fill_rate"] >= r.loc["legacy_rule", "fill_rate"]
+
+
+# ── simulation: timing, inventory position, metrics, evaluation window ─────
+
+def _one_series_inputs(T, first, f50=1000.0, f90=1000.0):
+    """Demand 1/day up to `first` (initial stock = 14 units), then 10/day."""
+    y = np.full((1, T), 10.0)
+    y[:, : first + 1] = 1.0
+    rows = [dict(origin_idx=o, product_id=1, store_id=1, gbm=f50, gbm_p90=f90,
+                 nexora_heuristic=f50) for o in range(first, T)]
+    return y, pd.DataFrame(rows)
+
+
+def _gbm(sim):
+    return sim.set_index("policy").loc["nexora_gbm"]
+
+
+@pytest.mark.parametrize("lead, stockout_days", [(1, 0), (3, 2), (5, 4)])
+def test_order_arrives_lead_time_days_after_review(lead, stockout_days):
+    """Review at end of day 30; initial stock 14. Day 31 sells 10, day 32 has 4 left.
+    The order is available from day 31 + lead: days 32..30+lead are short iff lead > 1."""
+    first, T = 30, 50
+    y, preds = _one_series_inputs(T, first)
+    sim = simulate(y, preds, {(1, 1): 0}, [first], first + 8, np.array([2.0]), lead_time=lead)
+    assert _gbm(sim).stockout_series_days == stockout_days
+
+
+def test_metrics_match_hand_calculation():
+    first, lead = 30, 3
+    y, preds = _one_series_inputs(50, first)
+    r = _gbm(simulate(y, preds, {(1, 1): 0}, [first], first + 8, np.array([2.0]), lead_time=lead))
+    # order = ceil(1000 * 10/7 - 14) = 1415 arrives day 34. Demand 10 on days 31..38 = 80.
+    # sold: 10, 4, 0, 10 x5 -> 64 of 80. End-of-day stock: 4,0,0,1405,1395,1385,1375,1365.
+    assert r.fill_rate == pytest.approx(64 / 80)
+    assert r.stockout_series_days == 2
+    assert r.avg_on_hand_units == pytest.approx(6929 / 8)
+    assert r.avg_on_hand_value_at_cost == pytest.approx(2 * 6929 / 8)
+
+
+def _reference_order_up_to(y, f7, lead, review, reviews, end, p_days):
+    """Independent single-series reference with an explicit inventory position."""
+    first = reviews[0]
+    on_hand = max(0.0, 14 * y[first - 27: first + 1].mean())
+    orders = []                                   # [arrival_day, qty]
+    sold_tot = dem_tot = stock_sum = 0.0
+    for day in range(first + 1, end + 1):
+        if day - 1 in reviews:
+            position = on_hand + sum(q for a, q in orders if a >= day)   # outstanding orders
+            qty = max(0.0, f7 * p_days / 7 - position)
+            qty = float(np.ceil(qty - 1e-9))
+            if qty > 0:
+                orders.append([day + lead, qty])
+        on_hand += sum(q for a, q in orders if a == day)
+        sold = min(on_hand, y[day]); on_hand -= sold
+        sold_tot += sold; dem_tot += y[day]; stock_sum += on_hand
+    return sold_tot / dem_tot, stock_sum / (end - first)
+
+
+@pytest.mark.parametrize("lead", [3, 10])     # 10 > review: orders are still in transit at review 2
+def test_inventory_position_includes_outstanding_orders(lead):
+    first, review, T = 30, 7, 80
+    y = np.full((1, T), 10.0)
+    rows = [dict(origin_idx=o, product_id=1, store_id=1, gbm=70.0, gbm_p90=70.0,
+                 nexora_heuristic=70.0) for o in range(first, T)]
+    reviews = [first, first + 7, first + 14]
+    end = 55
+    got = _gbm(simulate(y, pd.DataFrame(rows), {(1, 1): 0}, reviews, end, np.array([1.0]),
+                        lead_time=lead, review=review))
+    fill, avg = _reference_order_up_to(y[0], 70.0, lead, review, reviews,
+                                       min(end, reviews[-1] + review + lead), lead + review)
+    assert got.fill_rate == pytest.approx(fill)
+    assert got.avg_on_hand_units == pytest.approx(avg)
+
+
+def test_scoring_stops_where_the_last_review_stops_mattering():
+    """Days beyond last_review + review + lead depend on an unsimulated review; they must not
+    be scored, so extending end_idx cannot change any metric."""
+    first, T = 30, 80
+    y = np.full((1, T), 10.0)
+    rows = [dict(origin_idx=o, product_id=1, store_id=1, gbm=70.0, gbm_p90=70.0,
+                 nexora_heuristic=70.0) for o in range(first, T)]
+    reviews = [first, first + 7]
+    a = simulate(y, pd.DataFrame(rows), {(1, 1): 0}, reviews, first + 17, np.array([1.0]))
+    b = simulate(y, pd.DataFrame(rows), {(1, 1): 0}, reviews, T - 1, np.array([1.0]))
+    pd.testing.assert_frame_equal(a, b)
+
+
+def test_all_policies_share_start_stock_and_window():
+    """With no review before the end of the window no policy can order, so every policy must
+    report identical metrics: same starting stock, same days, same demand."""
+    first, T = 30, 60
+    y, preds = _one_series_inputs(T, first)
+    sim = simulate(y, preds, {(1, 1): 0}, [first], first + 1, np.array([1.0]), lead_time=3)
+    # window is 1 day (31); the order cannot arrive within it for any policy
+    assert sim["fill_rate"].nunique() == 1 and sim["avg_on_hand_units"].nunique() == 1
+    assert sim["avg_on_hand_units"].iloc[0] == pytest.approx(4.0)
+
+
+def test_missing_forecast_rows_raise_instead_of_silently_zeroing_a_series():
+    y = np.full((2, 60), 5.0)
+    rows = [dict(origin_idx=30, product_id=1, store_id=1, gbm=35.0, gbm_p90=40.0,
+                 nexora_heuristic=35.0)]                    # series 2 has no forecast
+    with pytest.raises(ValueError, match="every policy needs a forecast"):
+        simulate(y, pd.DataFrame(rows), {(1, 1): 0, (2, 1): 1}, [30], 45, np.ones(2))
+
+
+def test_scoring_end_helper_matches_simulate_window():
+    from inventory_painpoints_service.app.inventory_policy.simulation import scoring_end
+    assert scoring_end([30, 37], 79) == 37 + 7 + 3
+    assert scoring_end([30, 37], 40) == 40          # never extends past the data
+    assert scoring_end([37, 30], 79, lead_time=5) == 37 + 7 + 5   # order-insensitive
