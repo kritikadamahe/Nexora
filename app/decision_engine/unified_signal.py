@@ -10,7 +10,7 @@
 # The Decision Engine processes it and writes recommendations to DB.
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -28,7 +28,7 @@ class UnifiedSignal:
     return_rate_30d:        float          # return rate last 30 days
     current_stock:          int
     reorder_level:          int
-    tft_forecast_7d:        float          # null → 0.0 until ARIMA/TFT built
+    tft_forecast_7d:        float          # trained 7-day forecast (legacy column name; not a TFT)
 
     # ── From M3 (Reddit module — stubbed as 0.0/NEUTRAL for now) ─────────────
     urgency_score:          float = 0.0   # 0..1 — external news urgency
@@ -39,6 +39,9 @@ class UnifiedSignal:
 
     # ── Routing flags (Section 3.5.6) ─────────────────────────────────────────
     procurement_flag:       bool  = False  # True = product not in DB, found in news
+
+    # ── From the trained demand model (None when unavailable, e.g. old CSVs) ─────────────
+    forecast_7d_p90:        Optional[float] = None   # upper (P90) 7-day demand forecast
 
 
 def build_unified_signal(row: dict, urgency_score: float = 0.0,
@@ -61,6 +64,9 @@ def build_unified_signal(row: dict, urgency_score: float = 0.0,
     if tft_forecast is None or (isinstance(tft_forecast, float) and tft_forecast != tft_forecast):
         tft_forecast = row.get("rolling_sales_7d", 0.0) or 0.0
 
+    p90 = row.get("forecast_7d_p90")
+    p90 = None if p90 is None or p90 != p90 else float(p90)
+
     return UnifiedSignal(
         product_id            = int(row["product_id"]),
         store_id              = int(row["store_id"]),
@@ -74,4 +80,5 @@ def build_unified_signal(row: dict, urgency_score: float = 0.0,
         tft_forecast_7d       = float(tft_forecast),
         urgency_score         = urgency_score,
         news_sentiment        = news_sentiment,
+        forecast_7d_p90       = p90,
     )

@@ -7,6 +7,7 @@
 # this is what gets saved to CSV (now) and PostgreSQL (later),
 # and what the Decision Engine reads at runtime.
 
+import numpy as np
 import pandas as pd
 from inventory_painpoints_service.app.core.config import DATA_END_DATE
 
@@ -15,6 +16,7 @@ def assemble_features(
     inventory_features_df: pd.DataFrame,
     return_features_df: pd.DataFrame,
     expiry_features_df: pd.DataFrame,
+    forecast_df: pd.DataFrame = None,
 ) -> pd.DataFrame:
     """
     Merges all feature DataFrames into the product_analysis table structure.
@@ -30,6 +32,12 @@ def assemble_features(
 
     expiry_features_df contains:
         product_id, store_id, days_to_expiry, expiry_risk_score
+
+    forecast_df (optional) contains the trained 7-day demand forecast:
+        product_id, store_id, forecast_7d, forecast_7d_p90, forecast_method
+    When it is missing, or a series is absent from it, the original heuristic
+    (avg_daily_sales * 7 * seasonality_index) is used and forecast_method is
+    "heuristic_fallback".
     """
 
     if inventory_features_df.empty:
@@ -64,10 +72,24 @@ def assemble_features(
     df["pain_points_triggered"] = None
     df["composite_risk_score"]  = None
     
-    # Temporary forecast proxy (7-day demand estimate)
-    # Uses avg_daily_sales adjusted by seasonality_index.
-    # This will be replaced by TFT (Temporal Fusion Transformer) model output in future.
-    df["tft_forecast_7d"] = df["avg_daily_sales"] * 7 * df["seasonality_index"]
+    # 7-day demand forecast.
+    # Heuristic = avg_daily_sales * 7 * seasonality_index (the original proxy). It is only a
+    # fallback now; the trained model's output (forecast_df) is used whenever available.
+    if forecast_df is not None and not forecast_df.empty:
+        cols = ["product_id", "store_id", "forecast_7d", "forecast_7d_p90", "forecast_method"]
+        df = df.merge(forecast_df[cols], on=["product_id", "store_id"], how="left")
+    else:
+        df["forecast_7d"] = np.nan
+        df["forecast_7d_p90"] = np.nan
+        df["forecast_method"] = None
+    heuristic = df["avg_daily_sales"] * 7 * df["seasonality_index"]
+    missing = df["forecast_7d"].isna()
+    df.loc[missing, "forecast_7d"] = heuristic[missing]
+    df.loc[missing, "forecast_7d_p90"] = heuristic[missing]   # no spread information -> no safety stock
+    df.loc[missing, "forecast_method"] = "heuristic_fallback"
+    # Legacy column name kept because downstream modules read it. Despite the name it is NOT a
+    # Temporal Fusion Transformer; it equals forecast_7d (trained model, or heuristic fallback).
+    df["tft_forecast_7d"] = df["forecast_7d"]
 
     # Drop internal columns not needed downstream
     cols_to_drop = ["inventory_id", "expiry_date", "last_restocked_at"]
@@ -82,6 +104,7 @@ def assemble_features(
         "days_to_expiry", "expiry_risk_score",
         "return_rate_30d", "category_avg_return_rate",
         "pain_points_triggered", "composite_risk_score", "tft_forecast_7d",
+        "forecast_7d", "forecast_7d_p90", "forecast_method",
     ]
     final_cols = [c for c in final_cols if c in df.columns]
 

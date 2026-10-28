@@ -24,10 +24,14 @@ import pandas as pd
 from inventory_painpoints_service.app.core.config import DATA_END_DATE
 
 
-def compute_sales_features(sales_df: pd.DataFrame) -> pd.DataFrame:
+def compute_sales_features(sales_df: pd.DataFrame, as_of=None) -> pd.DataFrame:
     """
     Input:  cleaned sales DataFrame
     Output: one row per (product_id, store_id) with sales features
+
+    as_of: optional reference date. Defaults to DATA_END_DATE (original behaviour).
+           Callers that evaluate the heuristic at an earlier date (backtesting) must
+           also pass only sales up to that date, so no future data is used.
     """
 
     if sales_df.empty:
@@ -42,7 +46,7 @@ def compute_sales_features(sales_df: pd.DataFrame) -> pd.DataFrame:
     df = df.sort_values("sale_date")
 
     # Reference date = last day of our data (acts as "today" for nightly batch)
-    today = pd.Timestamp(DATA_END_DATE)
+    today = pd.Timestamp(DATA_END_DATE if as_of is None else as_of)
 
     # ── Rolling windows ──────────────────────────────────────────────────────
     cutoff_7d  = today - pd.Timedelta(days=7)
