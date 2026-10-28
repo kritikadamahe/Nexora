@@ -8,6 +8,18 @@ Compares, over the same out-of-sample weeks and the same starting stock:
 Assumptions: weekly review, deterministic lead time, orders placed at end of the review day
 arrive L days later, unmet demand is lost (not backordered), no MOQ/capacity, sales = demand
 (historical stock-outs are unobserved), initial stock = 2 weeks of the trailing 28-day mean.
+
+Timing convention: a review happens at the end of day o. The order is placed then and is
+available from the start of day o + 1 + lead_time, i.e. the first `lead_time` days after the
+review are served from existing stock only. Metrics use end-of-day stock.
+
+Evaluation window: scoring stops at last_review + review + lead_time. Days after that depend
+on a review that was never simulated (forecast rows do not exist for origins whose 7-day target
+is unobserved), so scoring them would count stock-outs no real, continuing policy would have.
+
+Known asymmetry: `legacy_rule` reproduces the original rule, which looks at on-hand stock only
+(no in-transit data). The two order-up-to policies use on-hand + outstanding orders. The two
+coincide whenever lead_time < review (all orders have arrived by the next review).
 """
 import numpy as np
 import pandas as pd
@@ -17,12 +29,20 @@ from .replenishment import order_up_to
 Z90 = 1.2816
 
 
+def scoring_end(review_origins: list, end_idx: int, lead_time: int = 3, review: int = 7) -> int:
+    """Last day index that is scored (see module docstring). Shared with run_evaluation so the
+    report can state the window that was actually used."""
+    return min(end_idx, max(review_origins) + review + lead_time)
+
+
 def simulate(y: np.ndarray, preds: pd.DataFrame, series_pos: dict, review_origins: list,
              end_idx: int, cost: np.ndarray, lead_time: int = 3, review: int = 7) -> pd.DataFrame:
     """y: (S, T) daily demand. preds: rows for (series, origin) with gbm, gbm_p90,
     nexora_heuristic, m28. series_pos maps (product_id, store_id) -> row in y."""
     S = y.shape[0]
+    review_origins = sorted(review_origins)
     first = review_origins[0]
+    end_idx = scoring_end(review_origins, end_idx, lead_time, review)
     p = lead_time + review
     lookup = preds.set_index(["origin_idx", "product_id", "store_id"])
     results = {}
@@ -40,6 +60,9 @@ def simulate(y: np.ndarray, preds: pd.DataFrame, series_pos: dict, review_origin
                 q = np.zeros(S)
                 position = on_hand + sum(a for _, a in pipeline) if pipeline else on_hand.copy()
                 rows = lookup.loc[o]
+                if len(rows) != S:
+                    raise ValueError(f"review origin {o}: forecasts for {len(rows)} of {S} series; "
+                                     "every policy needs a forecast for every series")
                 f50 = np.zeros(S); f90 = np.zeros(S); heur = np.zeros(S)
                 idx = np.array([series_pos[(a, b)] for a, b in rows.index])
                 f50[idx] = rows["gbm"].to_numpy(); f90[idx] = rows["gbm_p90"].to_numpy()

@@ -23,7 +23,7 @@ from inventory_painpoints_service.app.data.loaders.stores_loader import load_sto
 from inventory_painpoints_service.app.forecasting.evaluation import run_backtest, write_report
 from inventory_painpoints_service.app.forecasting.model import ModelConfig
 from inventory_painpoints_service.app.forecasting.panel import build_daily_panel
-from inventory_painpoints_service.app.inventory_policy.simulation import simulate
+from inventory_painpoints_service.app.inventory_policy.simulation import scoring_end, simulate
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -60,6 +60,9 @@ def main(argv=None):
     sim = simulate(panel.y, preds, pos, reviews, panel.n_days - 1, cost)
     sim.to_csv(Path(args.out) / "policy_simulation.csv", index=False)
     extras["simulation_reviews"] = [str(panel.dates[i].date()) for i in reviews]
+    last_scored = scoring_end(reviews, panel.n_days - 1)
+    extras["simulation_scored_days"] = [str(panel.dates[reviews[0] + 1].date()),
+                                        str(panel.dates[last_scored].date())]
     (Path(args.out) / "forecast_extras.json").write_text(json.dumps(extras, indent=2, default=str))
     _write_markdown(metrics, extras, sim, Path(args.out) / "forecast_evaluation.md")
     print(metrics[metrics.fold == "pooled"].round(4).to_string(index=False))
@@ -87,6 +90,9 @@ def _write_markdown(metrics, extras, sim, path):
         lines.append(f"- WAPE({k.replace('_minus_', ') - WAPE(')}) = {v['diff']:+.4f}, "
                      f"95% CI [{v['ci95'][0]:+.4f}, {v['ci95'][1]:+.4f}]")
     lines += ["", "## Replenishment simulation (same weeks, same starting stock)", "",
+              f"Scored days: {extras['simulation_scored_days'][0]} to "
+              f"{extras['simulation_scored_days'][1]} (stops where the last simulated review stops "
+              "mattering; see `simulation.py`).", "",
               "| Policy | Fill rate | Avg on-hand units | Avg on-hand value at cost | Stock-out series-days |",
               "|---|---|---|---|---|"]
     for _, r in sim.iterrows():
