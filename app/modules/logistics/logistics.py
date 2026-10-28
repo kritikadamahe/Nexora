@@ -71,4 +71,7 @@ class LogisticsModule:
             "name": r.get("name", f"product_{product_id}"),
             "cost_price": float(r.get("cost_price", 0.0)),
             "base_selling_price": float(r.get("base_selling_price", 0.0)),
+            "shelf_life_days": (float(r["shelf_life_days"])
+                                if "shelf_life_days" in r and r["shelf_life_days"] == r["shelf_life_days"]
+                                else None),
         }

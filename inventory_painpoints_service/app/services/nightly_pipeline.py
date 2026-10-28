@@ -38,6 +38,9 @@ from inventory_painpoints_service.app.features.inventory_features  import comput
 from inventory_painpoints_service.app.features.feature_assembler   import assemble_features
 
 from inventory_painpoints_service.app.detectors.detector_runner    import run_all_detectors
+from inventory_painpoints_service.app.core.config                  import DATA_END_DATE
+from inventory_painpoints_service.app.forecasting.predict          import forecast_next_7d
+from inventory_painpoints_service.app.inventory_policy.replenishment import plan_replenishment
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -98,7 +101,8 @@ def run_nightly_pipeline(
     expiry_feat = compute_expiry_features(inventory, products)
     return_feat = compute_return_features(returns, sales, products)
     inv_feat    = compute_inventory_features(inventory, sales_feat)
-    features    = assemble_features(inv_feat, return_feat, expiry_feat)
+    forecast    = _run_forecast(sales, products)
+    features    = assemble_features(inv_feat, return_feat, expiry_feat, forecast)
 
     print(f"  Feature matrix: {len(features)} rows × {len(features.columns)} columns")
 
@@ -125,8 +129,14 @@ def run_nightly_pipeline(
 
     result = result.drop(columns=["_pp_list"])
 
+    # ── REPLENISHMENT PLAN (forecast + stock + product data) ────────────────
+    plan = plan_replenishment(result, products)
+    print("\n  Replenishment actions: " + ", ".join(
+        f"{k}={v}" for k, v in plan["action"].value_counts().items()))
+
     # ── SAVE ─────────────────────────────────────────────────────────────────
     _save_to_csv(result, output_dir)
+    plan.to_csv(os.path.join(output_dir, "replenishment_plan.csv"), index=False)
 
     elapsed = (datetime.now() - start).total_seconds()
     print(f"\n{'='*60}")
@@ -134,6 +144,19 @@ def run_nightly_pipeline(
     print(f"{'='*60}\n")
 
     return result
+
+
+def _run_forecast(sales: pd.DataFrame, products: pd.DataFrame):
+    """Trains the demand model on history up to DATA_END_DATE and forecasts the next 7 days.
+    Returns None (-> heuristic fallback in assemble_features) if training is not possible."""
+    try:
+        fc = forecast_next_7d(sales, products, DATA_END_DATE)
+        print(f"  Demand model trained on {fc.attrs.get('train_rows', '?'):,} rows; "
+              f"forecast for {len(fc)} series")
+        return fc
+    except ValueError as exc:
+        print(f"  [warning] trained forecast unavailable ({exc}); using heuristic fallback")
+        return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────

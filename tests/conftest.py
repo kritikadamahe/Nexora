@@ -12,6 +12,7 @@ import os
 
 os.environ["GROQ_API_KEY"] = ""          # must run before app.core.config is imported
 os.environ.pop("NEXORA_EXTERNAL_SIGNAL_MODE", None)
+os.environ["NEXORA_FORECAST_MAX_ITER"] = "30"   # keeps pipeline fixtures fast; accuracy is tested separately
 
 import contextlib
 import io

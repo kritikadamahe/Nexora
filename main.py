@@ -338,3 +338,56 @@ def get_product_recommendation(product_id: int):
     # Latest per action type
     rows = rows.drop_duplicates(subset=["action_type"], keep="first")
     return sanitize_for_json(rows)[0] if len(rows) == 1 else sanitize_for_json(rows)
+
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GET /replenishment
+# Forecast-driven replenishment plan written by the nightly pipeline
+# (assumptions: inventory_policy/replenishment.py — lead time is a placeholder)
+# Optional ?action=ORDER_URGENT|ORDER|HOLD|OVERSTOCK_REVIEW|EXPIRY_RISK
+# ─────────────────────────────────────────────────────────────────────────────
+
+ACTION_ORDER = ["ORDER_URGENT", "EXPIRY_RISK", "ORDER", "OVERSTOCK_REVIEW", "HOLD"]
+
+
+def _plan_path() -> str:
+    return os.path.join(os.path.dirname(PRODUCT_ANALYSIS_PATH), "replenishment_plan.csv")
+
+
+@app.get("/replenishment")
+def get_replenishment(action: str = None):
+    if not os.path.exists(_plan_path()):
+        return JSONResponse(
+            status_code=404,
+            content={"error": "No replenishment plan found. Run POST /run-pipeline first."}
+        )
+    df = pd.read_csv(_plan_path())
+    counts = df["action"].value_counts().to_dict()
+    if action:
+        if action not in ACTION_ORDER:
+            return JSONResponse(status_code=422,
+                                content={"error": f"action must be one of {ACTION_ORDER}"})
+        df = df[df["action"] == action]
+    df = df.assign(_rank=df["action"].map({a: i for i, a in enumerate(ACTION_ORDER)}))
+    df = df.sort_values(["_rank", "order_quantity"], ascending=[True, False]).drop(columns="_rank")
+    return {
+        "action_counts": counts,
+        "total_units_to_order": int(df["order_quantity"].sum()),
+        "rows": sanitize_for_json(df),
+    }
+
+
+@app.get("/replenishment/{product_id}")
+def get_product_replenishment(product_id: int):
+    if not os.path.exists(_plan_path()):
+        return JSONResponse(
+            status_code=404,
+            content={"error": "No replenishment plan found. Run POST /run-pipeline first."}
+        )
+    df = pd.read_csv(_plan_path())
+    row = df[df["product_id"] == product_id]
+    if row.empty:
+        return JSONResponse(status_code=404,
+                            content={"error": f"product_id {product_id} not found in plan."})
+    return sanitize_for_json(row)[0]

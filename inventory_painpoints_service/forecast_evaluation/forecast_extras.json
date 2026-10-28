@@ -1,0 +1,85 @@
+{
+  "folds": [
+    {
+      "test_start": 462,
+      "test_end": 489,
+      "train_last_origin": 454
+    },
+    {
+      "test_start": 490,
+      "test_end": 517,
+      "train_last_origin": 482
+    },
+    {
+      "test_start": 518,
+      "test_end": 538,
+      "train_last_origin": 510
+    }
+  ],
+  "interval_p90": {
+    "coverage": 0.9082467532467533,
+    "target_coverage": 0.9,
+    "pinball_loss": 2.785003288204291
+  },
+  "n_series": 200,
+  "panel_dates": [
+    "2024-09-01",
+    "2026-02-28"
+  ],
+  "wape_by_volume_tier": {
+    "low": {
+      "naive_last_7d": 0.1284516147008833,
+      "moving_avg_28d": 0.12351277550224303,
+      "moving_avg_91d": 0.20157022614600148,
+      "nexora_heuristic": 0.17155626145876263,
+      "gbm_no_calendar": 0.16015227113701674,
+      "gbm": 0.1257991437613215
+    },
+    "mid": {
+      "naive_last_7d": 0.12629949954447314,
+      "moving_avg_28d": 0.1181530570219776,
+      "moving_avg_91d": 0.1826168265570714,
+      "nexora_heuristic": 0.15428022850438097,
+      "gbm_no_calendar": 0.14508246895181423,
+      "gbm": 0.1033514710321161
+    },
+    "high": {
+      "naive_last_7d": 0.12008704920945105,
+      "moving_avg_28d": 0.1162767217386155,
+      "moving_avg_91d": 0.12457561802205609,
+      "nexora_heuristic": 0.13219708314458853,
+      "gbm_no_calendar": 0.16689769150988276,
+      "gbm": 0.07120803946530398
+    }
+  },
+  "best_baseline": "moving_avg_28d",
+  "paired_bootstrap_WAPE_diff": {
+    "gbm_minus_moving_avg_28d": {
+      "diff": -0.042783149794815775,
+      "ci95": [
+        -0.05724354907087757,
+        -0.01646150753634341
+      ]
+    },
+    "gbm_minus_nexora_heuristic": {
+      "diff": -0.060239474691991125,
+      "ci95": [
+        -0.07127718735319262,
+        -0.04640965657465684
+      ]
+    }
+  },
+  "simulation_reviews": [
+    "2025-12-07",
+    "2025-12-14",
+    "2025-12-21",
+    "2025-12-28",
+    "2026-01-04",
+    "2026-01-11",
+    "2026-01-18",
+    "2026-01-25",
+    "2026-02-01",
+    "2026-02-08",
+    "2026-02-15"
+  ]
+}

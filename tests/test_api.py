@@ -61,3 +61,18 @@ def test_decision_requires_engine_then_works_after_restart(client):
     assert recs.json()["total"] >= 1
 
     assert c.get("/recommendations/106").status_code == 200
+
+
+def test_replenishment_endpoints(client):
+    c, _, _ = client
+    assert c.get("/replenishment").status_code == 404           # before the pipeline
+    c.post("/run-pipeline")
+    r = c.get("/replenishment").json()
+    assert sum(r["action_counts"].values()) == 200
+    assert len(r["rows"]) == 200 and r["total_units_to_order"] >= 0
+    urgent = c.get("/replenishment", params={"action": "ORDER_URGENT"}).json()
+    assert all(x["action"] == "ORDER_URGENT" for x in urgent["rows"])
+    assert c.get("/replenishment", params={"action": "BOGUS"}).status_code == 422
+    one = c.get("/replenishment/106").json()
+    assert one["product_id"] == 106 and "order_quantity" in one
+    assert c.get("/replenishment/999999").status_code == 404

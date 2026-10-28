@@ -12,6 +12,7 @@ EXPECTED_COLUMNS = [
     "reorder_level", "days_of_stock", "stock_to_sales_ratio", "days_to_expiry",
     "expiry_risk_score", "return_rate_30d", "category_avg_return_rate",
     "pain_points_triggered", "composite_risk_score", "tft_forecast_7d",
+    "forecast_7d", "forecast_7d_p90", "forecast_method",
 ]
 VALID_PAIN_POINTS = {"NEAR_EXPIRY", "HIGH_RETURN", "STAGNANT", "LOW_STOCK", "SEASONAL_MISMATCH"}
 
@@ -60,11 +61,33 @@ def test_golden_pain_point_counts_match_v0_run(analysis_df):
     assert int((analysis_df["composite_risk_score"] > 0.5).sum()) == 3
 
 
-def test_current_forecast_heuristic_is_documented_not_a_trained_model(analysis_df):
-    """
-    `tft_forecast_7d` is NOT a Temporal Fusion Transformer. It is
-    avg_daily_sales * 7 * seasonality_index. This test pins that definition because
-    it is the 'Nexora heuristic' baseline used in the Phase-1 evaluation.
-    """
-    expected = analysis_df["avg_daily_sales"] * 7 * analysis_df["seasonality_index"]
-    pd.testing.assert_series_equal(analysis_df["tft_forecast_7d"], expected, check_names=False)
+def test_forecast_columns_come_from_trained_model(analysis_df):
+    """tft_forecast_7d is a legacy column name: it now equals the trained forecast_7d."""
+    pd.testing.assert_series_equal(analysis_df["tft_forecast_7d"], analysis_df["forecast_7d"],
+                                   check_names=False)
+    assert (analysis_df["forecast_method"] == "gbm").all()
+    assert (analysis_df["forecast_7d"] >= 0).all()
+    assert (analysis_df["forecast_7d_p90"] >= analysis_df["forecast_7d"]).all()
+
+
+def test_heuristic_fallback_when_forecast_missing():
+    """Without a trained forecast the original heuristic is used and labelled as a fallback."""
+    from inventory_painpoints_service.app.features.feature_assembler import assemble_features
+    inv = pd.DataFrame({"product_id": [1], "store_id": [1], "current_stock": [10],
+                        "reorder_level": [5], "rolling_sales_7d": [7.0], "rolling_sales_30d": [30.0],
+                        "avg_daily_sales": [1.0], "sales_velocity_ratio": [1.0],
+                        "seasonality_index": [1.5], "days_of_stock": [10.0],
+                        "stock_to_sales_ratio": [1.4]})
+    out = assemble_features(inv, pd.DataFrame(), pd.DataFrame(), forecast_df=None)
+    assert out.loc[0, "forecast_method"] == "heuristic_fallback"
+    assert out.loc[0, "forecast_7d"] == pytest.approx(1.0 * 7 * 1.5)
+    assert out.loc[0, "tft_forecast_7d"] == out.loc[0, "forecast_7d"]
+
+
+def test_replenishment_plan_is_written_and_consistent(pipeline_dir):
+    out_dir, df = pipeline_dir
+    plan = pd.read_csv(out_dir / "replenishment_plan.csv")
+    assert len(plan) == len(df)
+    assert set(plan["action"]) <= {"ORDER", "ORDER_URGENT", "HOLD", "OVERSTOCK_REVIEW", "EXPIRY_RISK"}
+    assert (plan["order_quantity"] >= 0).all()
+    assert not plan.isna().any().any()
