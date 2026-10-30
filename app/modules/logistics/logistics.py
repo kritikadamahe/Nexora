@@ -14,14 +14,17 @@ from app.modules.logistics.reverse_logistics import compute_reverse_logistics
 
 class LogisticsModule:
 
-    def __init__(self, products_path: str):
+    def __init__(self, products_path: str, policy_params=None):
         """
         products_path: path to cleaned products.csv
+        policy_params: optional PolicyParams (lead times, review period) for forward restocking;
+                       defaults match the nightly plan
         NOTE:
         - 'id' is already renamed to 'product_id' in cleaner
         - So always use 'product_id' here
         """
         self.products_df = pd.read_csv(products_path)
+        self.policy_params = policy_params
 
     async def run(self, signal: UnifiedSignal, needs_reverse: bool) -> dict:
         """
@@ -36,7 +39,7 @@ class LogisticsModule:
         if needs_reverse:
             result = compute_reverse_logistics(signal, product_info)
         else:
-            result = compute_forward_logistics(signal, product_info)
+            result = compute_forward_logistics(signal, product_info, self.policy_params)
 
         # Add product context to result
         result["product_id"]   = signal.product_id
@@ -71,6 +74,7 @@ class LogisticsModule:
             "name": r.get("name", f"product_{product_id}"),
             "cost_price": float(r.get("cost_price", 0.0)),
             "base_selling_price": float(r.get("base_selling_price", 0.0)),
+            "category": r.get("category") if "category" in r and r["category"] == r["category"] else None,
             "shelf_life_days": (float(r["shelf_life_days"])
                                 if "shelf_life_days" in r and r["shelf_life_days"] == r["shelf_life_days"]
                                 else None),
