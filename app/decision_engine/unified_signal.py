@@ -42,6 +42,7 @@ class UnifiedSignal:
 
     # ── From the trained demand model (None when unavailable, e.g. old CSVs) ─────────────
     forecast_7d_p90:        Optional[float] = None   # upper (P90) 7-day demand forecast
+    forecast_method:        Optional[str]   = None   # "gbm", "heuristic_fallback", ... (None = unknown)
 
 
 def build_unified_signal(row: dict, urgency_score: float = 0.0,
@@ -59,10 +60,15 @@ def build_unified_signal(row: dict, urgency_score: float = 0.0,
     else:
         pain_points = raw_pp or []
 
-    # tft_forecast_7d is null until ARIMA/TFT built — use rolling_sales_7d as fallback
+    # tft_forecast_7d is the legacy column name for the 7-day forecast (trained model, or the
+    # heuristic fallback written by the pipeline). If it is missing (very old CSVs) fall back
+    # to rolling_sales_7d and say so in forecast_method.
+    method = row.get("forecast_method")
+    method = None if method is None or method != method else str(method)
     tft_forecast = row.get("tft_forecast_7d")
     if tft_forecast is None or (isinstance(tft_forecast, float) and tft_forecast != tft_forecast):
         tft_forecast = row.get("rolling_sales_7d", 0.0) or 0.0
+        method = "rolling_sales_fallback"
 
     p90 = row.get("forecast_7d_p90")
     p90 = None if p90 is None or p90 != p90 else float(p90)
@@ -73,7 +79,7 @@ def build_unified_signal(row: dict, urgency_score: float = 0.0,
         composite_risk_score  = float(row.get("composite_risk_score") or 0.0),
         pain_points           = pain_points,
         sales_velocity        = float(row.get("sales_velocity_ratio") or 0.0),
-        days_to_expiry        = int(row.get("days_to_expiry") or 9999),
+        days_to_expiry        = _days_to_expiry(row.get("days_to_expiry")),
         return_rate_30d       = float(row.get("return_rate_30d") or 0.0),
         current_stock         = int(row.get("current_stock") or 0),
         reorder_level         = int(row.get("reorder_level") or 0),
@@ -81,4 +87,12 @@ def build_unified_signal(row: dict, urgency_score: float = 0.0,
         urgency_score         = urgency_score,
         news_sentiment        = news_sentiment,
         forecast_7d_p90       = p90,
+        forecast_method       = method,
     )
+
+
+def _days_to_expiry(value) -> int:
+    """9999 = no expiry. Unlike `value or 9999`, a genuine 0 (expires today) is preserved."""
+    if value is None or value != value:
+        return 9999
+    return int(value)

@@ -104,9 +104,9 @@ def test_forward_logistics_uses_order_up_to_when_p90_available():
     with_p90 = compute_forward_logistics(_signal(forecast_7d_p90=84.0), info)
     assert with_p90["restock_method"] == "order_up_to_p90"
     assert with_p90["restock_quantity"] == math.ceil(order_up_to(70, 84, 3, 7)["order_up_to"] - 10)
-    legacy = compute_forward_logistics(_signal(), info)
-    assert legacy["restock_method"] == "legacy_safety_factor"
-    assert legacy["restock_quantity"] == round(70 * 1.3 - 10)
+    fallback = compute_forward_logistics(_signal(), info)
+    assert fallback["restock_method"] == "order_up_to_fixed_multiplier"
+    assert fallback["restock_quantity"] == math.ceil(70 / 7 * 10 * 1.3 - 10)
 
 
 # ── simulation ─────────────────────────────────────────────────────────────
