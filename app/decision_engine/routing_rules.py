@@ -63,6 +63,15 @@ def determine_action_types(signal: UnifiedSignal) -> List[str]:
         if "LOGISTICS" not in action_types:
             action_types.append("LOGISTICS")    # forward path, moderate priority
 
+    # ── Rule 5b: forecast-based stock-out risk ───────────────────────────────
+    # The shared replenishment calculation says forecast demand during the lead time exceeds
+    # stock (ORDER_URGENT), even if the static reorder level has not been crossed.
+    # replenishment_action is None unless the engine assessed it, so this rule is inert for
+    # callers that do not provide it.
+    if signal.replenishment_action == "ORDER_URGENT":
+        if "LOGISTICS" not in action_types:
+            action_types.append("LOGISTICS")    # forward path (reverse wins via conflict resolver)
+
     # ── Rule 6: Stagnant sales + low urgency ─────────────────────────────────
     # Combo to clear + XGBoost pricing
     if ("STAGNANT" in signal.pain_points

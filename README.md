@@ -1,6 +1,6 @@
 # Nexora
 
-**Demand forecasting, inventory risk detection and decision support for retail stores**
+## Demand forecasting, inventory risk detection and decision support for retail stores
 
 Nexora is an academic inventory-intelligence system. It reads a retailer's product, sales, stock and return records, forecasts demand for the next seven days, flags products with inventory problems, plans replenishment orders and recommends actions for each product: restock, reprice, bundle or move stock. Results are served through a FastAPI service.
 
@@ -132,7 +132,7 @@ cd Nexora
 python -m venv .venv
 ```
 
-Activate the environment:
+Activate the virtual environment:
 
 ```bash
 source .venv/bin/activate          # Linux/macOS
