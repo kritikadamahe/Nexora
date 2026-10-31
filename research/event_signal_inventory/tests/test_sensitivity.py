@@ -63,3 +63,25 @@ def test_model_selection_does_not_see_test_period(tmp_path, monkeypatch):
     for col in ["tau_selected", "val_cost"]:
         np.testing.assert_array_equal(clean_run[col].values, corrupt_run[col].values)
     assert not np.array_equal(clean_run["total_cost"].values, corrupt_run["total_cost"].values)
+
+
+def test_grid_configs_scale_strength_and_keep_base_unchanged():
+    import copy
+    from esi.grid import build_grid_configs, summarize_grid
+    base = json.load(open(os.path.join(os.path.dirname(__file__), "..", "configs", "smoke.json")))
+    before = copy.deepcopy(base)
+    spec = {"parameter": "spurious_rate", "values": [0.0, 0.1], "strengths": [0.5, 1.0],
+            "base_condition": list(base["conditions"])[0], "seeds": [0]}
+    cfgs = build_grid_configs(base, spec)
+    assert base == before
+    up = base["world"]["event_type_log_uplift"]
+    assert cfgs[0.5]["world"]["event_type_log_uplift"] == [0.5 * u for u in up]
+    assert list(cfgs[1.0]["conditions"]) == ["spurious_rate=0", "spurious_rate=0.1"]
+    with pytest.raises(ValueError):
+        build_grid_configs({**base, "data": {"source": "favorita"}}, spec)
+    rows = [{"strength": 1.0, "condition": "c", "seed": s, "arm": a, "total_cost": v}
+            for s in (0, 1) for a, v in [("A_blind", 100.0), ("B_clean_trained", 110.0),
+                                          ("C_asavailable_trained", 90.0)]]
+    summ = summarize_grid(pd.DataFrame(rows)).set_index("comparison")
+    assert summ.loc["C_asavailable_trained vs A_blind", "mean_rel_diff"] == pytest.approx(-0.1)
+    assert summ.loc["B_clean_trained vs A_blind", "seeds_first_cheaper"] == 0

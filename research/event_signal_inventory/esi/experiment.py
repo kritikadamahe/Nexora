@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import sklearn
 
+from .favorita import N_EVENT_TYPES, describe, load_world
 from .forecasting import MIN_HISTORY, QuantileForecaster, build_X, targets
 from .generator import generate_world
 from .inventory import simulate
@@ -73,6 +74,20 @@ def summarize(recs, warmup, ev_mask):
 
 def run(cfg, out_dir):
     os.makedirs(out_dir, exist_ok=True)
+    # Real data: one fixed world for every seed; seeds then vary only the signal errors and
+    # the model fits. The world section is derived from the data and saved with the config.
+    real_world = None
+    if cfg.get("data", {}).get("source") == "favorita":
+        real_world, panel = load_world(cfg["data"], cfg["split"]["train_end"])
+        pd.DataFrame({"sku": range(len(panel["series"])), "store": panel["series"][:, 0],
+                      "item": panel["series"][:, 1], "family": panel["item_family"]}
+                     ).to_csv(f"{out_dir}/series.csv", index=False)
+        cfg["world"] = {"n_sku": int(real_world.demand.shape[0]),
+                        "n_days": int(real_world.demand.shape[1]),
+                        "n_event_types": N_EVENT_TYPES,
+                        # training-period estimate; only used to pick the "misleading" type
+                        "event_type_log_uplift": real_world.uplift[:, 1:].mean(axis=0).round(4).tolist()}
+        print(describe(cfg["data"], cfg["split"]["train_end"], cfg["split"]["val_end"]), flush=True)
     L, m, K = cfg["lead_time"], cfg["shelf_life"], cfg["world"]["n_event_types"]
     T, tr_end, va_end = cfg["world"]["n_days"], cfg["split"]["train_end"], cfg["split"]["val_end"]
     tr_or, va_or, te_or = make_origins(T, tr_end, va_end, L)
@@ -82,7 +97,7 @@ def run(cfg, out_dir):
     t0 = time.time()
 
     for seed in cfg["seeds"]:
-        world = generate_world(cfg["world"], seed)
+        world = real_world if real_world is not None else generate_world(cfg["world"], seed)
         D = world.demand
         clean = clean_calendar(world.events, cfg["clean_lead_days"])
         y_tr, y_va, y_te = (targets(D, o, L) for o in (tr_or, va_or, te_or))
@@ -150,7 +165,8 @@ def run(cfg, out_dir):
         json.dump(cfg, f, indent=2)
     with open(f"{out_dir}/environment.json", "w") as f:
         json.dump(environment(), f, indent=2)
-    md = results_markdown(by_seed, paired, signals, cfg, time.time() - t0)
+    md = results_markdown(by_seed, paired, signals, cfg, time.time() - t0,
+                          real_data=real_world is not None)
     with open(f"{out_dir}/results.md", "w") as f:
         f.write(md)
     print(md)
@@ -189,7 +205,7 @@ def environment():
             "run_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 
 
-def results_markdown(by_seed, paired, signals, cfg, elapsed):
+def results_markdown(by_seed, paired, signals, cfg, elapsed, real_data=False):
     g = by_seed.groupby(["condition", "arm"])
     cols = ["total_cost", "shortage_cost", "waste_cost", "holding_cost", "lost_units",
             "waste_units", "fill_rate", "wape_median", "pinball_tau_norm", "tau_selected"]
@@ -214,7 +230,10 @@ def results_markdown(by_seed, paired, signals, cfg, elapsed):
         lines.append(f"| {r.condition} | {r.comparison} | {r.rel_cost_diff:+.3%} | "
                      f"[{r.ci95_low:+.3%}, {r.ci95_high:+.3%}] | {r.units_where_first_cheaper:.2f} |")
     piv = by_seed.pivot_table(index=["condition", "seed"], columns="arm", values="total_cost")
-    lines += ["", "Per-seed relative test cost (cluster-level check; each seed is one independent world):", "",
+    seed_note = ("seeds share the same real demand and differ only in signal errors and model fits; "
+                 "use esi.clustered_ci --cluster item for inference" if real_data
+                 else "each seed is one independent world")
+    lines += ["", f"Per-seed relative test cost (cluster-level check; {seed_note}):", "",
               "| condition | seed | C vs B | C vs A |", "|---|---|---|---|"]
     for (c, sd), r in piv.iterrows():
         lines.append(f"| {c} | {sd} | {r.C_asavailable_trained / r.B_clean_trained - 1:+.1%} | "

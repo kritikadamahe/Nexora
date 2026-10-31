@@ -33,3 +33,6 @@ htmlcov/
 *.egg-info/
 
 
+
+# Downloaded datasets (Favorita etc.) - large, Kaggle-licensed, never commit
+research/event_signal_inventory/data/
