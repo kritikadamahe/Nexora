@@ -14,6 +14,7 @@
 
 from typing import List
 from app.decision_engine.unified_signal import UnifiedSignal
+from inventory_painpoints_service.app.inventory_policy.replenishment import explain_replenishment
 
 
 def build_trigger(signal: UnifiedSignal) -> dict:
@@ -90,6 +91,9 @@ def build_evidence(signal: UnifiedSignal, shap_values: List[dict]) -> dict:
         "news_sentiment":        signal.news_sentiment,
         "tft_forecast_7d":       round(signal.tft_forecast_7d, 2)
                                  if signal.tft_forecast_7d else None,
+        "forecast_method":       signal.forecast_method,
+        "forecast_7d_p90":       round(signal.forecast_7d_p90, 2)
+                                 if signal.forecast_7d_p90 is not None else None,
         "top_shap_features":     shap_values,   # from SHAP explainer
     }
 
@@ -115,12 +119,29 @@ def build_reasoning(action_type: str,
                 "expiry_factor":   _get_expiry_factor(signal.days_to_expiry),
             }
         else:
-            return {
-                "action_chosen":      "RESTOCK",
+            out = {
+                # "RESTOCK" or "NO_RESTOCK" as decided by the replenishment calculation
+                "action_chosen":      module_result.get("action", "RESTOCK"),
                 "restock_quantity":   module_result.get("restock_quantity", 0),
                 "demand_forecast_7d": module_result.get("demand_forecast_7d", 0),
                 "trigger_reasons":    module_result.get("trigger_reason", []),
             }
+            rep = module_result.get("replenishment")
+            if rep:
+                out.update({
+                    "replenishment_action": rep["action"],
+                    "calculation": {k: rep.get(k) for k in (
+                        "forecast_method", "uncertainty_available", "safety_stock_basis",
+                        "forecast_7d", "forecast_7d_p90", "lead_time_days", "lead_time_source",
+                        "review_period_days", "protection_period_days",
+                        "expected_demand_protection_period", "safety_stock", "order_up_to_level",
+                        "current_stock", "inventory_position", "outstanding_orders_available",
+                        "order_quantity", "order_capped_by_shelf_life", "stockout_before_arrival")},
+                    "assumptions":    rep.get("assumptions", []),
+                    "input_warnings": rep.get("input_warnings", []),
+                    "explanation":    explain_replenishment(rep),
+                })
+            return out
 
     elif action_type == "PRICING":
         return {

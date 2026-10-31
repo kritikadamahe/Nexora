@@ -8,7 +8,7 @@
 
 import pandas as pd
 from app.decision_engine.unified_signal import UnifiedSignal
-from app.modules.logistics.forward_logistics import compute_forward_logistics
+from app.modules.logistics.forward_logistics import assess_replenishment, compute_forward_logistics
 from app.modules.logistics.reverse_logistics import compute_reverse_logistics
 
 
@@ -47,6 +47,12 @@ class LogisticsModule:
         result["product_name"] = product_info.get("name", f"product_{signal.product_id}")
 
         return result
+
+    def assess_replenishment(self, signal: UnifiedSignal) -> dict:
+        """Shared replenishment calculation for this signal (same inputs and policy parameters
+        as the forward path); used by the decision engine before routing."""
+        return assess_replenishment(signal, self._get_product_info(signal.product_id),
+                                    self.policy_params)
 
     def _get_product_info(self, product_id: int) -> dict:
         """

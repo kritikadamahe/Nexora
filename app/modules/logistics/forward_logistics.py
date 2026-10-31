@@ -22,6 +22,29 @@ from inventory_painpoints_service.app.inventory_policy.replenishment import (
 )
 
 
+def assess_replenishment(signal: UnifiedSignal, product_info: dict,
+                         params: PolicyParams = None) -> dict:
+    """The shared replenishment calculation for one signal. Used by compute_forward_logistics
+    and by the decision engine's routing (so both always see the same numbers)."""
+    params = params or PolicyParams()
+    if "lead_time_days" in product_info and product_info["lead_time_days"] is not None:
+        lead, source = product_info["lead_time_days"], "product_info"
+    else:
+        lead, source = resolve_lead_time(signal.product_id, product_info.get("category"), params)
+    return compute_replenishment(
+        forecast_7d=signal.tft_forecast_7d,
+        forecast_7d_p90=signal.forecast_7d_p90,
+        current_stock=signal.current_stock,
+        lead_time_days=lead,
+        review_period_days=params.review_period_days,
+        forecast_method=signal.forecast_method,
+        shelf_life_days=product_info.get("shelf_life_days"),
+        days_to_expiry=signal.days_to_expiry,
+        lead_time_source=source,
+        params=params,
+    )
+
+
 def compute_forward_logistics(
     signal: UnifiedSignal,
     product_info: dict,
@@ -43,25 +66,7 @@ def compute_forward_logistics(
         trigger_reason  : why forward logistics fired
         projected_impact: expected revenue
     """
-    params = params or PolicyParams()
-
-    if "lead_time_days" in product_info and product_info["lead_time_days"] is not None:
-        lead, source = product_info["lead_time_days"], "product_info"
-    else:
-        lead, source = resolve_lead_time(signal.product_id, product_info.get("category"), params)
-
-    rep = compute_replenishment(
-        forecast_7d=signal.tft_forecast_7d,
-        forecast_7d_p90=signal.forecast_7d_p90,
-        current_stock=signal.current_stock,
-        lead_time_days=lead,
-        review_period_days=params.review_period_days,
-        forecast_method=signal.forecast_method,
-        shelf_life_days=product_info.get("shelf_life_days"),
-        days_to_expiry=signal.days_to_expiry,
-        lead_time_source=source,
-        params=params,
-    )
+    rep = assess_replenishment(signal, product_info, params)
     restock_quantity = rep["order_quantity"]
     method = ("order_up_to_p90" if rep["safety_stock_basis"] == BASIS_SPREAD
               else "order_up_to_fixed_multiplier")
