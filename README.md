@@ -1,5 +1,5 @@
 # Nexora
-**AI-Powered Demand Forecasting and Supply Chain Optimization**
+## AI-Powered Demand Forecasting and Supply Chain Optimization
 
 Nexora is an academic inventory-intelligence system that integrates demand forecasting, inventory risk detection, replenishment planning, and rule-based decision support. It processes retail data to identify inventory issues and generate product-level operational recommendations through a FastAPI service.
 
@@ -73,14 +73,16 @@ cd Nexora
 python -m venv .venv
 ```
 
-Activate the environment.
+Activate the virtual environment.
 
 **Windows (PowerShell):**
+
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
 **Linux/macOS:**
+
 ```bash
 source .venv/bin/activate
 ```
@@ -119,7 +121,7 @@ python -m uvicorn main:app --reload
 
 API documentation is available at:
 
-`http://127.0.0.1:8000/docs`
+http://127.0.0.1:8000/docs
 
 Run `POST /run-pipeline` to generate the latest analysis and replenishment outputs before using decision endpoints when the required pipeline output is unavailable.
 
