@@ -44,6 +44,9 @@ class UnifiedSignal:
     forecast_7d_p90:        Optional[float] = None   # upper (P90) 7-day demand forecast
     forecast_method:        Optional[str]   = None   # "gbm", "heuristic_fallback", ... (None = unknown)
 
+    # ── Set by the Decision Engine before routing (shared replenishment calculation) ────
+    replenishment_action:   Optional[str]   = None   # ORDER_URGENT / ORDER / HOLD / ... (None = not assessed)
+
 
 def build_unified_signal(row: dict, urgency_score: float = 0.0,
                          news_sentiment: str = "NEUTRAL") -> UnifiedSignal:

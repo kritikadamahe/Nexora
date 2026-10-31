@@ -76,3 +76,17 @@ def test_replenishment_endpoints(client):
     one = c.get("/replenishment/106").json()
     assert one["product_id"] == 106 and "order_quantity" in one
     assert c.get("/replenishment/999999").status_code == 404
+
+def test_decision_endpoint_exposes_forecast_fields_and_keeps_old_ones(client):
+    c, _, _ = client
+    c.post("/run-pipeline")
+    body = c.get("/decision/106").json()
+    for key in ["product_id", "pain_points", "action_types", "recommendations", "skipped"]:
+        assert key in body
+    assert body["forecast"]["method"] == "gbm"
+    assert body["forecast"]["horizon_days"] == 7
+    assert body["replenishment_action"] in {"ORDER", "ORDER_URGENT", "HOLD", "EXPIRY_RISK",
+                                            "OVERSTOCK_REVIEW", "INSUFFICIENT_DATA"}
+    rec = body["recommendations"][0]
+    assert rec["action"] in {"RESTOCK", "NO_RESTOCK"}
+    assert "assumptions" in rec["replenishment"]

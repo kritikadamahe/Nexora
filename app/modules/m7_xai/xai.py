@@ -87,14 +87,19 @@ class XAILayer:
             projection = build_projection(action_type, rec)
 
             # ── LLM generates one-sentence rationale ─────────────────────────
-            rationale = generate_rationale(
-                action_type = action_type,
-                trigger     = trigger,
-                evidence    = evidence,
-                reasoning   = reasoning,
-                projection  = projection,
-                shap_values = shap_values,
-            )
+            # Restock decisions are explained from the calculation itself (deterministic text
+            # built from its inputs and assumptions); the LLM is not asked to describe them.
+            if reasoning.get("explanation"):
+                rationale = reasoning["explanation"]
+            else:
+                rationale = generate_rationale(
+                    action_type = action_type,
+                    trigger     = trigger,
+                    evidence    = evidence,
+                    reasoning   = reasoning,
+                    projection  = projection,
+                    shap_values = shap_values,
+                )
 
             # ── Assemble reason_json (Section 3.33) ───────────────────────────
             reason_json = {

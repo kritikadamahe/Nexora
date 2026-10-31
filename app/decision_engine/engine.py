@@ -208,6 +208,11 @@ class DecisionEngine:
             news_sentiment = external["news_sentiment"],
         )
 
+        # Shared replenishment calculation (same as the forward-logistics path and the nightly
+        # plan); its action lets routing see forecast-based stock-out risk.
+        replenishment = self.m5.assess_replenishment(signal)
+        signal.replenishment_action = replenishment["action"]
+
         # ── Step 4: Compute action_priority_score ─────────────────────────────
         signal.action_priority_score = compute_action_priority_score(
             signal, shelf_life_days=shelf_life
@@ -226,6 +231,7 @@ class DecisionEngine:
                 conflicts      = {},
                 elapsed        = (datetime.now() - start).total_seconds(),
                 skipped        = True,
+                replenishment  = replenishment,
             )
 
         # ── Step 6: Resolve conflicts ─────────────────────────────────────────
@@ -256,6 +262,7 @@ class DecisionEngine:
        
 
                 # 🔥 Merge XAI into each recommendation
+        xai_results = []
         if module_results:
             xai_results = self.m7_xai.explain_and_save(
                 signal=signal,
@@ -280,7 +287,8 @@ class DecisionEngine:
             conflicts      = resolution,
             elapsed        = elapsed,
             skipped        = False,
-            xai_results    = xai_results
+            xai_results    = xai_results,
+            replenishment  = replenishment,
         )
         return self._convert_numpy(response)
 
@@ -323,7 +331,9 @@ class DecisionEngine:
         return {
             "summary": xai.get("rationale"),
             "key_factors": reason.get("trigger", {}).get("pain_points", []),
-            "confidence": "HIGH" if reason.get("evidence", {}).get("urgency_score", 0) > 0.5 else "MEDIUM"
+            # NOTE: this label reflects external news urgency only, not forecast quality
+            "confidence": "HIGH" if reason.get("evidence", {}).get("urgency_score", 0) > 0.5 else "MEDIUM",
+            "confidence_basis": "news_urgency"
         }
     
     def _convert_numpy(self, obj):
@@ -349,7 +359,7 @@ class DecisionEngine:
 
     def _build_response(self, product_id, product_name, signal,
                         action_types, module_results, conflicts,
-                        elapsed, skipped,xai_results=None) -> dict:
+                        elapsed, skipped,xai_results=None, replenishment=None) -> dict:
         """Builds the final API response."""
         return {
             "product_id":            product_id,
@@ -368,6 +378,16 @@ class DecisionEngine:
             "current_stock":         signal.current_stock,
             "sales_velocity_ratio":  round(signal.sales_velocity, 4),
             "return_rate_30d":       round(signal.return_rate_30d, 4),
+
+            # Demand forecast behind any replenishment decision (additive fields)
+            "forecast": {
+                "horizon_days":          7,
+                "forecast_7d":           signal.tft_forecast_7d,
+                "forecast_7d_p90":       signal.forecast_7d_p90,
+                "method":                signal.forecast_method,
+                "uncertainty_available": (replenishment or {}).get("uncertainty_available"),
+            },
+            "replenishment_action":  signal.replenishment_action,
 
             # Decision
             "skipped":               skipped,

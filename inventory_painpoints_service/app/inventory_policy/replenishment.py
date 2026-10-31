@@ -225,6 +225,7 @@ def compute_replenishment(
         "forecast_7d_p90": f90,
         "uncertainty_available": spread_ok,
         "safety_stock_basis": basis,
+        "safety_stock_multiplier": None if spread_ok else params.fallback_cover_multiplier,
         "daily_demand_forecast": daily,
         "lead_time_days": lead,
         "lead_time_source": lead_time_source,
@@ -254,7 +255,7 @@ def _insufficient(f50, f90, stock, lead, review, method, lead_source, problems) 
         "forecast_horizon_days": HORIZON_DAYS, "forecast_method": method,
         "forecast_7d": _num(f50), "forecast_7d_p90": _num(f90),
         "uncertainty_available": False, "safety_stock_basis": None,
-        "daily_demand_forecast": None, "lead_time_days": _num(lead),
+        "safety_stock_multiplier": None, "daily_demand_forecast": None, "lead_time_days": _num(lead),
         "lead_time_source": lead_source, "review_period_days": _num(review),
         "protection_period_days": None, "expected_demand_protection_period": None,
         "safety_stock": None, "order_up_to_level": None, "policy_reorder_point": None,
@@ -264,6 +265,62 @@ def _insufficient(f50, f90, stock, lead, review, method, lead_source, problems) 
         "expiry_at_risk_units": 0, "input_warnings": list(problems),
         "assumptions": ["no recommendation: required inputs are invalid or missing"],
     }
+
+
+_METHOD_LABELS = {
+    "gbm": "the trained demand model",
+    "heuristic_fallback": "a heuristic fallback (not a trained forecast)",
+    "rolling_sales_fallback": "last week's sales (no forecast available)",
+}
+
+
+def explain_replenishment(rep: dict) -> str:
+    """Plain-language explanation generated from the calculation's own numbers and assumptions.
+    Deterministic on purpose: quantities are never left to a language model to describe."""
+    action = rep.get("action")
+    if action == "INSUFFICIENT_DATA":
+        why = "; ".join(rep.get("input_warnings") or ["required inputs are missing or invalid"])
+        return f"No restock recommended: the calculation could not run ({why})."
+
+    method = _METHOD_LABELS.get(rep.get("forecast_method"), "a forecast of unknown origin")
+    parts = [
+        f"Forecast demand is {rep['forecast_7d']:.0f} units over the next "
+        f"{rep['forecast_horizon_days']} days, from {method}. With a {rep['lead_time_days']:g}-day "
+        f"lead time and a {rep['review_period_days']:g}-day review period the policy must cover "
+        f"{rep['protection_period_days']:g} days: expected demand "
+        f"{rep['expected_demand_protection_period']:.0f} + safety stock {rep['safety_stock']:.0f} "
+        f"= order-up-to level {rep['order_up_to_level']:.0f} units."
+    ]
+    if rep["uncertainty_available"]:
+        parts.append(f"Safety stock comes from the model's upper (P90) forecast of "
+                     f"{rep['forecast_7d_p90']:.0f} units.")
+    else:
+        parts.append(f"No forecast uncertainty is available, so safety stock is a fixed "
+                     f"{(rep['safety_stock_multiplier'] - 1):.0%} of expected demand, "
+                     "not a probabilistic estimate.")
+    parts.append(f"On-hand stock is {rep['current_stock']:.0f} units; outstanding orders are "
+                 "not available and are assumed to be zero.")
+
+    if action in ORDER_ACTIONS:
+        msg = f"Recommended restock: {rep['order_quantity']} units."
+        if rep["stockout_before_arrival"]:
+            msg += (f" Forecast demand during the lead time "
+                    f"({rep['daily_demand_forecast'] * rep['lead_time_days']:.0f} units) exceeds "
+                    "current stock, so a stock-out is expected before an order could arrive.")
+        if rep["order_capped_by_shelf_life"]:
+            msg += f" The quantity is capped at what can sell within the {rep['shelf_life_days']:g}-day shelf life."
+    elif action == "EXPIRY_RISK":
+        msg = (f"No restock: about {rep['expiry_at_risk_units']} units already in stock are "
+               "not expected to sell before they expire.")
+    elif action == "OVERSTOCK_REVIEW":
+        msg = (f"No restock: current stock covers about {rep['days_of_cover']:.0f} days of "
+               "forecast demand, which is above the overstock threshold.")
+    else:
+        msg = "No restock: current stock already meets the order-up-to level."
+    parts.append(msg)
+    if rep.get("lead_time_source") == "default_assumption":
+        parts.append("The lead time is a placeholder assumption, not supplier data.")
+    return " ".join(parts)
 
 
 def plan_replenishment(analysis_df: pd.DataFrame, products_df: pd.DataFrame,
