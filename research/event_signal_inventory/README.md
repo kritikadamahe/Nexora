@@ -6,7 +6,7 @@ This directory is self-contained. It does not import from or modify the RetailEd
 
 ## Setup and execution
 
-**Requirements.** Python 3.11 or newer, because the pinned numpy 2.4 and pandas 3.0 need it. The recorded runs used Python 3.12.3. Use a **separate virtual environment**: `requirements.txt` here pins versions that can differ from the main application's dependencies.
+**Requirements.** Python 3.11 or newer, because the pinned numpy 2.4 and pandas 3.0 need it. The recorded runs used Python 3.11.9; exact reproduction needs the pinned scikit-learn 1.8.0 (see `results/reproducibility_check.md`). Use a **separate virtual environment**: `requirements.txt` here pins versions that can differ from the main application's dependencies.
 
 Windows (PowerShell), from the Nexora repository root:
 
@@ -57,7 +57,7 @@ Every run writes the following files to `--out`:
 
 `results/small_stdout.log` is the console output of the recorded 5-seed run (`results/small/`).
 
-**Determinism.** All randomness comes from the seeds in the config: the world, the signals, the models, and the bootstrap. Re-running `configs/small.json` in the same environment reproduced `metrics_by_seed.csv` exactly. With different library versions or a different platform, the gradient-boosting models may produce different numbers. Seeds 0–4 of the 20-seed run do not match the 5-seed run, and the cause has not been identified (see `RESEARCH_REPORT.md`, Section 9).
+**Determinism.** All randomness comes from the seeds in the config: the world, the signals, the models, and the bootstrap. Re-running `configs/small.json` in the same environment reproduced `metrics_by_seed.csv` exactly. A different scikit-learn version changes the gradient-boosting fits and therefore the numbers. This is why seeds 0–4 of the 20-seed run (scikit-learn 1.8.0) do not match the 5-seed run (1.9.1); see `results/reproducibility_check.md`.
 
 ## Sensitivity analysis: false-alarm rate
 
@@ -177,7 +177,7 @@ What these results show:
 
 The unit-level bootstrap intervals in `results/rerun/results.md` overstate certainty. For example, they exclude 0 for both C vs A comparisons, whereas the seed-level intervals do not.
 
-Seeds 0–4 of the 20-seed run are not identical to the 5-seed run below. The cause has not been identified; `RESEARCH_REPORT.md` Section 9 lists the candidates.
+Seeds 0–4 of the 20-seed run are not identical to the 5-seed run below, because the 5-seed run used scikit-learn 1.9.1 instead of 1.8.0 (`results/reproducibility_check.md`).
 
 Simulation only; see the limitations above and in the report.
 
