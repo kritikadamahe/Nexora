@@ -338,7 +338,7 @@ The cost components show how the arms differ:
 
 **Relationship to the earlier 5-seed results** (Appendix A; descriptive only). The 5-seed run pointed in the same direction for clean C vs A (−31.4%), false-alarm C vs B (−17.1%) and imperfect C vs B (−8.8%). For false-alarm C vs A, however, its pooled estimate was +5.2%, whereas the 20-seed estimate is −3.5%; neither is statistically supported. The sign change shows how unstable that comparison is at small seed counts.
 
-The 20-seed values for seeds 0–4 are not identical to the 5-seed run (Section 9, item 3), so the 5-seed run is not an exact subset of the 20-seed run.
+The 20-seed values for seeds 0–4 are not identical to the 5-seed run because the two runs used different scikit-learn versions (Section 9, item 3), so the 5-seed run is not an exact subset of the 20-seed run.
 
 **False-alarm sensitivity sweep** (Appendix B; 5 seeds, descriptive only). As the false-alarm rate rose from 0 to 0.20, C's pooled advantage over A shrank and then reversed, while its advantage over B grew. This sweep was not repeated with 20 seeds, so these patterns remain hypotheses.
 
@@ -359,18 +359,17 @@ The 20-seed values for seeds 0–4 are not identical to the 5-seed run (Section 
    - the operational metrics in Section 6.1 and the original unit-level intervals carry the rounding of `results.md`;
    - only the settings visible in `results.md` could be checked against `configs/small.json`: 40 SKUs, 168 test days, 7 warm-up days, and the three condition names. The remaining parameters were not confirmed.
 2. **Seed count, now resolved.** An earlier project message described `results/rerun/` as a five-seed run. `results/rerun/results.md` records seeds 0–19 (20 seeds).
-3. **Seeds 0–4 of the 20-seed run do not reproduce the 5-seed run.** With the same seeds and, apparently, the same configuration, the per-seed results should be identical, but they differ. For clean C vs A, seeds 0–4 give −31.7%, −31.5%, −30.9%, −36.8%, −25.0% in `results/rerun/results.md`, against −31.1%, −31.4%, −30.3%, −36.7%, −24.7% in `results/small/results.md`. False-alarm C vs B differs similarly (for example −20.5% vs −20.9% for seed 0).
-   Possible causes are different library versions or platform (the 5-seed run used Python 3.12.3, numpy 2.4.4 and scikit-learn 1.8.0 on Linux), a changed configuration, or code changes between the runs. Comparing `results/rerun/environment.json` and `results/rerun/config.json` with `results/small/` would identify the cause. Until then, the two runs should be treated as separate experiments, not as a subset and a superset.
+3. **Seeds 0–4 of the 20-seed run do not reproduce the 5-seed run: resolved, the cause is the scikit-learn version.** For clean C vs A, seeds 0–4 give −31.7%, −31.5%, −30.9%, −36.8%, −25.0% in `results/rerun/results.md`, against −31.1%, −31.4%, −30.3%, −36.7%, −24.7% in `results/small/results.md`. The configurations are identical apart from the seed list. `results/small/environment.json` records scikit-learn 1.9.1 (with numpy 2.4.6 and pandas 3.1.0), while `results/rerun/` used scikit-learn 1.8.0 (numpy 2.4.4, pandas 3.0.2); both used Python 3.11.9. `results/final/`, a 5-seed run under the same versions as the 20-seed run, matches its seeds 0–4 exactly. Controlled re-runs show that changing scikit-learn alone reproduces the difference, while numpy and pandas have no effect. The details are in `results/reproducibility_check.md`. The two runs remain separate experiments, not a subset and a superset.
 4. **No 20-seed configuration is committed.** `configs/small.json` lists seeds 0–4, and there is no 20-seed config in `configs/`. The configuration used is recorded only in `results/rerun/config.json`.
 5. **Unit-level intervals appear in two places with slightly different values.** `clustered_ci.md` recomputes the original unit-level bootstrap with its own random stream. For example, imperfect B vs A is [−0.292%, +3.101%] in `results/rerun/results.md` and [−0.4%, +3.1%] in `clustered_ci.md`. The original method's official values are those in `results.md` / `paired_differences.csv`. Either way, these intervals are not the primary evidence.
 6. **The per-comparison decision rule is unadjusted for multiple comparisons.** The Section 3.8 decision rule tests each comparison at 0.05. Section 6.3 applies a Holm correction to all eight non-trivial comparisons using the exact CSV p-values. Four comparisons survive it (exact p ≤ 1.5 × 10⁻⁴); imperfect C vs B (p = 0.0470) does not.
 7. **The root `README.md` still reports the 5-seed results.** The module README has been updated to the 20-seed results; the root README's "Research Contribution" section has not.
 8. **The sign-flip test enumerates every sign pattern.** `clustered_ci.signflip_p` builds all 2ⁿ patterns: about 1.05 million for 20 seeds. That is feasible, but a Monte Carlo version would be needed for many more seeds.
-9. **The 5-seed results were produced from an uncommitted worktree.** `results/small/environment.json` records commit `2eb21e3` with `git_worktree_dirty: true`. The 20-seed run's commit and worktree state were not checked.
+9. **The 5-seed results were produced from an uncommitted worktree.** `results/small/environment.json` records commit `f7450f0` with `git_worktree_dirty: true`. The 20-seed run (`results/rerun/`) records commit `ace2edb`, also with a dirty worktree; no file under `esi/` that affects results changed between those commits.
 
 ## 10. Reproducibility
 
-**Environment.** Python 3.11 or newer, in a separate virtual environment, with `research/event_signal_inventory/requirements.txt`: numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, pytest 9.1.1. The recorded 5-seed run used Python 3.12.3 (`results/small/environment.json`).
+**Environment.** Python 3.11 or newer, in a separate virtual environment, with `research/event_signal_inventory/requirements.txt`: numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, pytest 9.1.1. These are the versions of the 20-seed run, with Python 3.11.9. The earlier 5-seed run used scikit-learn 1.9.1, numpy 2.4.6 and pandas 3.1.0 (`results/small/environment.json`), which is why its numbers differ (Section 9, item 3).
 
 **Commands supported by the repository.** Run these from `research/event_signal_inventory`, and write to a new output directory so existing results are not overwritten:
 
@@ -389,7 +388,7 @@ python -m esi.sensitivity --config configs/sensitivity_false_alarm.json --out re
 
 The `--config results/rerun/config.json` form works because `esi/experiment.py` writes the complete run configuration to `config.json`, and its command-line entry point accepts any such file.
 
-All randomness comes from the configured seeds. Re-running `configs/small.json` in the same environment reproduced `metrics_by_seed.csv` exactly. Different library versions or platforms may produce numerical differences in the gradient-boosting models. Seeds 0–4 of the 20-seed run do not match the 5-seed run (Section 9, item 3).
+All randomness comes from the configured seeds. Re-running `configs/small.json` in the same environment reproduced `metrics_by_seed.csv` exactly. A different scikit-learn version changes the gradient-boosting fits and therefore the numbers; this is why seeds 0–4 of the 20-seed run do not match the 5-seed run (Section 9, item 3).
 
 **Files used for this report**
 

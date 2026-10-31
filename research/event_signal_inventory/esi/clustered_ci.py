@@ -12,8 +12,14 @@ ignores this dependence. This script re-analyses an existing results directory
   seed_t_*     : t-interval of the per-seed relative differences (df = n_seeds - 1)
   signflip_p   : exact two-sided sign-flip test on the per-seed relative differences
 
+With real data (esi.favorita) every seed shares the same demand, so seeds are not
+independent. Use --cluster item (or store) to resample products (stores) instead; the
+experiment writes series.csv mapping each SKU index to its store and item. "seed" in the
+output column names then means "cluster".
+
 Usage:
     python -m esi.clustered_ci --results results/small --out results/validation_clustered_ci/small
+    python -m esi.clustered_ci --results results/favorita --cluster item --out results/validation_clustered_ci/favorita_item
 """
 import argparse
 import itertools
@@ -78,23 +84,35 @@ def clustered_comparison(x, y, seeds, reps, rng):
     }
 
 
-def analyse(sku, reps=2000, seed=12345):
+def analyse(sku, reps=2000, seed=12345, cluster="seed", series=None):
+    """cluster: "seed" (synthetic worlds) or a column of `series` ("store", "item")."""
     rng = np.random.default_rng(seed)
+    if cluster != "seed":
+        if series is None or cluster not in series:
+            raise ValueError(f"clustering by {cluster!r} needs series.csv with that column")
+        sku = sku.merge(series[["sku", cluster]], on="sku", how="left", validate="many_to_one")
+        if sku[cluster].isna().any():
+            raise ValueError("some SKUs are missing from series.csv")
     piv = sku.pivot_table(index=["condition", "seed", "sku"], columns="arm", values="cost")
+    labels = sku.drop_duplicates(["condition", "seed", "sku"]).set_index(
+        ["condition", "seed", "sku"])[cluster] if cluster != "seed" else None
     rows = []
     for cond, g in piv.groupby(level="condition", sort=False):
-        seeds = g.index.get_level_values("seed").values
+        groups = (g.index.get_level_values("seed").values if labels is None
+                  else labels.reindex(g.index).values)
         for a, b in COMPARISONS:
-            r = clustered_comparison(g[a].values, g[b].values, seeds, reps, rng)
-            rows.append({"condition": cond, "comparison": f"{a} vs {b}", **r})
+            r = clustered_comparison(g[a].values, g[b].values, groups, reps, rng)
+            rows.append({"condition": cond, "comparison": f"{a} vs {b}", "cluster_by": cluster, **r})
     return pd.DataFrame(rows)
 
 
 def to_markdown(df, src):
-    L = [f"# Seed-clustered intervals for `{src}`", "",
+    c = df.cluster_by.iloc[0] if "cluster_by" in df else "seed"
+    L = [f"# {c.capitalize()}-clustered intervals for `{src}`", "",
          "Relative total-cost difference (negative = first arm cheaper). 95% intervals.", "",
-         "| condition | comparison | estimate | iid bootstrap (original) | seed-cluster bootstrap | "
-         "two-stage bootstrap | per-seed t-interval | seeds first cheaper | sign-flip p |",
+         f"Clusters: {c}.", "",
+         "| condition | comparison | estimate | iid bootstrap (original) | cluster bootstrap | "
+         "two-stage bootstrap | per-cluster t-interval | clusters first cheaper | sign-flip p |",
          "|---|---|---|---|---|---|---|---|---|"]
     f = lambda lo, hi: f"[{lo:+.1%}, {hi:+.1%}]"
     for _, r in df.iterrows():
@@ -102,9 +120,9 @@ def to_markdown(df, src):
                  f"{f(r.cluster_low, r.cluster_high)} | {f(r.twostage_low, r.twostage_high)} | "
                  f"{f(r.seed_t_low, r.seed_t_high)} | {r.seeds_first_cheaper}/{r.n_seeds} | {r.signflip_p:.3f} |")
     n = int(df.n_seeds.iloc[0])
-    L += ["", f"With {n} seeds the smallest attainable two-sided sign-flip p-value is "
-          f"{2 / 2 ** n:.4f}. A seed-cluster bootstrap with only {n} clusters also tends to "
-          "understate uncertainty, so the per-seed t-interval is the more conservative summary."]
+    L += ["", f"With {n} clusters the smallest attainable two-sided sign-flip p-value is "
+          f"{2 / 2 ** n:.4f}. A cluster bootstrap with only {n} clusters also tends to "
+          "understate uncertainty, so the per-cluster t-interval is the more conservative summary."]
     return "\n".join(L) + "\n"
 
 
@@ -114,11 +132,14 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--reps", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=12345)
+    ap.add_argument("--cluster", default="seed", help="seed (default), or store / item for real data")
     a = ap.parse_args()
     if os.path.abspath(a.out) == os.path.abspath(a.results):
         raise SystemExit("refusing to write into the source results directory")
     sku = pd.read_csv(os.path.join(a.results, "metrics_by_sku.csv"), float_precision="round_trip")
-    df = analyse(sku, a.reps, a.seed)
+    series_path = os.path.join(a.results, "series.csv")
+    series = pd.read_csv(series_path) if os.path.exists(series_path) else None
+    df = analyse(sku, a.reps, a.seed, a.cluster, series)
     os.makedirs(a.out, exist_ok=True)
     df.to_csv(os.path.join(a.out, "clustered_ci.csv"), index=False)
     md = to_markdown(df, a.results)

@@ -1,0 +1,103 @@
+{
+  "description": "Favorita real-data replication: 5 Quito stores x 20 perishable items, 20 seeds. Demand is fixed real sales; seeds vary signal errors and model fits only.",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "data": {
+    "source": "favorita",
+    "data_dir": "data/favorita",
+    "city": "Quito",
+    "start": "2015-08-01",
+    "end": "2017-08-15",
+    "n_stores": 5,
+    "n_items": 20,
+    "min_open_share": 0.98,
+    "min_selling_share": 0.9,
+    "exclude_events": [
+      "Terremoto"
+    ],
+    "stockout_flag_mean": 5.0
+  },
+  "split": {
+    "train_end": 430,
+    "val_end": 574
+  },
+  "lead_time": 2,
+  "shelf_life": 4,
+  "costs": {
+    "holding": 0.05,
+    "shortage": 1.0,
+    "waste": 0.6
+  },
+  "warmup_days": 7,
+  "clean_lead_days": 14,
+  "quantile_grid": [
+    0.5,
+    0.65,
+    0.8,
+    0.9
+  ],
+  "model_params": {
+    "max_iter": 150,
+    "learning_rate": 0.08,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 40
+  },
+  "conditions": {
+    "clean": {
+      "p_miss": 0.0,
+      "p_late": 0.0,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.0,
+      "p_misleading": 0.0
+    },
+    "imperfect": {
+      "p_miss": 0.3,
+      "p_late": 0.3,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.04,
+      "p_misleading": 0.5
+    },
+    "false_alarm": {
+      "p_miss": 0.1,
+      "p_late": 0.0,
+      "late_lead": 0,
+      "lead_days": 14,
+      "spurious_rate": 0.08,
+      "p_misleading": 0.8
+    }
+  },
+  "bootstrap_reps": 2000,
+  "bootstrap_seed": 12345,
+  "world": {
+    "n_sku": 100,
+    "n_days": 742,
+    "n_event_types": 3,
+    "event_type_log_uplift": [
+      0.0866,
+      -0.0083,
+      0.3575
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+seed,condition,true_events_test,announcements_test
+0,clean,6,6
+0,imperfect,6,8
+0,false_alarm,6,27
+1,clean,6,6
+1,imperfect,6,9
+1,false_alarm,6,22

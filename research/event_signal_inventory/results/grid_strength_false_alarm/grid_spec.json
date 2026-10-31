@@ -1,0 +1,30 @@
+{
+  "description": "Event strength x false-alarm rate. Strength scales event_type_log_uplift of configs/seed20.json (0.1 is roughly the Favorita panel's level, 1.0 the original simulation). Error values vary spurious_rate from the false_alarm condition (p_miss 0.1, p_misleading 0.8).",
+  "base_config": "configs/seed20.json",
+  "base_condition": "false_alarm",
+  "parameter": "spurious_rate",
+  "values": [
+    0.0,
+    0.04,
+    0.08,
+    0.16
+  ],
+  "strengths": [
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ]
+}

@@ -91,3 +91,19 @@ def test_analyse_runs_on_saved_results_format():
                         "cost": np.arange(12, dtype=float) + 10})
     df = analyse(sku, reps=50)
     assert len(df) == 3 and set(df.n_seeds) == {2}
+
+
+def test_cluster_by_item_groups_rows_across_seeds_and_stores():
+    rows = []
+    for seed in (0, 1):
+        for sku, item in enumerate([7, 7, 9, 9]):
+            for arm, cost in [("A_blind", 10.0), ("B_clean_trained", 10.0 + item),
+                              ("C_asavailable_trained", 10.0)]:
+                rows.append({"condition": "clean", "seed": seed, "sku": sku, "arm": arm, "cost": cost})
+    series = pd.DataFrame({"sku": range(4), "store": [1, 2, 1, 2], "item": [7, 7, 9, 9]})
+    df = analyse(pd.DataFrame(rows), reps=50, cluster="item", series=series)
+    r = df[df.comparison == "B_clean_trained vs A_blind"].iloc[0]
+    assert r.cluster_by == "item" and r.n_seeds == 2               # two item clusters
+    assert r.seed_mean == pytest.approx(np.mean([0.7, 0.9]))
+    with pytest.raises(ValueError):
+        analyse(pd.DataFrame(rows), reps=10, cluster="store", series=None)
