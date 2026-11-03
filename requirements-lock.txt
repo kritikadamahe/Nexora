@@ -26,7 +26,7 @@ matplotlib==3.11.2
 mlxtend==0.25.0
 narwhals==2.27.1
 numpy==2.5.4
-nvidia-nccl-cu13==2.32.3
+nvidia-nccl-cu13==2.32.3; sys_platform == "linux"
 opentelemetry-api==1.45.1
 packaging==26.3
 pandas==3.1.0

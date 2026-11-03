@@ -14,6 +14,7 @@ import os
 import pandas as pd
 from typing import List
 from app.decision_engine.unified_signal import UnifiedSignal
+from app.modules.clearance import project_clearance
 from app.modules.combo.combo_rules  import (
     detect_product_category,
     cross_sell_strategy,
@@ -198,13 +199,16 @@ class ComboModule:
         demand_increase  = discount_pct / 100 * 0.8   # price elasticity
         daily_sales      = signal.tft_forecast_7d / 7 if signal.tft_forecast_7d > 0 else 1
         new_daily_sales  = daily_sales * (1 + demand_increase)
-        days_to_clear    = round(signal.current_stock / new_daily_sales) if new_daily_sales > 0 else 999
-        revenue_recovery = round(signal.current_stock * combo_price, 2)
+        proj = project_clearance(signal.current_stock, new_daily_sales,
+                                 signal.days_to_expiry, combo_price)
 
         return {
-            "combo_price":       combo_price,
-            "original_price":    base_price,
-            "projected_revenue": revenue_recovery,
-            "days_to_clear":     days_to_clear,
+            "combo_price":              combo_price,
+            "original_price":           base_price,
+            "projected_revenue":        proj["projected_revenue"],
+            "days_to_clear":            proj["days_to_clear"],
+            "units_sold_before_expiry": proj["units_sold_before_expiry"],
+            "units_unsold_at_expiry":   proj["units_unsold_at_expiry"],
+            "clears_before_expiry":     proj["clears_before_expiry"],
             "confidence":        combo.get("confidence_level", "LOW"),
         }
