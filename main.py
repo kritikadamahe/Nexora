@@ -273,6 +273,11 @@ async def get_decision(product_id: int):
         )
 
     result = await decision_engine.run_for_product(product_id)
+
+    # The engine reports an unknown product as {"error": ...}. Return a real
+    # 404 so this endpoint behaves like /results and /replenishment.
+    if isinstance(result, dict) and set(result) == {"error"}:
+        return JSONResponse(status_code=404, content=result)
     return result
 
 

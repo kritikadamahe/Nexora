@@ -15,6 +15,7 @@
 #   - No nearby store capacity → TRANSFER score forced to 0
 
 import numpy as np
+from app.modules.clearance import project_clearance
 from app.decision_engine.unified_signal import UnifiedSignal
 
 # ── Warehouse stub constants ──────────────────────────────────────────────────
@@ -214,15 +215,19 @@ def _compute_projected_impact(action, signal, cost_price, base_price,
         demand_increase  = price_drop_pct * 0.8   # elasticity
         daily_sales_est  = signal.tft_forecast_7d / 7 if signal.tft_forecast_7d > 0 else 1
         new_daily_sales  = daily_sales_est * (1 + demand_increase)
-        days_to_clear    = round(signal.current_stock / new_daily_sales) if new_daily_sales > 0 else 999
-        revenue_recovery = round(signal.current_stock * suggested_price, 2)
+        proj = project_clearance(signal.current_stock, new_daily_sales,
+                                 signal.days_to_expiry, suggested_price)
+        revenue_recovery = proj["projected_revenue"]
         revenue_if_expired = 0.0
 
         return {
-            "projected_revenue":      revenue_recovery,
-            "revenue_if_no_action":   revenue_if_expired,
-            "revenue_recovery":       revenue_recovery,
-            "days_to_clear":          days_to_clear,
+            "projected_revenue":        revenue_recovery,
+            "revenue_if_no_action":     revenue_if_expired,
+            "revenue_recovery":         revenue_recovery,
+            "days_to_clear":            proj["days_to_clear"],
+            "units_sold_before_expiry": proj["units_sold_before_expiry"],
+            "units_unsold_at_expiry":   proj["units_unsold_at_expiry"],
+            "clears_before_expiry":     proj["clears_before_expiry"],
             "confidence":             "MEDIUM",
         }
 

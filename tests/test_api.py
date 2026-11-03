@@ -90,3 +90,12 @@ def test_decision_endpoint_exposes_forecast_fields_and_keeps_old_ones(client):
     rec = body["recommendations"][0]
     assert rec["action"] in {"RESTOCK", "NO_RESTOCK"}
     assert "assumptions" in rec["replenishment"]
+
+def test_decision_unknown_product_returns_404(client):
+    """/decision must use a real 404 for unknown products, like /replenishment."""
+    c, _, _ = client
+    c.post("/run-pipeline")
+    r = c.get("/decision/999999")
+    assert r.status_code == 404
+    assert "999999" in r.json()["error"]
+    assert c.get("/replenishment/999999").status_code == 404

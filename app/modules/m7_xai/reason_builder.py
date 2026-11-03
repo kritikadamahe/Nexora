@@ -189,6 +189,8 @@ def build_projection(action_type: str, module_result: dict) -> dict:
             "revenue_if_no_action":   projected.get("revenue_if_no_action", 0),
             "revenue_recovery":       projected.get("revenue_recovery", 0),
             "days_to_clear":          projected.get("days_to_clear"),
+            "units_unsold_at_expiry": projected.get("units_unsold_at_expiry"),
+            "clears_before_expiry":   projected.get("clears_before_expiry"),
             "units_to_clear":         module_result.get("recommended_value", {})
                                       .get("units_to_clear"),
             "confidence":             projected.get("confidence", "MEDIUM"),
@@ -208,6 +210,8 @@ def build_projection(action_type: str, module_result: dict) -> dict:
             "combo_price":        projected.get("combo_price"),
             "projected_revenue":  projected.get("projected_revenue", 0),
             "days_to_clear":      projected.get("days_to_clear"),
+            "units_unsold_at_expiry": projected.get("units_unsold_at_expiry"),
+            "clears_before_expiry":   projected.get("clears_before_expiry"),
             "confidence":         module_result.get("confidence_level", "LOW"),
         }
 
