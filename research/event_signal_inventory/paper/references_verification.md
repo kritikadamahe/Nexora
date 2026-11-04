@@ -74,6 +74,31 @@ All of these resolved correctly and can be added if a reviewer asks:
 - Cameron, Gelbach & Miller (2008), RESTAT 90(3):414--427, doi:10.1162/rest.90.3.414 (useful if the paper discusses few-cluster inference).
 - Good (2005), Permutation, Parametric and Bootstrap Tests of Hypotheses, Springer, doi:10.1007/b138696 (for the sign-flip test).
 
+
+## Added 2026-11-05 (17 entries, from the list above)
+
+Metadata for each entry was generated from its Crossref record (title, authors, journal, volume, issue, pages, year), with author names checked in OpenAlex where Crossref was incomplete.
+
+| key | how verified | why cited |
+|---|---|---|
+| nahmias2011perishable | doi:10.1007/978-1-4419-7999-5 (Crossref; OpenAlex) | Book-length treatment of perishable inventory, alongside the 1982 review. |
+| petropoulos2022forecasting | doi:10.1016/j.ijforecast.2021.11.001 (Crossref; OpenAlex) | Broad review of forecasting theory and practice; listed as first author and others (80 authors). |
+| ali2009sku | doi:10.1016/j.eswa.2009.04.052 (Crossref; OpenAlex) | SKU demand forecasting under promotions. |
+| huang2014value | doi:10.1016/j.ejor.2014.02.022 (Crossref; OpenAlex) | Competitive and promotional information in FMCG sales forecasting. |
+| ma2016demand | doi:10.1016/j.ejor.2015.08.029 (Crossref; OpenAlex) | High-dimensional promotional information in SKU retail forecasting. |
+| januschowski2022forecasting | doi:10.1016/j.ijforecast.2021.10.004 (Crossref; OpenAlex) | Why tree-based models did well in M5. |
+| makridakis2022m5uncertainty | doi:10.1016/j.ijforecast.2021.10.009 (Crossref; OpenAlex) | M5 quantile-forecast track. |
+| sanders2009quantifying | doi:10.1016/j.omega.2006.10.004 (Crossref; OpenAlex) | Operational cost of forecast errors; full author names from OpenAlex (Crossref gives initials only). |
+| prak2019general | doi:10.1016/j.ijforecast.2017.11.004 (Crossref; OpenAlex) | Forecast uncertainty in inventory models. |
+| taylor2007forecasting | doi:10.1016/j.ejor.2006.02.006 (Crossref; OpenAlex) | Quantile regression for daily supermarket sales. |
+| ulrich2021distributional | doi:10.1016/j.ejor.2019.11.029 (Crossref; OpenAlex) | Distributional demand forecasts in e-grocery. |
+| gneiting2007strictly | doi:10.1198/016214506000001437 (Crossref; OpenAlex) | Proper scoring rules, including the pinball loss. |
+| morenotorres2012unifying | doi:10.1016/j.patcog.2011.06.019 (Crossref; OpenAlex) | Definitions of dataset shift. |
+| globerson2006nightmare | doi:10.1145/1143844.1143889 (Crossref; OpenAlex) | Robustness to features deleted at test time, analogous to missed announcements. |
+| iwana2021empirical | doi:10.1371/journal.pone.0254841 (Crossref; OpenAlex) | Time-series data augmentation, alongside Wen et al. |
+| good2005permutation | doi:10.1007/b138696 (Crossref; OpenAlex) | Permutation (sign-flip) tests; author from OpenAlex (Crossref record has none). |
+| cameron2008bootstrap | doi:10.1162/rest.90.3.414 (Crossref; OpenAlex) | Cluster bootstrap understates uncertainty with few clusters. |
+
 ## Dropped because not verified
 
 - None of the requested candidates failed. Social-media/news signals for retail demand (thread 8) were not added: no peer-reviewed source was checked within this pass, so only weather information (Steinker et al. 2017) is cited.
