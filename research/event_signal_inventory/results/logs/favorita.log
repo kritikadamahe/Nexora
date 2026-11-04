@@ -1,0 +1,141 @@
+Favorita panel: 100 series (5 stores x 20 perishable items), 742 days 2015-08-01 .. 2017-08-15
+split: train < day 430, validation < day 574, test 168 days
+mean daily units per series: 135.2 (median series 117.1)
+zero-sale days: 0.4%; suspected stockout days: 0.4%
+families: DAIRY 5, MEATS 10, POULTRY 5, PRODUCE 80
+type 1 national holiday: 21 occurrences (5 in test), 35 days; training log-uplift mean +0.087, sd +0.221
+type 2 national event: 6 occurrences (1 in test), 6 days; training log-uplift mean -0.008, sd +0.178
+type 3 local holiday: 2 occurrences (0 in test), 4 days; training log-uplift mean +0.358, sd +0.235
+seed 0 done (74s)
+seed 1 done (153s)
+seed 2 done (231s)
+seed 3 done (310s)
+seed 4 done (387s)
+seed 5 done (468s)
+seed 6 done (544s)
+seed 7 done (622s)
+seed 8 done (703s)
+seed 9 done (779s)
+seed 10 done (855s)
+seed 11 done (934s)
+seed 12 done (1009s)
+seed 13 done (1070s)
+seed 14 done (1133s)
+seed 15 done (1196s)
+seed 16 done (1257s)
+seed 17 done (1319s)
+seed 18 done (1382s)
+seed 19 done (1442s)
+Seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] | SKUs: 100 | test days: 166 (first 7 excluded) | runtime 1443s
+
+Test-period metrics, mean ± sd across seeds (cost summed over SKUs):
+
+| condition | arm | total_cost | shortage_cost | waste_cost | holding_cost | lost_units | waste_units | fill_rate | wape_median | pinball_tau_norm | tau_selected |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| clean | A_blind | 127203 ± 720 | 38006 ± 601 | 9052 ± 255 | 80144 ± 506 | 38006 ± 601 | 15087 ± 425 | 0.982 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| clean | B_clean_trained | 127909 ± 669 | 39679 ± 576 | 8936 ± 182 | 79294 ± 478 | 39679 ± 576 | 14894 ± 304 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| clean | C_asavailable_trained | 127909 ± 669 | 39679 ± 576 | 8936 ± 182 | 79294 ± 478 | 39679 ± 576 | 14894 ± 304 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| clean | D_noise_injected | 127909 ± 669 | 39679 ± 576 | 8936 ± 182 | 79294 ± 478 | 39679 ± 576 | 14894 ± 304 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| false_alarm | A_blind | 127203 ± 720 | 38006 ± 601 | 9052 ± 255 | 80144 ± 506 | 38006 ± 601 | 15087 ± 425 | 0.982 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| false_alarm | B_clean_trained | 128203 ± 981 | 39775 ± 763 | 8976 ± 197 | 79452 ± 844 | 39775 ± 763 | 14960 ± 328 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| false_alarm | C_asavailable_trained | 128042 ± 1309 | 40506 ± 1479 | 8833 ± 292 | 78703 ± 1061 | 40506 ± 1479 | 14721 ± 486 | 0.980 ± 0.001 | 0.145 ± 0.001 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| false_alarm | D_noise_injected | 127967 ± 1204 | 40556 ± 1540 | 8803 ± 272 | 78608 ± 1181 | 40556 ± 1540 | 14672 ± 453 | 0.980 ± 0.001 | 0.145 ± 0.001 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| imperfect | A_blind | 127203 ± 720 | 38006 ± 601 | 9052 ± 255 | 80144 ± 506 | 38006 ± 601 | 15087 ± 425 | 0.982 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| imperfect | B_clean_trained | 128359 ± 1089 | 40381 ± 1075 | 8962 ± 187 | 79017 ± 794 | 40381 ± 1075 | 14936 ± 311 | 0.980 ± 0.001 | 0.145 ± 0.001 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| imperfect | C_asavailable_trained | 127467 ± 1145 | 39182 ± 1191 | 8924 ± 323 | 79360 ± 640 | 39182 ± 1191 | 14874 ± 538 | 0.981 ± 0.001 | 0.146 ± 0.001 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| imperfect | D_noise_injected | 127899 ± 1521 | 39807 ± 1678 | 8916 ± 327 | 79175 ± 1109 | 39807 ± 1678 | 14860 ± 545 | 0.981 ± 0.001 | 0.145 ± 0.001 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+
+Paired relative test-cost difference (negative = first arm cheaper), bootstrap 95% CI over (seed, SKU) units:
+
+| condition | comparison | rel. cost diff | 95% CI | share of units first cheaper |
+|---|---|---|---|---|
+| clean | C_asavailable_trained vs B_clean_trained | +0.000% | [+0.000%, +0.000%] | 0.00 |
+| clean | C_asavailable_trained vs A_blind | +0.556% | [+0.337%, +0.801%] | 0.46 |
+| clean | B_clean_trained vs A_blind | +0.556% | [+0.327%, +0.791%] | 0.46 |
+| false_alarm | C_asavailable_trained vs B_clean_trained | -0.126% | [-0.319%, +0.065%] | 0.51 |
+| false_alarm | C_asavailable_trained vs A_blind | +0.660% | [+0.418%, +0.901%] | 0.45 |
+| false_alarm | B_clean_trained vs A_blind | +0.786% | [+0.559%, +1.018%] | 0.45 |
+| imperfect | C_asavailable_trained vs B_clean_trained | -0.695% | [-0.924%, -0.470%] | 0.53 |
+| imperfect | C_asavailable_trained vs A_blind | +0.208% | [-0.003%, +0.411%] | 0.47 |
+| imperfect | B_clean_trained vs A_blind | +0.909% | [+0.688%, +1.140%] | 0.44 |
+| clean | D_noise_injected vs B_clean_trained | +0.000% | [+0.000%, +0.000%] | 0.00 |
+| clean | D_noise_injected vs A_blind | +0.556% | [+0.329%, +0.806%] | 0.46 |
+| clean | D_noise_injected vs C_asavailable_trained | +0.000% | [+0.000%, +0.000%] | 0.00 |
+| false_alarm | D_noise_injected vs B_clean_trained | -0.184% | [-0.373%, -0.003%] | 0.50 |
+| false_alarm | D_noise_injected vs A_blind | +0.601% | [+0.353%, +0.837%] | 0.46 |
+| false_alarm | D_noise_injected vs C_asavailable_trained | -0.058% | [-0.275%, +0.157%] | 0.50 |
+| imperfect | D_noise_injected vs B_clean_trained | -0.358% | [-0.587%, -0.144%] | 0.50 |
+| imperfect | D_noise_injected vs A_blind | +0.547% | [+0.307%, +0.784%] | 0.45 |
+| imperfect | D_noise_injected vs C_asavailable_trained | +0.339% | [+0.105%, +0.575%] | 0.48 |
+
+Per-seed relative test cost (cluster-level check; seeds share the same real demand and differ only in signal errors and model fits; use esi.clustered_ci --cluster item for inference):
+
+| condition | seed | C vs B | C vs A | D vs B | D vs C |
+|---|---|---|---|---|---|
+| clean | 0 | +0.0% | +0.9% | +0.0% | +0.0% |
+| clean | 1 | +0.0% | -0.6% | +0.0% | +0.0% |
+| clean | 2 | +0.0% | +0.3% | +0.0% | +0.0% |
+| clean | 3 | +0.0% | +0.3% | +0.0% | +0.0% |
+| clean | 4 | +0.0% | +2.6% | +0.0% | +0.0% |
+| clean | 5 | +0.0% | +0.2% | +0.0% | +0.0% |
+| clean | 6 | +0.0% | +0.8% | +0.0% | +0.0% |
+| clean | 7 | +0.0% | +1.0% | +0.0% | +0.0% |
+| clean | 8 | +0.0% | -0.4% | +0.0% | +0.0% |
+| clean | 9 | +0.0% | +0.6% | +0.0% | +0.0% |
+| clean | 10 | +0.0% | +1.3% | +0.0% | +0.0% |
+| clean | 11 | +0.0% | +0.2% | +0.0% | +0.0% |
+| clean | 12 | +0.0% | -0.1% | +0.0% | +0.0% |
+| clean | 13 | +0.0% | +0.4% | +0.0% | +0.0% |
+| clean | 14 | +0.0% | +0.6% | +0.0% | +0.0% |
+| clean | 15 | +0.0% | +0.2% | +0.0% | +0.0% |
+| clean | 16 | +0.0% | +1.1% | +0.0% | +0.0% |
+| clean | 17 | +0.0% | +0.7% | +0.0% | +0.0% |
+| clean | 18 | +0.0% | +0.5% | +0.0% | +0.0% |
+| clean | 19 | +0.0% | +0.9% | +0.0% | +0.0% |
+| false_alarm | 0 | -0.9% | +0.3% | -0.3% | +0.6% |
+| false_alarm | 1 | +0.6% | +1.6% | -1.1% | -1.7% |
+| false_alarm | 2 | +0.0% | +0.1% | +1.1% | +1.1% |
+| false_alarm | 3 | -0.2% | -0.0% | +0.2% | +0.5% |
+| false_alarm | 4 | -0.5% | +1.9% | -0.1% | +0.3% |
+| false_alarm | 5 | +2.2% | +2.3% | +1.5% | -0.7% |
+| false_alarm | 6 | +0.5% | +1.6% | -0.1% | -0.6% |
+| false_alarm | 7 | -0.6% | +0.7% | -1.7% | -1.2% |
+| false_alarm | 8 | -0.5% | -0.1% | -0.8% | -0.2% |
+| false_alarm | 9 | +1.1% | +1.9% | +1.2% | +0.1% |
+| false_alarm | 10 | -0.0% | +1.3% | -1.2% | -1.2% |
+| false_alarm | 11 | -0.3% | -0.1% | -0.5% | -0.2% |
+| false_alarm | 12 | +1.4% | +0.1% | -0.3% | -1.7% |
+| false_alarm | 13 | -1.1% | -0.0% | +1.2% | +2.3% |
+| false_alarm | 14 | -1.2% | -0.1% | -1.7% | -0.5% |
+| false_alarm | 15 | -1.5% | -1.4% | +0.0% | +1.5% |
+| false_alarm | 16 | -0.9% | +0.8% | +0.2% | +1.2% |
+| false_alarm | 17 | +0.2% | +1.2% | -0.8% | -1.0% |
+| false_alarm | 18 | -0.4% | +0.4% | -0.0% | +0.4% |
+| false_alarm | 19 | -0.4% | +0.7% | -0.5% | -0.1% |
+| imperfect | 0 | -1.0% | -0.0% | -0.2% | +0.8% |
+| imperfect | 1 | -0.7% | -0.8% | +0.4% | +1.1% |
+| imperfect | 2 | -0.3% | +0.5% | -2.9% | -2.7% |
+| imperfect | 3 | -1.1% | +0.4% | -0.8% | +0.3% |
+| imperfect | 4 | -0.9% | +2.3% | -1.2% | -0.4% |
+| imperfect | 5 | +0.1% | +0.8% | +0.1% | +0.0% |
+| imperfect | 6 | -0.7% | -0.1% | +1.7% | +2.4% |
+| imperfect | 7 | -1.1% | +0.5% | -1.6% | -0.5% |
+| imperfect | 8 | -1.6% | -1.4% | +0.6% | +2.3% |
+| imperfect | 9 | +0.3% | +0.6% | +0.2% | -0.2% |
+| imperfect | 10 | -0.9% | +0.9% | -1.5% | -0.6% |
+| imperfect | 11 | +2.7% | +2.6% | +0.8% | -1.9% |
+| imperfect | 12 | +0.7% | +0.6% | -0.3% | -1.0% |
+| imperfect | 13 | -0.5% | +0.3% | +0.2% | +0.7% |
+| imperfect | 14 | -2.3% | -1.0% | -1.3% | +1.0% |
+| imperfect | 15 | -1.0% | -0.1% | +0.0% | +1.0% |
+| imperfect | 16 | -2.0% | -0.2% | -1.5% | +0.5% |
+| imperfect | 17 | -1.3% | -0.8% | -2.3% | -0.9% |
+| imperfect | 18 | -0.3% | -0.3% | +2.6% | +2.9% |
+| imperfect | 19 | -1.8% | -0.6% | +0.0% | +1.9% |
+
+Mean event counts in the test period (announcements include spurious ones):
+
+- clean: true events 6.0, announcements 6.0
+- false_alarm: true events 6.0, announcements 21.1
+- imperfect: true events 6.0, announcements 10.1
+

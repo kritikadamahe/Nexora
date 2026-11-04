@@ -1,11 +1,21 @@
 \begin{filecontents*}{references.bib}
+% Verified reference list for "Event Signal Quality and Inventory Cost".
+% Every entry was checked against a DOI resolver (doi.org / Crossref / OpenAlex),
+% the publisher page, or the official proceedings page. See references_verification.md.
+
+% ---------------------------------------------------------------------------
+% The 8 entries already embedded in paper.tex (verified; corrections noted in
+% references_verification.md)
+% ---------------------------------------------------------------------------
 @article{nahmias1982perishable,
   author  = {Nahmias, Steven},
   title   = {Perishable Inventory Theory: A Review},
   journal = {Operations Research},
   volume  = {30},
+  number  = {4},
   pages   = {680--708},
-  year    = {1982}
+  year    = {1982},
+  doi     = {10.1287/opre.30.4.680}
 }
 @article{koenker1978regression,
   author  = {Koenker, Roger and Bassett, Jr., Gilbert},
@@ -14,7 +24,8 @@
   volume  = {46},
   number  = {1},
   pages   = {33--50},
-  year    = {1978}
+  year    = {1978},
+  doi     = {10.2307/1913643}
 }
 @article{friedman2001gbm,
   author  = {Friedman, Jerome H.},
@@ -23,15 +34,18 @@
   volume  = {29},
   number  = {5},
   pages   = {1189--1232},
-  year    = {2001}
+  year    = {2001},
+  doi     = {10.1214/aos/1013203451}
 }
 @article{pedregosa2011sklearn,
-  author  = {Pedregosa, Fabian and others},
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
   title   = {Scikit-learn: Machine Learning in {P}ython},
   journal = {Journal of Machine Learning Research},
   volume  = {12},
+  number  = {85},
   pages   = {2825--2830},
-  year    = {2011}
+  year    = {2011},
+  url     = {https://jmlr.org/papers/v12/pedregosa11a.html}
 }
 @article{holm1979simple,
   author  = {Holm, Sture},
@@ -40,14 +54,18 @@
   volume  = {6},
   number  = {2},
   pages   = {65--70},
-  year    = {1979}
+  year    = {1979},
+  url     = {https://www.jstor.org/stable/4615733}
 }
 @book{efron1993bootstrap,
   author    = {Efron, Bradley and Tibshirani, Robert J.},
   title     = {An Introduction to the Bootstrap},
+  series    = {Monographs on Statistics and Applied Probability},
+  volume    = {57},
   publisher = {Chapman \& Hall},
   address   = {New York},
-  year      = {1993}
+  year      = {1993},
+  doi       = {10.1007/978-1-4899-4541-9}
 }
 @article{makridakis2022m5,
   author  = {Makridakis, Spyros and Spiliotis, Evangelos and Assimakopoulos, Vassilios},
@@ -56,7 +74,8 @@
   volume  = {38},
   number  = {4},
   pages   = {1346--1364},
-  year    = {2022}
+  year    = {2022},
+  doi     = {10.1016/j.ijforecast.2021.11.013}
 }
 @misc{favorita2018kaggle,
   author       = {{Corporaci{\'o}n Favorita}},
@@ -64,6 +83,236 @@
   howpublished = {Kaggle competition},
   year         = {2018},
   url          = {https://www.kaggle.com/c/favorita-grocery-sales-forecasting}
+}
+
+% ---------------------------------------------------------------------------
+% Perishable inventory
+% ---------------------------------------------------------------------------
+@article{nandakumar1993near,
+  author  = {Nandakumar, Purushottaman and Morton, Thomas E.},
+  title   = {Near Myopic Heuristics for the Fixed-Life Perishability Problem},
+  journal = {Management Science},
+  volume  = {39},
+  number  = {12},
+  pages   = {1490--1498},
+  year    = {1993},
+  doi     = {10.1287/mnsc.39.12.1490}
+}
+@article{broekmeulen2009heuristic,
+  author  = {Broekmeulen, Rob A. C. M. and van Donselaar, Karel H.},
+  title   = {A Heuristic to Manage Perishable Inventory with Batch Ordering, Positive Lead-Times, and Time-Varying Demand},
+  journal = {Computers \& Operations Research},
+  volume  = {36},
+  number  = {11},
+  pages   = {3013--3018},
+  year    = {2009},
+  doi     = {10.1016/j.cor.2009.01.017}
+}
+@article{bakker2012review,
+  author  = {Bakker, Monique and Riezebos, Jan and Teunter, Ruud H.},
+  title   = {Review of Inventory Systems with Deterioration since 2001},
+  journal = {European Journal of Operational Research},
+  volume  = {221},
+  number  = {2},
+  pages   = {275--284},
+  year    = {2012},
+  doi     = {10.1016/j.ejor.2012.03.004}
+}
+@article{janssen2016literature,
+  author  = {Janssen, Larissa and Claus, Thorsten and Sauer, J{\"u}rgen},
+  title   = {Literature Review of Deteriorating Inventory Models by Key Topics from 2012 to 2015},
+  journal = {International Journal of Production Economics},
+  volume  = {182},
+  pages   = {86--112},
+  year    = {2016},
+  doi     = {10.1016/j.ijpe.2016.08.019}
+}
+@article{haijema2019improved,
+  author  = {Haijema, Ren{\'e} and Minner, Stefan},
+  title   = {Improved Ordering of Perishables: The Value of Stock-Age Information},
+  journal = {International Journal of Production Economics},
+  volume  = {209},
+  pages   = {316--324},
+  year    = {2019},
+  doi     = {10.1016/j.ijpe.2018.03.008}
+}
+
+% ---------------------------------------------------------------------------
+% Retail forecasting with calendar, event and promotion effects
+% ---------------------------------------------------------------------------
+@article{fildes2022retail,
+  author  = {Fildes, Robert and Ma, Shaohui and Kolassa, Stephan},
+  title   = {Retail Forecasting: Research and Practice},
+  journal = {International Journal of Forecasting},
+  volume  = {38},
+  number  = {4},
+  pages   = {1283--1318},
+  year    = {2022},
+  doi     = {10.1016/j.ijforecast.2019.06.004}
+}
+@article{trapero2015identification,
+  author  = {Trapero, Juan R. and Kourentzes, Nikolaos and Fildes, Robert},
+  title   = {On the Identification of Sales Forecasting Models in the Presence of Promotions},
+  journal = {Journal of the Operational Research Society},
+  volume  = {66},
+  number  = {2},
+  pages   = {299--307},
+  year    = {2015},
+  doi     = {10.1057/jors.2013.174}
+}
+@article{vandonselaar2016analysis,
+  author  = {van Donselaar, Karel H. and Peters, J. and de Jong, A. and Broekmeulen, Rob A. C. M.},
+  title   = {Analysis and Forecasting of Demand during Promotions for Perishable Items},
+  journal = {International Journal of Production Economics},
+  volume  = {172},
+  pages   = {65--75},
+  year    = {2016},
+  doi     = {10.1016/j.ijpe.2015.10.022}
+}
+@article{huber2020daily,
+  author  = {Huber, Jakob and Stuckenschmidt, Heiner},
+  title   = {Daily Retail Demand Forecasting Using Machine Learning with Emphasis on Calendric Special Days},
+  journal = {International Journal of Forecasting},
+  volume  = {36},
+  number  = {4},
+  pages   = {1420--1438},
+  year    = {2020},
+  doi     = {10.1016/j.ijforecast.2020.02.005}
+}
+@article{makridakis2022m5background,
+  author  = {Makridakis, Spyros and Spiliotis, Evangelos and Assimakopoulos, Vassilios},
+  title   = {The {M5} Competition: Background, Organization, and Implementation},
+  journal = {International Journal of Forecasting},
+  volume  = {38},
+  number  = {4},
+  pages   = {1325--1336},
+  year    = {2022},
+  doi     = {10.1016/j.ijforecast.2021.07.007}
+}
+@article{steinker2017value,
+  author  = {Steinker, Sebastian and Hoberg, Kai and Thonemann, Ulrich W.},
+  title   = {The Value of Weather Information for E-Commerce Operations},
+  journal = {Production and Operations Management},
+  volume  = {26},
+  number  = {10},
+  pages   = {1854--1874},
+  year    = {2017},
+  doi     = {10.1111/poms.12721}
+}
+
+% ---------------------------------------------------------------------------
+% Forecast errors and inventory performance
+% ---------------------------------------------------------------------------
+@article{gardner1990evaluating,
+  author  = {Gardner, Everette S.},
+  title   = {Evaluating Forecast Performance in an Inventory Control System},
+  journal = {Management Science},
+  volume  = {36},
+  number  = {4},
+  pages   = {490--499},
+  year    = {1990},
+  doi     = {10.1287/mnsc.36.4.490}
+}
+@article{kourentzes2020optimising,
+  author  = {Kourentzes, Nikolaos and Trapero, Juan R. and Barrow, Devon K.},
+  title   = {Optimising Forecasting Models for Inventory Planning},
+  journal = {International Journal of Production Economics},
+  volume  = {225},
+  pages   = {107597},
+  year    = {2020},
+  doi     = {10.1016/j.ijpe.2019.107597}
+}
+
+% ---------------------------------------------------------------------------
+% Data-driven newsvendor and boosting
+% ---------------------------------------------------------------------------
+@article{ban2019big,
+  author  = {Ban, Gah-Yi and Rudin, Cynthia},
+  title   = {The Big Data Newsvendor: Practical Insights from Machine Learning},
+  journal = {Operations Research},
+  volume  = {67},
+  number  = {1},
+  pages   = {90--108},
+  year    = {2019},
+  doi     = {10.1287/opre.2018.1757}
+}
+@article{huber2019data,
+  author  = {Huber, Jakob and M{\"u}ller, Sebastian and Fleischmann, Moritz and Stuckenschmidt, Heiner},
+  title   = {A Data-Driven Newsvendor Problem: From Data to Decision},
+  journal = {European Journal of Operational Research},
+  volume  = {278},
+  number  = {3},
+  pages   = {904--915},
+  year    = {2019},
+  doi     = {10.1016/j.ejor.2019.04.043}
+}
+@article{bertsimas2020predictive,
+  author  = {Bertsimas, Dimitris and Kallus, Nathan},
+  title   = {From Predictive to Prescriptive Analytics},
+  journal = {Management Science},
+  volume  = {66},
+  number  = {3},
+  pages   = {1025--1044},
+  year    = {2020},
+  doi     = {10.1287/mnsc.2018.3253}
+}
+@inproceedings{ke2017lightgbm,
+  author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
+  title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
+  booktitle = {Advances in Neural Information Processing Systems 30 (NIPS 2017)},
+  pages     = {3146--3154},
+  year      = {2017},
+  url       = {https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html}
+}
+
+% ---------------------------------------------------------------------------
+% Noisy inputs, dataset shift, augmentation, privileged information, leakage
+% ---------------------------------------------------------------------------
+@article{bishop1995training,
+  author  = {Bishop, Chris M.},
+  title   = {Training with Noise is Equivalent to {T}ikhonov Regularization},
+  journal = {Neural Computation},
+  volume  = {7},
+  number  = {1},
+  pages   = {108--116},
+  year    = {1995},
+  doi     = {10.1162/neco.1995.7.1.108}
+}
+@book{quinonero2009dataset,
+  editor    = {Qui{\~n}onero-Candela, Joaquin and Sugiyama, Masashi and Schwaighofer, Anton and Lawrence, Neil D.},
+  title     = {Dataset Shift in Machine Learning},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA},
+  year      = {2009},
+  doi       = {10.7551/mitpress/9780262170055.001.0001}
+}
+@article{vapnik2009new,
+  author  = {Vapnik, Vladimir and Vashist, Akshay},
+  title   = {A New Learning Paradigm: Learning Using Privileged Information},
+  journal = {Neural Networks},
+  volume  = {22},
+  number  = {5--6},
+  pages   = {544--557},
+  year    = {2009},
+  doi     = {10.1016/j.neunet.2009.06.042}
+}
+@inproceedings{wen2021time,
+  author    = {Wen, Qingsong and Sun, Liang and Yang, Fan and Song, Xiaomin and Gao, Jingkun and Wang, Xue and Xu, Huan},
+  title     = {Time Series Data Augmentation for Deep Learning: A Survey},
+  booktitle = {Proceedings of the Thirtieth International Joint Conference on Artificial Intelligence ({IJCAI-21})},
+  pages     = {4653--4660},
+  year      = {2021},
+  doi       = {10.24963/ijcai.2021/631}
+}
+@article{kaufman2012leakage,
+  author  = {Kaufman, Shachar and Rosset, Saharon and Perlich, Claudia and Stitelman, Ori},
+  title   = {Leakage in Data Mining: Formulation, Detection, and Avoidance},
+  journal = {ACM Transactions on Knowledge Discovery from Data},
+  volume  = {6},
+  number  = {4},
+  pages   = {1--21},
+  year    = {2012},
+  doi     = {10.1145/2382577.2382579}
 }
 \end{filecontents*}
 
@@ -172,11 +421,11 @@
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-Demand forecasters for perishable goods are usually given event information (holidays, festivals, promotions) taken from a clean, after-the-fact calendar. At ordering time that information can be missing, late, false or mislabelled. We study when event signals reduce inventory cost and when imperfect signals do more harm than good. Three forecasters share one replenishment policy: one ignores events (A), one is trained on the true calendar (B), and one is trained on the signals as they would have been available at ordering time (C). In a simulation with strong events and clean signals, event-aware forecasting cuts cost by 36.9\% (cheaper in 20 of 20 seeds). With false-alarm-heavy signals, clean-calendar training costs 15.6\% more than ignoring events, and as-available training removes most of that harm (16.6\% cheaper than B). A sweep over event strength and false-alarm rate shows that all these effects scale with event strength: at the strength measured in real Favorita grocery data, every difference shrinks to 3.4\% or less. On Favorita, with 100 perishable series, event signals made no statistically distinguishable difference in cost once intervals are clustered by product. Event signals, and protection against their errors, are worth as much as events move demand.
+Demand forecasters for perishable goods are usually given event information (holidays, promotions, benefit days) taken from a clean, after-the-fact calendar. At ordering time that information can be missing, late, false or mislabelled. We study when event signals reduce inventory cost and how a forecaster should be trained when its signals are imperfect. Four forecasters share one replenishment policy: one ignores events (A), one is trained on the true calendar (B), one on the signals as they were available at ordering time (C), and one on the true calendar with simulated signal errors injected at estimated rates (D). Arm D needs no archive of past announcements, which few retailers keep. In simulation, accurate event signals cut cost by 36.8\%. With false-alarm-heavy signals, clean-calendar training costs 16.1\% more than ignoring events, while C and D are 17.0\% and 18.1\% cheaper than B; D and C are statistically indistinguishable. When D's assumed false-alarm rate differs from the true one, overestimating it remained cheaper than ignoring events in every cell of the sweep, whereas underestimating it cost up to 37\% more. A sweep over event strength shows that all effects scale with how strongly events move demand. On Walmart M5 food sales, where SNAP benefit days lift sales by about 17\%, event signals cut cost by 5.3\% and both C and D protect against false alarms, with sizes close to those the simulation predicts for that strength. On Favorita perishables, where holidays lift sales by about 9\%, no difference is distinguishable from zero.
 \end{abstract}
 
 \begin{IEEEkeywords}
-perishable inventory, demand forecasting, event signals, signal quality, quantile forecasting, simulation.
+perishable inventory, demand forecasting, event signals, signal quality, noise injection, quantile forecasting, simulation.
 \end{IEEEkeywords}
 
 % ============================================================================
@@ -186,16 +435,18 @@ perishable inventory, demand forecasting, event signals, signal quality, quantil
 \label{sec:intro}
 Perishable retail has a narrow margin for error: over-ordering turns into waste and under-ordering turns into lost sales \cite{nahmias1982perishable}. Event information is a natural input to demand forecasts, but event features are usually built from a clean calendar that is known with certainty after the fact. In deployment the signal is different. Events are announced late, some are never announced, some announcements prove false, and labels can be wrong. A model that learned to trust a clean calendar may react strongly to a signal that is wrong.
 
-This paper asks two questions.
+Training on the signals exactly as they were available at ordering time avoids that mismatch, but it requires an archive of every past announcement, including those that later proved wrong, and few retailers keep one. A retailer does have the clean calendar and can estimate how often its event feed errs. This paper asks three questions.
 \begin{enumerate}
-    \item Does training on signals as they were actually available (arm C) reduce the cost harm of imperfect signals, compared with training on the clean calendar (arm B)?
-    \item How does the answer depend on how strongly events move demand? When events barely matter, is any of this worth doing?
+    \item Does training on imperfect signals, either as they were available (arm C) or simulated from the clean calendar (arm D), reduce the cost harm of imperfect signals compared with clean-calendar training (arm B)?
+    \item How wrong can the error rate assumed for arm D be before its benefit disappears?
+    \item How do the answers depend on how strongly events move demand, and do they hold on real sales data?
 \end{enumerate}
 Our contributions are as follows.
 \begin{itemize}
-    \item A controlled simulation of perishable replenishment (fixed shelf life, lead time, first-in-first-out stock) in which signal quality (misses, late announcements, false alarms, mislabelling) is a tunable input, and in which models are judged by inventory cost rather than forecast error alone (Section~\ref{sec:method}).
-    \item A map of where event signals help, where they do nothing and where they hurt, over event strength and false-alarm rate (Section~\ref{sec:results}).
-    \item A real-data check on Favorita grocery sales, where events are weak, with confidence intervals that account for demand being shared across seeds.
+    \item A controlled simulation of perishable replenishment in which signal quality (misses, late announcements, false alarms, mislabelling) is a tunable input and forecasters are judged by inventory cost rather than forecast error alone (Section~\ref{sec:method}).
+    \item A noise-injection training recipe (arm D) that needs only the clean calendar and an estimated error rate, and a train/serve mismatch sweep showing that overestimating the false-alarm rate is safe while underestimating it is costly.
+    \item A map of where event signals help, do nothing or hurt, over event strength and false-alarm rate.
+    \item Two real-data cases with clustered intervals: Walmart M5 food sales with strong scheduled events, and Favorita perishables with weak ones.
 \end{itemize}
 The claims concern operational cost under one heuristic replenishment policy, and we make no claim about deployed systems.
 
@@ -204,9 +455,16 @@ The claims concern operational cost under one heuristic replenishment policy, an
 % ============================================================================
 \section{Related Work}
 \label{sec:related}
-Perishable inventory with fixed shelf life has a long theoretical tradition \cite{nahmias1982perishable}, in which ordering decisions depend on a demand forecast and on the ages of the units in stock. Modern replenishment pipelines commonly produce that forecast with machine-learned quantile models \cite{koenker1978regression, friedman2001gbm}, which map naturally onto newsvendor-style order-up-to levels. Calendar and event variables are standard inputs to such models, and public retail benchmarks such as Favorita \cite{favorita2018kaggle} and M5 \cite{makridakis2022m5} ship holiday and event calendars for that purpose.
 
-We study a narrower question than event-aware forecasting in general. Given that event features are used, how does the quality of the signal at ordering time change the cost of the resulting orders, and does it matter whether the model saw the same kind of imperfect signal during training? We evaluate arms by simulated inventory cost, not only by forecast accuracy, and we vary event strength separately from signal quality so that the answer can be stated as a regime rather than a single number.
+\textbf{Perishable inventory control.} Fixed-shelf-life inventory has a long theoretical tradition \cite{nahmias1982perishable}. Optimal policies are hard to compute because the state must record the age profile of the stock, which has motivated near-myopic and heuristic policies \cite{nandakumar1993near}. Broekmeulen and van Donselaar \cite{broekmeulen2009heuristic} give a heuristic for the retail case with batch ordering, positive lead times and time-varying demand, and Haijema and Minner \cite{haijema2019improved} quantify the value of using stock-age information when ordering. Reviews of deteriorating-inventory models cover the wider literature \cite{bakker2012review, janssen2016literature}. We do not propose a new policy. We fix a simple order-up-to rule with first-in-first-out issuing and use it as a common yardstick for the forecasts.
+
+\textbf{Calendar, event and promotion effects in retail forecasting.} Holidays, promotions and other special days are among the main drivers of retail demand, and their treatment is a recurring topic in reviews of retail forecasting \cite{fildes2022retail}. Promotional forecasting has been studied with regression-type models \cite{trapero2015identification}, including for perishable items, where promotional uplift interacts with waste \cite{vandonselaar2016analysis}. Huber and Stuckenschmidt \cite{huber2020daily} compare machine-learning forecasters for daily retail demand with a focus on calendric special days. Public benchmarks supply event calendars as features: the Favorita data include a holiday calendar \cite{favorita2018kaggle}, and the M5 data include calendar events and SNAP days \cite{makridakis2022m5background}. In M5, methods built on gradient-boosted trees \cite{friedman2001gbm, ke2017lightgbm} performed strongly \cite{makridakis2022m5}. External signals such as weather have also been shown to carry operational value \cite{steinker2017value}. In these studies the event inputs are usually treated as known and correct; how errors in them affect results is rarely examined.
+
+\textbf{Forecast quality judged by inventory outcomes.} Several authors argue that forecasts for replenishment should be judged by the inventory performance they produce, not only by accuracy. Gardner \cite{gardner1990evaluating} evaluates forecasting methods through inventory trade-off curves, and Kourentzes et al. \cite{kourentzes2020optimising} show that standard accuracy measures can be poorly aligned with inventory outcomes and propose optimising forecasting models for inventory planning. A related line connects forecasting and decisions directly. Quantile regression \cite{koenker1978regression} gives the critical-fractile quantile that a newsvendor order requires, and feature-based or data-driven newsvendor models learn order quantities from covariates \cite{ban2019big, huber2019data, bertsimas2020predictive}. Our forecasters follow this pattern: a gradient-boosted quantile model sets the order-up-to level, and the arms are compared by simulated cost.
+
+\textbf{Imperfect inputs and train--serve mismatch.} When the distribution of inputs at deployment differs from that seen in training, a model fitted on one can perform poorly on the other; this is the general problem of dataset shift \cite{quinonero2009dataset}. A clean, after-the-fact event calendar used for training but not available at ordering time is closely related to data leakage, in which a model is built with information that will not exist when predictions are made \cite{kaufman2012leakage}. Learning using privileged information \cite{vapnik2009new} studies the opposite design choice, deliberately exploiting information that is present only during training. Two remedies for noisy inputs are also relevant. Adding noise to inputs during training acts as a regulariser \cite{bishop1995training}, and data augmentation for time series is an active area \cite{wen2021time}. Our arm D, trained on the clean calendar with simulated signal errors injected at estimated rates, is an instance of this idea applied to event features.
+
+\textbf{Positioning.} This paper combines these threads in one setting. Rather than asking whether event features improve accuracy, we ask how the quality of the event signal available at ordering time changes the cost of a perishable replenishment policy. We compare training on the clean calendar, on the signals as they would have been available, and on the clean calendar with injected noise, and we vary the error rates used in training and in serving separately. We also vary event strength independently of signal quality, so that results are reported as a map of regimes rather than a single effect size. To our knowledge, the effect of imperfect event signals on perishable inventory cost, and the choice of training signal under such errors, has received little attention in the literature reviewed above.
 
 % ============================================================================
 % III. METHODOLOGY
@@ -246,19 +504,24 @@ All arms use pooled gradient-boosted quantile regression (scikit-learn \texttt{H
 \begin{itemize}
     \item \textbf{A (blind):} no event features.
     \item \textbf{B (clean-trained):} trained on the true calendar, every event announced 14 days ahead, then served the imperfect signal.
-    \item \textbf{C (as-available-trained):} trained on the training-period part of the same signal realisation it is served with.
+    \item \textbf{C (as-available-trained):} trained on the training-period part of the same signal realisation it is served with. This needs an archive of past announcements.
+    \item \textbf{D (noise-injected):} trained on the true calendar corrupted by an independent draw of the error process at an assumed error rate, then served the imperfect signal. This needs only the clean calendar and an estimate of the error rates. In the main experiments the assumed rates equal the true ones; Section~\ref{sec:mismatch} varies them.
 \end{itemize}
-Under clean signals B and C see identical features and must give identical results, which serves as a built-in consistency check. The quantile $\tau$ is chosen separately for each arm and condition by validation-period simulated cost, and the test period is evaluated once.
+Under clean signals B, C and D see identical features and must give identical results, which serves as a built-in consistency check. The quantile $\tau$ is chosen separately for each arm and condition by validation-period simulated cost, and the test period is evaluated once.
 
 \subsection{Demand Data}
-\textbf{Synthetic.} Daily demand is negative-binomial with a mean equal to a SKU base level times a weekday profile, a linear trend and an event multiplier. Event uplifts vary by type and SKU, and 20\% of SKUs do not respond to events. Each seed is an independent world. \emph{Event strength} scales all event log-uplifts, with 1.0 the original simulation.
+\textbf{Synthetic.} Daily demand is negative-binomial with a mean equal to a SKU base level times a weekday profile, a linear trend and an event multiplier. Event uplifts vary by type and SKU, and 20\% of SKUs do not respond to events. Each seed is an independent world with 40 SKUs over 730 days. \emph{Event strength} scales all event log-uplifts, with 1.0 the original simulation (mean log-uplift 0.8).
 
-\textbf{Favorita.} Five Quito stores $\times$ 20 perishable items (100 series: 80 produce, 10 meats, 5 dairy, 5 poultry) over 742 days from 2015-08-01 to 2017-08-15, with 166 evaluated test days \cite{favorita2018kaggle}. Events come from the holiday calendar: national holidays (21 occurrences, 5 in the test period), national events (6 occurrences, 1 in test) and local holidays (2 occurrences, 0 in test). The April 2016 earthquake is excluded because it could not have been announced. Demand is fixed real sales, so seeds vary only the signal errors and the model fits. Recorded sales are censored by stockouts; zero-sale days are 0.4\% of the panel, which limits the bias.
+\textbf{Walmart M5.} The three Wisconsin stores $\times$ the 33 food items that sold on at least 85\% of days in every store (99 series), over 753 days from 2014-05-01 to 2016-05-22 \cite{makridakis2022m5background}. Event types are SNAP benefit days, which are scheduled and published in advance (125 occurrences, 250 days, 30 occurrences in the test period), national or religious events (30 occurrences), and cultural or sporting events (11 occurrences). Training-period mean log-uplifts are $+0.157$ for SNAP days (about $+17\%$), $-0.133$ for national or religious events and $+0.004$ for cultural or sporting events, which places SNAP days at roughly strength 0.2 on the synthetic scale. M5 items are not labelled perishable; the same shelf life is imposed on them, so M5 tests how event strength moves cost rather than the spoilage of specific products. Zero-sale days are 4.3\% of the panel.
+
+\textbf{Favorita.} Five Quito stores $\times$ 20 perishable items (100 series: 80 produce, 10 meats, 5 dairy, 5 poultry) over 742 days from 2015-08-01 to 2017-08-15 \cite{favorita2018kaggle}. Events come from the holiday calendar: national holidays (21 occurrences, 5 in the test period, mean log-uplift $+0.087$, about $+9\%$ and roughly strength 0.1), national events (6 occurrences) and local holidays (2 occurrences, none in test). The April 2016 earthquake is excluded because it could not have been announced. Zero-sale days are 0.4\% of the panel.
+
+On both real data sets demand is fixed recorded sales, so seeds vary only the signal errors and the model fits, and recorded sales are censored by stockouts. Training, validation and test periods end on days 430, 574 and the last day; after a 7-day warm-up, 170 (M5) and 159 (Favorita) test days are evaluated, against 161 in the synthetic worlds.
 
 \subsection{Statistics}
-In the synthetic experiments each seed is an independent world, so the unit of analysis is the seed. The primary evidence is the per-seed 95\% $t$-interval of relative cost differences ($19$ degrees of freedom for $20$ seeds) and an exact two-sided sign-flip test. A comparison is called supported only when the interval excludes 0 and $p < 0.05$, and Holm's correction \cite{holm1979simple} is applied across the eight non-trivial comparisons at family-wise $\alpha = 0.05$. Bootstrap intervals over (seed, SKU) units \cite{efron1993bootstrap} are computed but are too narrow, since they ignore dependence, and are not used for conclusions.
+In the synthetic experiments each seed is an independent world, so the unit of analysis is the seed. The primary evidence is the per-seed 95\% $t$-interval of relative cost differences and an exact two-sided sign-flip test. A comparison is called supported when the interval excludes 0 and its Holm-adjusted $p$ \cite{holm1979simple} is below 0.05, with the correction applied across all 15 comparisons that are not identical by design. Bootstrap intervals over (seed, SKU) units \cite{efron1993bootstrap} are computed but ignore dependence and are not used for conclusions.
 
-On real data every seed shares the same demand, so seeds are not independent. There we resample products (20 clusters) or stores (5 clusters) instead, and treat the per-cluster $t$-interval as the conservative summary.
+On real data every seed shares the same demand, so seeds are not independent. There we cluster by product (33 items for M5, 20 for Favorita) and report the per-cluster $t$-interval and the sign-flip test with Holm's correction across the 13 distinct comparisons in each data set. With more than 20 clusters the sign-flip $p$ is estimated from 200{,}000 random sign patterns instead of all $2^n$. Store-level clustering is also computed but has only 3 (M5) or 5 (Favorita) clusters, too few for any test to reach significance.
 
 % ============================================================================
 % IV. RESULTS
@@ -267,51 +530,56 @@ On real data every seed shares the same demand, so seeds are not independent. Th
 \label{sec:results}
 
 \subsection{Synthetic: Strong Events, Three Conditions}
-Table~\ref{tab:cost20} and Table~\ref{tab:stats20} report the 20-seed run with 40 SKUs and 161 evaluated test days.
+Table~\ref{tab:cost20} and Table~\ref{tab:stats20} report the 20-seed run.
 
 \begin{table}[t]
 \centering
 \caption{Synthetic, 20 seeds: mean test cost summed over 40 SKUs.}
 \label{tab:cost20}
-\setlength{\tabcolsep}{5pt}
+\setlength{\tabcolsep}{4pt}
 \footnotesize
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-\textbf{Condition} & \textbf{A (blind)} & \textbf{B (clean-trained)} & \textbf{C (as-available)} \\
+\textbf{Condition} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} \\
 \midrule
-clean       & 17{,}748 & 11{,}208 & 11{,}208 \\
-imperfect   & 17{,}748 & 17{,}992 & 17{,}134 \\
-false alarm & 17{,}748 & 20{,}521 & 17{,}121 \\
+clean       & 17{,}736 & 11{,}216 & 11{,}216 & 11{,}216 \\
+imperfect   & 17{,}736 & 17{,}997 & 17{,}057 & 17{,}010 \\
+false alarm & 17{,}736 & 20{,}595 & 17{,}098 & 16{,}869 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table*}[t]
 \centering
-\caption{Synthetic, 20 seeds: paired relative test-cost differences (negative = first arm cheaper). Interval: per-seed 95\% $t$-interval. $p$: exact sign-flip test. Holm: adjusted over the eight comparisons shown. Clean C vs B is omitted because the two arms are identical by design; clean B vs A therefore equals clean C vs A and is kept as a separate hypothesis, which makes the correction slightly conservative.}
+\caption{Synthetic, 20 seeds: paired relative test-cost differences (negative = first arm cheaper). Estimate: pooled over seeds. Interval: per-seed 95\% $t$-interval. $p$: exact sign-flip test. Holm: adjusted over 15 comparisons. Under clean signals B, C and D are identical by design, so their three comparisons with A coincide; they are shown in one row but counted three times, which makes the correction slightly conservative.}
 \label{tab:stats20}
 \setlength{\tabcolsep}{5pt}
 \footnotesize
 \begin{tabular}{@{}llrrrrrl@{}}
 \toprule
-\textbf{Condition} & \textbf{Comparison} & \textbf{Estimate} & \textbf{Interval} & \textbf{$p$} & \textbf{First cheaper} & \textbf{Holm $p$} & \textbf{Supported?} \\
+\textbf{Condition} & \textbf{Comparison} & \textbf{Estimate} & \textbf{Interval (\%)} & \textbf{$p$} & \textbf{First cheaper} & \textbf{Holm $p$} & \textbf{Supported?} \\
 \midrule
-clean       & C vs A & $-36.9\%$ & $[-38.68, -33.75]$ & $1.9\times10^{-6}$ & 20/20 & $1.5\times10^{-5}$ & Yes \\
-clean       & B vs A & $-36.9\%$ & $[-38.68, -33.75]$ & $1.9\times10^{-6}$ & 20/20 & $1.5\times10^{-5}$ & Yes \\
-false alarm & C vs B & $-16.6\%$ & $[-19.63, -12.64]$ & $1.9\times10^{-6}$ & 20/20 & $1.5\times10^{-5}$ & Yes \\
-false alarm & B vs A & $+15.6\%$ & $[+8.21, +25.60]$ & $1.5\times10^{-4}$ & 2/20  & $7.6\times10^{-4}$ & Yes (B worse) \\
-imperfect   & C vs B & $-4.8\%$  & $[-8.09, -0.08]$  & 0.047 & 15/20 & 0.188 & Marginal, fails Holm \\
-imperfect   & C vs A & $-3.5\%$  & $[-7.73, +0.27]$  & 0.063 & 15/20 & 0.189 & No \\
-false alarm & C vs A & $-3.5\%$  & $[-8.25, +2.55]$  & 0.287 & 15/20 & 0.574 & No \\
-imperfect   & B vs A & $+1.4\%$  & $[-4.38, +6.29]$  & 0.716 & 11/20 & 0.716 & No \\
+clean       & B, C, D vs A & $-36.8\%$ & $[-38.68, -33.48]$ & $1.9\times10^{-6}$ & 20/20 & $2.9\times10^{-5}$ & Yes \\
+false alarm & D vs B & $-18.1\%$ & $[-21.16, -14.08]$ & $1.9\times10^{-6}$ & 20/20 & $2.9\times10^{-5}$ & Yes \\
+false alarm & C vs B & $-17.0\%$ & $[-20.13, -12.95]$ & $1.9\times10^{-6}$ & 20/20 & $2.9\times10^{-5}$ & Yes \\
+false alarm & B vs A & $+16.1\%$ & $[+8.66, +26.36]$  & $1.9\times10^{-4}$ & 2/20  & $1.7\times10^{-3}$ & Yes (B worse) \\
+false alarm & D vs A & $-4.9\%$  & $[-9.44, +1.09]$   & 0.113 & 16/20 & 0.564 & No \\
+false alarm & C vs A & $-3.6\%$  & $[-8.32, +2.56]$   & 0.286 & 14/20 & 1     & No \\
+false alarm & D vs C & $-1.3\%$  & $[-3.59, +1.26]$   & 0.329 & 13/20 & 1     & No \\
+imperfect   & D vs B & $-5.5\%$  & $[-7.17, -2.90]$   & $1.4\times10^{-4}$ & 18/20 & $1.4\times10^{-3}$ & Yes \\
+imperfect   & C vs B & $-5.2\%$  & $[-8.34, -0.88]$   & 0.019 & 16/20 & 0.153 & No (fails Holm) \\
+imperfect   & D vs A & $-4.1\%$  & $[-8.36, -0.17]$   & 0.043 & 15/20 & 0.298 & No (fails Holm) \\
+imperfect   & C vs A & $-3.8\%$  & $[-8.14, +0.11]$   & 0.053 & 15/20 & 0.321 & No \\
+imperfect   & B vs A & $+1.5\%$  & $[-4.21, +6.49]$   & 0.665 & 9/20  & 1     & No \\
+imperfect   & D vs C & $-0.3\%$  & $[-2.65, +2.48]$   & 0.947 & 9/20  & 1     & No \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Four findings follow. First, accurate signals pay off strongly: clean C versus A is $-36.9\%$. Second, clean-calendar training with false-alarm-heavy signals is worse than ignoring events ($+15.6\%$), and as-available training removes most of that harm ($-16.6\%$ versus B). Third, with mixed, moderate errors the advantage of C over B is small and does not survive multiplicity correction. Fourth, neither imperfect condition shows that using imperfect signals beats ignoring them: C versus A is not supported in either.
+Five findings follow. First, accurate signals pay off strongly: under clean signals event-aware forecasting is $36.8\%$ cheaper than ignoring events. Second, clean-calendar training with false-alarm-heavy signals is worse than ignoring events ($+16.1\%$). Third, both forms of training on imperfect signals remove that harm: C and D are $17.0\%$ and $18.1\%$ cheaper than B. Fourth, D is not worse than C. Their difference is $-1.3\%$ and $-0.3\%$, with intervals inside $\pm 3.6\%$, so the archive that C requires can be replaced by simulated errors when the error rates are known. Under mixed, moderate errors D's advantage over B ($-5.5\%$) survives multiplicity correction, while C's ($-5.2\%$) does not. Fifth, no arm that uses imperfect signals is shown to beat ignoring events once the correction is applied.
 
 \subsection{Synthetic: Event Strength $\times$ False-Alarm Rate}
-Event strength scales the generator's event log-uplifts, and 0.1 is roughly the level measured in the Favorita panel. The false-alarm rate is $\lambda$, with $p_{\text{miss}} = 0.1$ and $p_{\text{mis}} = 0.8$ throughout, so the $\lambda = 0$ cells still contain 10\% missed events and are not the clean condition of Table~\ref{tab:conditions}. Each cell is the mean per-seed relative cost difference over 10 seeds (Table~\ref{tab:grid}, Fig.~\ref{fig:grid}). Sign-flip $p$-values are not corrected for multiplicity; with 10 seeds the smallest attainable value is 0.002, reached whenever all ten seeds agree.
+Event strength scales the generator's event log-uplifts, and 0.1 and 0.2 are roughly the levels measured in the Favorita and M5 panels. The false-alarm rate is $\lambda$, with $p_{\text{miss}} = 0.1$ and $p_{\text{mis}} = 0.8$ throughout, so the $\lambda = 0$ cells still contain 10\% missed events and are not the clean condition of Table~\ref{tab:conditions}. Each cell is the mean per-seed relative cost difference over 10 seeds (Table~\ref{tab:grid}, Fig.~\ref{fig:grid}). Sign-flip $p$-values are not corrected for multiplicity; with 10 seeds the smallest attainable value is 0.002, reached whenever all ten seeds agree.
 
 \begin{table*}[t]
 \centering
@@ -364,71 +632,111 @@ Event strength scales the generator's event log-uplifts, and 0.1 is roughly the 
 \label{fig:grid}
 \end{figure*}
 
-The map has four features. The benefit of events grows with strength, from about 3\% to about 32\% at zero false alarms. The harm from false alarms also grows with strength: at strength 1.0 and $\lambda = 0.16$, clean-trained B costs 40\% more than ignoring events. The protection from as-available training (C versus B) grows with both strength and false-alarm rate, and is near zero or slightly adverse ($+0.3\%$ to $+3.2\%$) when there are no false alarms. At strength 0.1 every difference is within 3.4\%, which is the regime Favorita falls into.
+The map has four features. The benefit of events grows with strength, from about 3\% to about 32\% at zero false alarms. The harm from false alarms also grows with strength: at strength 1.0 and $\lambda = 0.16$, clean-trained B costs 40\% more than ignoring events. The protection from as-available training (C versus B) grows with both strength and false-alarm rate, and is near zero or slightly adverse ($+0.3\%$ to $+3.2\%$) when there are no false alarms. At strength 0.1 every difference is within 3.4\%, which is the regime Favorita falls into; M5's SNAP days sit near 0.2, between the first two rows.
 
-\subsection{Real Data: Favorita}
-Table~\ref{tab:favcost} and Table~\ref{tab:favci} give the 20-seed Favorita run on 100 series.
 
-\begin{table}[t]
+\subsection{Train/Serve Mismatch for Arm D}
+\label{sec:mismatch}
+In practice the error rate used to corrupt D's training calendar is an estimate. We cross the false-alarm rate assumed for D ($\lambda_1 \in \{0, 0.04, 0.08, 0.16, 0.32\}$) with the true rate of the served signals ($\lambda_2 \in \{0, 0.04, 0.08, 0.16\}$), holding $p_{\text{miss}} = 0.1$ and $p_{\text{mis}} = 0.8$, at event strengths 0.25, 0.5 and 1.0 with 10 seeds. Every model in a column is served the same signal realisation, so comparisons within a column are paired. Table~\ref{tab:mismatch} shows the cost of D against ignoring events at strengths 0.25 and 1.0.
+
+\begin{table*}[t]
 \centering
-\caption{Favorita, 20 seeds: mean test cost summed over 100 series.}
-\label{tab:favcost}
+\caption{Train/serve mismatch (synthetic, 10 seeds): mean per-seed relative test cost of D against A (negative = D cheaper), by the false-alarm rate assumed when injecting noise (rows) and the true rate of the served signals (columns). The C row is trained on the true process. Cells above the diagonal overestimate the rate; cells below it underestimate it.}
+\label{tab:mismatch}
 \setlength{\tabcolsep}{5pt}
 \footnotesize
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}l rrrr @{\hspace{14pt}} rrrr@{}}
 \toprule
-\textbf{Condition} & \textbf{A (blind)} & \textbf{B (clean-trained)} & \textbf{C (as-available)} \\
+ & \multicolumn{4}{c}{\textbf{Strength 0.25} (true $\lambda_2$)} & \multicolumn{4}{c}{\textbf{Strength 1.0} (true $\lambda_2$)} \\
+\cmidrule(lr){2-5}\cmidrule(l){6-9}
+\textbf{Arm} & 0 & .04 & .08 & .16 & 0 & .04 & .08 & .16 \\
 \midrule
-clean       & 127{,}203 & 127{,}909 & 127{,}909 \\
-imperfect   & 127{,}203 & 128{,}359 & 127{,}467 \\
-false alarm & 127{,}203 & 128{,}203 & 128{,}042 \\
+C (true rate)        & $-5.8$ & $-3.9$ & $-2.9$ & $-2.5$ & $-32.4$ & $-15.5$ & $+0.0$  & $-1.6$  \\
+D, $\lambda_1 = 0$    & $-5.7$ & $-3.6$ & $-1.0$ & $+2.4$ & $-32.8$ & $-9.6$  & $+19.0$ & $+37.4$ \\
+D, $\lambda_1 = 0.04$ & $-4.9$ & $-3.8$ & $-2.6$ & $-0.1$ & $-32.2$ & $-14.4$ & $+3.9$  & $+19.2$ \\
+D, $\lambda_1 = 0.08$ & $-5.0$ & $-4.5$ & $-3.4$ & $-1.8$ & $-30.0$ & $-16.2$ & $-2.8$  & $+8.7$  \\
+D, $\lambda_1 = 0.16$ & $-3.3$ & $-2.9$ & $-2.4$ & $-1.5$ & $-24.1$ & $-15.8$ & $-3.5$  & $+1.3$  \\
+D, $\lambda_1 = 0.32$ & $-2.4$ & $-2.4$ & $-2.2$ & $-1.8$ & $-15.6$ & $-12.9$ & $-7.3$  & $-3.5$  \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
+
+The errors are asymmetric. At every strength, every cell in which D overestimated the false-alarm rate was cheaper than ignoring events. Underestimating it reproduces the failure of clean-calendar training: at strength 1.0, D trained without false alarms but served 0.16 per day costs $37.4\%$ more than ignoring events. Overestimation has a price only when signals are cleaner than assumed. At strength 1.0 with no false alarms, D assuming 0.32 is $15.6\%$ cheaper than A, against $32.4\%$ for C, and $29.7\%$ more expensive than B. When the assumed rate is correct, D stays within about 3 percentage points of C. The practical reading is to err towards assuming more false alarms. With 10 seeds these cell means carry sampling error, and their sign-flip $p$-values (in the repository) are not corrected for multiplicity.
+
+\subsection{Real Data: M5 and Favorita}
+Table~\ref{tab:realcost} gives mean test costs and Table~\ref{tab:realci} the item-clustered comparisons for both data sets.
 
 \begin{table}[t]
 \centering
-\caption{Favorita: relative cost difference (negative = first arm cheaper) with 95\% intervals clustered by item (20 clusters).}
-\label{tab:favci}
+\caption{Real data, 20 seeds: mean test cost summed over all series.}
+\label{tab:realcost}
 \setlength{\tabcolsep}{3pt}
 \footnotesize
-\begin{tabular}{@{}llrrr@{}}
+\begin{tabular}{@{}llrrrr@{}}
 \toprule
-\textbf{Condition} & \textbf{Comparison} & \textbf{Est.} & \textbf{Cluster bootstrap} & \textbf{Per-cluster $t$} \\
+\textbf{Data} & \textbf{Condition} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} \\
 \midrule
-clean       & B/C vs A & $+0.6\%$ & $[-0.4, +1.7]$ & $[-0.5, +1.0]$ \\
-false alarm & C vs A   & $+0.7\%$ & $[-0.2, +1.6]$ & $[-0.1, +1.2]$ \\
-false alarm & B vs A   & $+0.8\%$ & $[-0.2, +1.9]$ & $[-0.2, +1.2]$ \\
-imperfect   & C vs A   & $+0.2\%$ & $[-0.3, +0.7]$ & $[-0.2, +0.6]$ \\
-imperfect   & B vs A   & $+0.9\%$ & $[-0.0, +2.0]$ & $[-0.5, +1.3]$ \\
-imperfect   & C vs B   & $-0.7\%$ & $[-1.4, -0.0]$ & $[-0.9, +0.1]$ \\
+M5       & clean       & 25{,}747 & 24{,}370 & 24{,}370 & 24{,}370 \\
+         & imperfect   & 25{,}747 & 25{,}757 & 25{,}577 & 25{,}433 \\
+         & false alarm & 25{,}747 & 25{,}438 & 24{,}997 & 25{,}096 \\
+\midrule
+Favorita & clean       & 127{,}203 & 127{,}909 & 127{,}909 & 127{,}909 \\
+         & imperfect   & 127{,}203 & 128{,}359 & 127{,}467 & 127{,}899 \\
+         & false alarm & 127{,}203 & 128{,}203 & 128{,}042 & 127{,}967 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Event signals did not measurably change cost on Favorita: every item-clustered $t$-interval for events versus ignoring them includes zero, and the point estimates are slightly positive, meaning events are slightly worse. The ordering seen in simulation appears in miniature, since under imperfect signals C is slightly cheaper than B ($-0.7\%$), but the evidence is weak. The per-item $t$-interval includes zero, and with store clustering (5 clusters) the interval is $[-1.4, +0.2]$ for C versus B. With store clustering the cluster bootstrap for imperfect B versus A is $[+0.2, +1.3]$, but its per-store $t$-interval $[-0.5, +2.0]$ includes zero.
+\begin{table*}[t]
+\centering
+\caption{Real data: relative cost difference (negative = first arm cheaper) with per-item 95\% $t$-intervals (33 items for M5, 20 for Favorita) and Holm-adjusted sign-flip $p$ over the 13 comparisons in each data set. Bold: interval excludes 0 and Holm $p < 0.05$.}
+\label{tab:realci}
+\setlength{\tabcolsep}{5pt}
+\footnotesize
+\begin{tabular}{@{}ll rrr @{\hspace{14pt}} rrr@{}}
+\toprule
+ & & \multicolumn{3}{c}{\textbf{M5 (SNAP days, strong)}} & \multicolumn{3}{c}{\textbf{Favorita (holidays, weak)}} \\
+\cmidrule(lr){3-5}\cmidrule(l){6-8}
+\textbf{Condition} & \textbf{Comparison} & \textbf{Est.} & \textbf{Interval (\%)} & \textbf{Holm $p$} & \textbf{Est.} & \textbf{Interval (\%)} & \textbf{Holm $p$} \\
+\midrule
+clean       & B, C, D vs A & $\mathbf{-5.3\%}$ & $[-7.1, -2.1]$ & 0.004 & $+0.6\%$ & $[-0.5, +1.0]$ & 1 \\
+false alarm & C vs B & $\mathbf{-1.7\%}$ & $[-2.4, -1.1]$ & $<0.001$ & $-0.1\%$ & $[-0.3, +0.3]$ & 1 \\
+false alarm & D vs B & $\mathbf{-1.3\%}$ & $[-1.8, -0.9]$ & $<0.001$ & $-0.2\%$ & $[-0.3, +0.3]$ & 1 \\
+false alarm & C vs A & $\mathbf{-2.9\%}$ & $[-3.9, -1.0]$ & 0.013 & $+0.7\%$ & $[-0.1, +1.2]$ & 0.91 \\
+false alarm & D vs A & $\mathbf{-2.5\%}$ & $[-3.5, -0.7]$ & 0.030 & $+0.6\%$ & $[-0.1, +1.1]$ & 0.91 \\
+false alarm & B vs A & $-1.2\%$ & $[-2.3, +0.9]$ & 0.80 & $+0.8\%$ & $[-0.2, +1.2]$ & 1 \\
+false alarm & D vs C & $+0.4\%$ & $[+0.0, +0.8]$ & 0.17 & $-0.1\%$ & $[-0.2, +0.1]$ & 1 \\
+imperfect   & C vs B & $-0.7\%$ & $[-1.2, +0.4]$ & 0.80 & $-0.7\%$ & $[-0.9, +0.1]$ & 1 \\
+imperfect   & D vs B & $-1.3\%$ & $[-1.7, -0.1]$ & 0.18 & $-0.4\%$ & $[-0.5, +0.3]$ & 1 \\
+imperfect   & C vs A & $-0.7\%$ & $[-1.3, -0.0]$ & 0.19 & $+0.2\%$ & $[-0.2, +0.6]$ & 1 \\
+imperfect   & D vs A & $\mathbf{-1.2\%}$ & $[-1.7, -0.4]$ & 0.020 & $+0.5\%$ & $[+0.1, +0.9]$ & 0.34 \\
+imperfect   & B vs A & $+0.0\%$ & $[-1.2, +0.9]$ & 0.80 & $+0.9\%$ & $[-0.0, +1.3]$ & 0.45 \\
+imperfect   & D vs C & $\mathbf{-0.6\%}$ & $[-0.7, -0.2]$ & 0.026 & $+0.3\%$ & $[+0.0, +0.5]$ & 0.47 \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
-The weak effect has plausible reasons. National holidays raise sales by only about 9\% (training-period mean log-uplift $+0.087$), national events by about 0\% ($-0.008$), the test period holds only six events, and 80\% of the series are produce, whose demand is steady across the calendar. With so little signal to learn from, the extra event features add more noise than information. With clean signals, cost on event-window days fell by 0.75\% against A, but cost on the remaining days, which carry 77\% of the cost, rose by 0.95\%, giving the slightly positive estimates for B and C against A. Finally, widening the quantile grid to include 0.95 and 0.975 did not change the picture: every arm still selects $\tau = 0.90$, so the earlier grid was not the constraint.
+\textbf{M5.} Event signals pay off on real data when events are strong enough. With clean signals, event-aware forecasting is $5.3\%$ cheaper than ignoring events (cheaper for 24 of 33 items). Under false-alarm-heavy signals, clean-calendar training no longer helps (B versus A, $-1.2\%$, not significant), while both C and D remain cheaper than A and than B, so training on imperfect signals protects the value of events here too. D and C are within $0.6\%$ of each other in both imperfect conditions. These sizes are close to those the simulation map predicts near M5's strength of about 0.2: at strength 0.25 the grid gives $-5.8\%$ for clean C versus A, and $-2.9\%$ for C versus A and $-2.4\%$ for C versus B at $\lambda = 0.08$, against $-5.3\%$, $-2.9\%$ and $-1.7\%$ observed. The mapping of a real data set onto the synthetic strength scale is approximate, so we read this as consistency, not as a test of the map. Clustering by store leaves only three clusters; the store-level bootstrap intervals for the false-alarm comparisons of C and D against B exclude zero, but no test with three clusters can reach significance.
+
+\textbf{Favorita.} Event signals did not measurably change cost: no comparison survives the correction, and the point estimates for events against ignoring them are slightly positive. With clean signals, cost on event-window days fell by $0.75\%$ against A, but cost on the remaining days, which carry 77\% of the cost, rose by $0.95\%$: with national holidays lifting sales by only about 9\%, national events by about 0\% and six events in the test period, the extra features add more noise than information. Widening the quantile grid to 0.95 and 0.975 did not change this; every arm still selects $\tau = 0.90$.
 
 \subsection{Discussion}
-\textbf{Answers to the two questions.} Training on as-available signals reduces the cost of imperfect signals, and the benefit grows with the false-alarm rate. It is strongly supported in simulation when false alarms are common, weak when errors are mixed and moderate, and not distinguishable from zero on Favorita. The size of every effect is governed by event strength: when events move demand a lot, accurate signals are worth tens of percent and false alarms can cost as much, whereas when events move demand by under about 10\%, the whole question is worth a few percent at most.
+\textbf{Answers to the three questions.} First, training on imperfect signals removes most of the cost harm that false alarms do to a clean-trained model, in simulation ($-17\%$ to $-18\%$ against B) and on M5 ($-1.3\%$ to $-1.7\%$), and noise injection (D) does this as well as an archive of real announcements (C). Second, D is robust to overestimating the false-alarm rate but not to underestimating it. Third, the size of every effect is governed by event strength: when events move demand a lot, accurate signals are worth tens of percent and false alarms can cost as much, while when they move demand by under about 10\%, as in Favorita, the whole question is worth little.
 
-\textbf{Practical reading.} Before investing in event features or in the quality of an event feed, estimate how much events move demand for the product in question. If the uplift is small, a blind forecaster is as good. If it is large, clean signals are valuable, and training the forecaster on realistic signals is a cheap way to avoid doing worse than a blind forecaster when signals are unreliable.
+\textbf{Practical reading.} Estimate how much events move demand before investing in event features or feed quality. If the uplift is small, a blind forecaster is as good. If it is large, use event features, and train on the clean calendar with simulated errors at a deliberately generous false-alarm rate; this needs no announcement archive and avoids doing worse than a blind forecaster when the feed is unreliable.
 
-\textbf{Scope.} The Favorita result concerns everyday perishables, mostly produce, around national and local holidays. It should not be read as ``events never help in real retail.''
+\textbf{Scope.} The Favorita result concerns everyday perishables, mostly produce, around national and local holidays, and the M5 result concerns food sales around SNAP days with an imposed shelf life. Neither should be read as a statement about all retail events.
 
 \subsection{Limitations}
 \begin{enumerate}
-    \item \textbf{Design favours C in part.} C is trained and evaluated on the same error process, and its advantage when that process shifts between training and deployment has not been tested.
+    \item \textbf{Simulated signal errors.} On real data, as in simulation, the imperfect signals are generated from the true calendar by our error process, because no archive of real-time announcements was available. C and D are therefore compared under errors that follow the process D assumes.
+    \item \textbf{One mismatch dimension.} The mismatch sweep varies only the false-alarm rate; misses, delays and mislabelling were held at their nominal values.
     \item \textbf{One policy and one cost structure.} All arms share one heuristic order-up-to rule, with lead time 2, shelf life 4 and fixed cost ratios. Other policies or cost ratios could change the sizes of the differences.
     \item \textbf{Simplified operations.} A single SKU at a single echelon, with no capacity limits, ordering costs, substitution or supplier variability.
-    \item \textbf{Censored demand.} Real sales understate demand during stockouts (0.4\% of Favorita series-days are suspected stockouts).
-    \item \textbf{Few clusters.} Twenty seeds is a modest number, and store-level clustering on Favorita has only five clusters, for which the smallest attainable sign-flip $p$ is 0.0625.
-    \item \textbf{Panel composition.} Eighty of the 100 Favorita series are produce, from a single city.
-    \item \textbf{Grid size.} The strength $\times$ false-alarm grid uses 10 seeds, and its $p$-values are uncorrected.
-    \item \textbf{One real data set, with weak events.} Favorita's events are weak, so it cannot show whether the simulated benefit of accurate signals holds on real data when events are strong. Scheduled, strong events, such as the SNAP benefit days in M5 \cite{makridakis2022m5}, are a natural next test.
-    \item \textbf{Library-version sensitivity.} Results are deterministic in a fixed environment, but the gradient-boosting fits change with the scikit-learn version: an earlier 5-seed run under scikit-learn 1.9.1 gives per-seed costs up to 10\% different from the same seeds under 1.8.0. All reported results use one pinned environment, recorded with each run.
-    \item \textbf{No pre-registration.} The hypotheses were set during prototype design.
+    \item \textbf{Censored demand and imposed shelf life.} Real sales understate demand during stockouts (suspected stockouts are 2.3\% of M5 and 0.4\% of Favorita series-days), and M5 items are given a shelf life they may not have.
+    \item \textbf{Few clusters.} Real-data inference treats items as independent; with 3 (M5) or 5 (Favorita) stores, store-level clustering cannot support any conclusion. Twenty synthetic seeds is a modest number, and the strength and mismatch sweeps use 10 seeds with uncorrected $p$-values.
+    \item \textbf{Library-version sensitivity.} Results are deterministic in a fixed environment but change with the scikit-learn version. Every reported result was produced from committed code in the public repository, in one pinned environment recorded with each run.
+    \item \textbf{No pre-registration.} The hypotheses were set during prototype design, and arm D was added after the first results.
 \end{enumerate}
 
 % ============================================================================
@@ -436,7 +744,7 @@ The weak effect has plausible reasons. National holidays raise sales by only abo
 % ============================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-Event signals are worth about as much as events move demand, and imperfect signals can destroy that value. In simulation, accurate event information cut inventory cost by 37\%, and false-alarm-heavy signals made a clean-trained model 16\% worse than ignoring events, while a model trained on realistic signals recovered most of that loss. On real Favorita perishables, where events move demand by less than 10\%, none of it mattered. A map over event strength and false-alarm rate tells practitioners which regime they are in. The next step is a real-data case with strong, scheduled events, to check whether the simulated map predicts the cost differences observed there. Code, configurations and saved results are available at \url{https://github.com/kritikadamahe/Nexora/tree/main/research/event_signal_inventory}.
+Event signals are worth about as much as events move demand, and imperfect signals can destroy that value. In simulation, accurate event information cut inventory cost by 37\%, and false-alarm-heavy signals made a clean-trained model 16\% worse than ignoring events. Training on the clean calendar with simulated errors recovered that loss as well as training on an archive of real announcements, and stayed better than ignoring events whenever the false-alarm rate was overestimated. On Walmart M5 food sales, where SNAP days lift sales by about 17\%, event signals cut cost by 5\% and both remedies protected against false alarms, with sizes close to the simulation's prediction; on Favorita perishables, where holidays lift sales by about 9\%, none of it mattered. A natural next step is a data set with a recorded archive of real-time announcements, so that real signal errors replace simulated ones. Code, configurations and saved results are available at \url{https://github.com/kritikadamahe/Nexora/tree/main/research/event_signal_inventory}.
 
 % ============================================================================
 % REFERENCES
