@@ -10,10 +10,12 @@ PY=${PYTHON:-python}
 THREADS=${THREADS:-7}
 mkdir -p results/logs results/validation_clustered_ci
 
-run() {  # name, command...
+run() {  # name, command...  (a step with results/logs/<name>.done is skipped, so reruns resume)
   local name=$1; shift
+  if [[ -f results/logs/$name.done ]]; then echo "[$(date -u +%FT%TZ)] skip  $name (done)"; return; fi
   echo "[$(date -u +%FT%TZ)] start $name"
   OMP_NUM_THREADS=$THREADS "$@" > "results/logs/$name.log" 2>&1
+  touch "results/logs/$name.done"
   echo "[$(date -u +%FT%TZ)] done  $name"
 }
 

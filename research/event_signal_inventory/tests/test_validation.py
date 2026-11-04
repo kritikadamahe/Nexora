@@ -67,6 +67,16 @@ def test_arms_share_world_costs_periods_and_clean_b_equals_c(tmp_path):
 def test_signflip_and_identical_arms():
     assert signflip_p([-1, -2, -3, -4, -5]) == pytest.approx(2 / 32)
     assert signflip_p([1, -1, 1, -1]) == 1.0
+
+
+def test_signflip_large_n_uses_bounded_memory_monte_carlo():
+    # 33 clusters (M5 items): enumeration would need 2^33 rows; the sampled p must be
+    # near the true value and reproducible.
+    d = np.r_[np.full(20, -1.0), np.full(13, 1.0)]
+    p = signflip_p(d)
+    assert p == signflip_p(d)
+    assert 0.28 < p < 0.31                                   # exact: 2 * P(Bin(33, .5) <= 13) = 0.296
+    assert signflip_p(np.full(33, -1.0)) == pytest.approx(1 / 200_001)
     x = np.arange(1, 21, dtype=float); seeds = np.repeat([0, 1, 2, 3], 5)
     r = clustered_comparison(x, x.copy(), seeds, 200, np.random.default_rng(0))
     for k in ["rel_cost_diff", "iid_low", "iid_high", "cluster_low", "cluster_high",
