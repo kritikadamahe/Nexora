@@ -1,0 +1,7 @@
+condition,comparison,rel_cost_diff,ci95_low,ci95_high,units_where_first_cheaper,n_units
+clean,C_asavailable_trained vs B_clean_trained,0.0,0.0,0.0,0.0,2000
+clean,C_asavailable_trained vs A_blind,0.005555547257331825,0.0033677501859425665,0.00800728636307607,0.464,2000
+clean,B_clean_trained vs A_blind,0.005555547257331825,0.0032666012570024103,0.007905712895704058,0.464,2000
+planned_calendar,C_asavailable_trained vs B_clean_trained,-0.004984708845204543,-0.006517253556232781,-0.0034034963824701573,0.549,2000
+planned_calendar,C_asavailable_trained vs A_blind,0.002190128361380173,2.5018652507885962e-06,0.004351863336095381,0.483,2000
+planned_calendar,B_clean_trained vs A_blind,0.007210780849666882,0.005015765474713507,0.009602617128297217,0.453,2000

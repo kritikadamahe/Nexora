@@ -1,0 +1,102 @@
+Favorita panel: 100 series (5 stores x 20 perishable items), 742 days 2015-08-01 .. 2017-08-15
+split: train < day 430, validation < day 574, test 168 days
+mean daily units per series: 135.2 (median series 117.1)
+zero-sale days: 0.4%; suspected stockout days: 0.4%
+families: DAIRY 5, MEATS 10, POULTRY 5, PRODUCE 80
+type 1 national holiday: 21 occurrences (5 in test), 35 days; training log-uplift mean +0.087, sd +0.221
+type 2 national event: 6 occurrences (1 in test), 6 days; training log-uplift mean -0.008, sd +0.178
+type 3 local holiday: 2 occurrences (0 in test), 4 days; training log-uplift mean +0.358, sd +0.235
+seed 0 done (36s)
+seed 1 done (74s)
+seed 2 done (110s)
+seed 3 done (146s)
+seed 4 done (180s)
+seed 5 done (221s)
+seed 6 done (257s)
+seed 7 done (291s)
+seed 8 done (327s)
+seed 9 done (365s)
+seed 10 done (401s)
+seed 11 done (436s)
+seed 12 done (474s)
+seed 13 done (509s)
+seed 14 done (547s)
+seed 15 done (581s)
+seed 16 done (616s)
+seed 17 done (654s)
+seed 18 done (690s)
+seed 19 done (725s)
+Seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] | SKUs: 100 | test days: 166 (first 7 excluded) | runtime 725s
+
+Test-period metrics, mean ± sd across seeds (cost summed over SKUs):
+
+| condition | arm | total_cost | shortage_cost | waste_cost | holding_cost | lost_units | waste_units | fill_rate | wape_median | pinball_tau_norm | tau_selected |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| clean | A_blind | 127203 ± 720 | 38006 ± 601 | 9052 ± 255 | 80144 ± 506 | 38006 ± 601 | 15087 ± 425 | 0.982 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| clean | B_clean_trained | 127909 ± 669 | 39679 ± 576 | 8936 ± 182 | 79294 ± 478 | 39679 ± 576 | 14894 ± 304 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| clean | C_asavailable_trained | 127909 ± 669 | 39679 ± 576 | 8936 ± 182 | 79294 ± 478 | 39679 ± 576 | 14894 ± 304 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| planned_calendar | A_blind | 127203 ± 720 | 38006 ± 601 | 9052 ± 255 | 80144 ± 506 | 38006 ± 601 | 15087 ± 425 | 0.982 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| planned_calendar | B_clean_trained | 128120 ± 641 | 39815 ± 579 | 8938 ± 185 | 79367 ± 475 | 39815 ± 579 | 14897 ± 309 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+| planned_calendar | C_asavailable_trained | 127481 ± 635 | 39558 ± 551 | 8926 ± 166 | 78997 ± 594 | 39558 ± 551 | 14877 ± 277 | 0.981 ± 0.000 | 0.146 ± 0.000 | 0.036 ± 0.000 | 0.900 ± 0.000 |
+
+Paired relative test-cost difference (negative = first arm cheaper), bootstrap 95% CI over (seed, SKU) units:
+
+| condition | comparison | rel. cost diff | 95% CI | share of units first cheaper |
+|---|---|---|---|---|
+| clean | C_asavailable_trained vs B_clean_trained | +0.000% | [+0.000%, +0.000%] | 0.00 |
+| clean | C_asavailable_trained vs A_blind | +0.556% | [+0.337%, +0.801%] | 0.46 |
+| clean | B_clean_trained vs A_blind | +0.556% | [+0.327%, +0.791%] | 0.46 |
+| planned_calendar | C_asavailable_trained vs B_clean_trained | -0.498% | [-0.652%, -0.340%] | 0.55 |
+| planned_calendar | C_asavailable_trained vs A_blind | +0.219% | [+0.000%, +0.435%] | 0.48 |
+| planned_calendar | B_clean_trained vs A_blind | +0.721% | [+0.502%, +0.960%] | 0.45 |
+
+Per-seed relative test cost (cluster-level check; seeds share the same real demand and differ only in signal errors and model fits; use esi.clustered_ci --cluster item for inference):
+
+| condition | seed | C vs B | C vs A |
+|---|---|---|---|
+| clean | 0 | +0.0% | +0.9% |
+| clean | 1 | +0.0% | -0.6% |
+| clean | 2 | +0.0% | +0.3% |
+| clean | 3 | +0.0% | +0.3% |
+| clean | 4 | +0.0% | +2.6% |
+| clean | 5 | +0.0% | +0.2% |
+| clean | 6 | +0.0% | +0.8% |
+| clean | 7 | +0.0% | +1.0% |
+| clean | 8 | +0.0% | -0.4% |
+| clean | 9 | +0.0% | +0.6% |
+| clean | 10 | +0.0% | +1.3% |
+| clean | 11 | +0.0% | +0.2% |
+| clean | 12 | +0.0% | -0.1% |
+| clean | 13 | +0.0% | +0.4% |
+| clean | 14 | +0.0% | +0.6% |
+| clean | 15 | +0.0% | +0.2% |
+| clean | 16 | +0.0% | +1.1% |
+| clean | 17 | +0.0% | +0.7% |
+| clean | 18 | +0.0% | +0.5% |
+| clean | 19 | +0.0% | +0.9% |
+| planned_calendar | 0 | -0.6% | +0.5% |
+| planned_calendar | 1 | +0.3% | -0.2% |
+| planned_calendar | 2 | +0.2% | +0.6% |
+| planned_calendar | 3 | -0.4% | +0.1% |
+| planned_calendar | 4 | -1.2% | +1.5% |
+| planned_calendar | 5 | -0.7% | -0.4% |
+| planned_calendar | 6 | -1.1% | -0.1% |
+| planned_calendar | 7 | -0.8% | +0.3% |
+| planned_calendar | 8 | +0.5% | +0.2% |
+| planned_calendar | 9 | -1.1% | -0.3% |
+| planned_calendar | 10 | -0.8% | +0.5% |
+| planned_calendar | 11 | -0.2% | +0.3% |
+| planned_calendar | 12 | -0.1% | -0.1% |
+| planned_calendar | 13 | -0.2% | +0.6% |
+| planned_calendar | 14 | -1.1% | -0.4% |
+| planned_calendar | 15 | +0.2% | +0.6% |
+| planned_calendar | 16 | -1.2% | +0.1% |
+| planned_calendar | 17 | -0.5% | +0.3% |
+| planned_calendar | 18 | -0.3% | +0.4% |
+| planned_calendar | 19 | -0.9% | +0.2% |
+
+Mean event counts in the test period (announcements include spurious ones):
+
+- clean: true events 6.0, announcements 6.0
+- planned_calendar: true events 6.0, announcements 6.0
+
