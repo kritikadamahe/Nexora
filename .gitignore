@@ -2,6 +2,7 @@
 # Virtual environments
 venv/
 .venv/
+.venv-esi/
 env/
 RetailEdge_AI_venv/
 

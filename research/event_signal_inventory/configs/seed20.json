@@ -22,5 +22,6 @@
     "false_alarm": {"p_miss": 0.1, "p_late": 0.0, "late_lead": 0, "lead_days": 14, "spurious_rate": 0.08, "p_misleading": 0.8}
   },
   "bootstrap_reps": 2000,
-  "bootstrap_seed": 12345
+  "bootstrap_seed": 12345,
+  "arm_D": true
 }

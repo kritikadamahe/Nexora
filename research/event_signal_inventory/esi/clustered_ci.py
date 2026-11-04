@@ -31,6 +31,15 @@ from scipy import stats
 
 COMPARISONS = [("C_asavailable_trained", "B_clean_trained"),
                ("C_asavailable_trained", "A_blind"), ("B_clean_trained", "A_blind")]
+# Arm D (noise-injected training) is optional; its pairs are added only when it was run.
+D_COMPARISONS = [("D_noise_injected", "B_clean_trained"), ("D_noise_injected", "A_blind"),
+                 ("D_noise_injected", "C_asavailable_trained")]
+
+
+def comparison_passes(arms):
+    """Comparisons in passes: the base pairs first for every condition, then arm D's, so the
+    shared random stream gives the base pairs the same intervals whether or not D was run."""
+    return [COMPARISONS] + ([D_COMPARISONS] if "D_noise_injected" in arms else [])
 
 
 def _ratio(x, y):
@@ -97,12 +106,13 @@ def analyse(sku, reps=2000, seed=12345, cluster="seed", series=None):
     labels = sku.drop_duplicates(["condition", "seed", "sku"]).set_index(
         ["condition", "seed", "sku"])[cluster] if cluster != "seed" else None
     rows = []
-    for cond, g in piv.groupby(level="condition", sort=False):
-        groups = (g.index.get_level_values("seed").values if labels is None
-                  else labels.reindex(g.index).values)
-        for a, b in COMPARISONS:
-            r = clustered_comparison(g[a].values, g[b].values, groups, reps, rng)
-            rows.append({"condition": cond, "comparison": f"{a} vs {b}", "cluster_by": cluster, **r})
+    for pairs in comparison_passes(piv.columns):
+        for cond, g in piv.groupby(level="condition", sort=False):
+            groups = (g.index.get_level_values("seed").values if labels is None
+                      else labels.reindex(g.index).values)
+            for a, b in pairs:
+                r = clustered_comparison(g[a].values, g[b].values, groups, reps, rng)
+                rows.append({"condition": cond, "comparison": f"{a} vs {b}", "cluster_by": cluster, **r})
     return pd.DataFrame(rows)
 
 

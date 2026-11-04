@@ -91,5 +91,6 @@
     }
   },
   "bootstrap_reps": 2000,
-  "bootstrap_seed": 12345
+  "bootstrap_seed": 12345,
+  "arm_D": true
 }
