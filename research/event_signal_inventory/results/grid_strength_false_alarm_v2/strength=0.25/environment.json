@@ -1,0 +1,9 @@
+{
+  "python": "3.11.9",
+  "numpy": "2.4.4",
+  "pandas": "3.0.2",
+  "sklearn": "1.8.0",
+  "git_commit": "2704f019b1c169ceead5aaf90069a077bf3ae5e0",
+  "git_worktree_dirty": false,
+  "run_utc": "2026-11-04T13:49:51Z"
+}

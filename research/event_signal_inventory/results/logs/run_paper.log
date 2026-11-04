@@ -1,0 +1,17 @@
+[2026-11-04T17:29:05Z] skip  synthetic20 (done)
+[2026-11-04T17:29:05Z] skip  m5 (done)
+[2026-11-04T17:29:05Z] skip  mismatch (done)
+[2026-11-04T17:29:05Z] skip  m5_ci_item (done)
+[2026-11-04T17:29:05Z] skip  synthetic20_ci (done)
+[2026-11-04T17:29:05Z] skip  m5_ci_store (done)
+[2026-11-04T17:29:05Z] skip  grid (done)
+[2026-11-04T17:29:05Z] skip  favorita (done)
+[2026-11-04T17:29:05Z] skip  favorita_ci_item (done)
+[2026-11-04T17:29:05Z] skip  favorita_ci_store (done)
+[2026-11-04T17:29:05Z] start favorita_planned
+[2026-11-04T17:41:11Z] done  favorita_planned
+[2026-11-04T17:41:11Z] start favorita_planned_ci
+[2026-11-04T17:41:19Z] done  favorita_planned_ci
+[2026-11-04T17:41:19Z] skip  favorita_windows (done)
+[2026-11-04T17:41:19Z] skip  m5_windows (done)
+[2026-11-04T17:41:19Z] ALL DONE

@@ -17,6 +17,7 @@ class World:
     events: list                # list of (start_day, duration, type) true event occurrences
     uplift: np.ndarray          # (n_sku, K+1) log-uplift; column 0 is 0
     base: np.ndarray            # (n_sku,) base daily mean
+    planned_events: list = None  # real data only: the calendar as officially planned in advance
 
 
 def generate_world(cfg: dict, seed: int) -> World:

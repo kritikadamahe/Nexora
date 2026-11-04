@@ -82,6 +82,19 @@ def test_overlap_takes_lowest_type():
     assert et.tolist() == [0, 1, 0] and events == [(1, 1, 1)]
 
 
+def test_planned_calendar_keeps_statutory_dates_and_drops_decreed_days():
+    # A holiday moved by decree from day 1 to day 3, plus a bridge day on day 5.
+    dates = pd.date_range("2016-05-23", periods=7)
+    h = pd.DataFrame({
+        "date": ["2016-05-24", "2016-05-26", "2016-05-28"],
+        "type": ["Holiday", "Transfer", "Bridge"], "locale": "National", "locale_name": "Ecuador",
+        "description": ["Batalla", "Traslado Batalla", "Puente"], "transferred": [True, False, False]})
+    _, observed = build_event_calendar(h, dates, "Quito", "Pichincha", [])
+    _, planned = build_event_calendar(h, dates, "Quito", "Pichincha", [], planned=True)
+    assert observed == [(3, 1, 1), (5, 1, 1)]
+    assert planned == [(1, 1, 1)]
+
+
 def test_uplift_uses_training_days_only():
     demand = np.array([[10, 10, 30, 10, 999]])
     et = np.array([0, 0, 1, 0, 1])

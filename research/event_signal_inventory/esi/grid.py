@@ -37,6 +37,7 @@ def build_grid_configs(base_cfg, spec):
             raise ValueError(f"invalid strength {s}")
         cfg = copy.deepcopy(base_cfg)
         cfg["seeds"] = spec.get("seeds", cfg["seeds"])
+        cfg["arm_D"] = spec.get("arm_D", False)              # D's mismatch has its own sweep (esi.mismatch)
         cfg["world"]["event_type_log_uplift"] = [s * u for u in base_cfg["world"]["event_type_log_uplift"]]
         cfg["conditions"] = {}
         for v in values:

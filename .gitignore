@@ -2,6 +2,7 @@
 # Virtual environments
 venv/
 .venv/
+.venv-esi/
 env/
 RetailEdge_AI_venv/
 
@@ -36,3 +37,6 @@ htmlcov/
 
 # Downloaded datasets (Favorita etc.) - large, Kaggle-licensed, never commit
 research/event_signal_inventory/data/
+
+# run_paper.sh resume markers
+research/event_signal_inventory/results/logs/*.done

@@ -1,0 +1,15 @@
+  condition                   arm  event_window_share_of_cost  cost_vs_A  cost_event_window_vs_A  cost_other_days_vs_A
+      clean               A_blind                   +23.3172%   +0.0000%                +0.0000%              +0.0000%
+      clean       B_clean_trained                   +23.0139%   +0.5556%                -0.7521%              +0.9532%
+      clean C_asavailable_trained                   +23.0139%   +0.5556%                -0.7521%              +0.9532%
+      clean      D_noise_injected                   +23.0139%   +0.5556%                -0.7521%              +0.9532%
+false_alarm               A_blind                   +23.3172%   +0.0000%                +0.0000%              +0.0000%
+false_alarm       B_clean_trained                   +23.1253%   +0.7864%                -0.0430%              +1.0386%
+false_alarm C_asavailable_trained                   +23.1852%   +0.6597%                +0.0899%              +0.8330%
+false_alarm      D_noise_injected                   +22.9558%   +0.6009%                -0.9583%              +1.0750%
+  imperfect               A_blind                   +23.3172%   +0.0000%                +0.0000%              +0.0000%
+  imperfect       B_clean_trained                   +23.2457%   +0.9090%                +0.5998%              +1.0031%
+  imperfect C_asavailable_trained                   +23.2448%   +0.2079%                -0.1033%              +0.3025%
+  imperfect      D_noise_injected                   +23.2678%   +0.5474%                +0.3344%              +0.6122%
+
+written to results/favorita_v3/event_window_split.csv

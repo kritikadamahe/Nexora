@@ -1,0 +1,36 @@
+{
+  "description": "Train/serve mismatch for arm D: noise injected at an assumed false-alarm rate (rows) vs the true rate of the served signals (columns), with p_miss 0.1 and p_misleading 0.8 from the false_alarm condition of configs/seed20.json. Strength scales event_type_log_uplift (1.0 = original simulation).",
+  "base_config": "configs/seed20.json",
+  "base_condition": "false_alarm",
+  "parameter": "spurious_rate",
+  "train_values": [
+    0.0,
+    0.04,
+    0.08,
+    0.16,
+    0.32
+  ],
+  "serve_values": [
+    0.0,
+    0.04,
+    0.08,
+    0.16
+  ],
+  "strengths": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ]
+}

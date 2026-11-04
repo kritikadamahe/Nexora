@@ -10,7 +10,8 @@ ignores this dependence. This script re-analyses an existing results directory
   cluster_*    : bootstrap resampling whole seeds
   twostage_*   : seeds resampled, then SKUs resampled within each drawn seed
   seed_t_*     : t-interval of the per-seed relative differences (df = n_seeds - 1)
-  signflip_p   : exact two-sided sign-flip test on the per-seed relative differences
+  signflip_p   : two-sided sign-flip test on the per-seed relative differences (exact up to
+                 20 clusters, Monte Carlo with 200,000 draws beyond that)
 
 With real data (esi.favorita) every seed shares the same demand, so seeds are not
 independent. Use --cluster item (or store) to resample products (stores) instead; the
@@ -31,18 +32,47 @@ from scipy import stats
 
 COMPARISONS = [("C_asavailable_trained", "B_clean_trained"),
                ("C_asavailable_trained", "A_blind"), ("B_clean_trained", "A_blind")]
+# Arm D (noise-injected training) is optional; its pairs are added only when it was run.
+D_COMPARISONS = [("D_noise_injected", "B_clean_trained"), ("D_noise_injected", "A_blind"),
+                 ("D_noise_injected", "C_asavailable_trained")]
+
+
+def comparison_passes(arms):
+    """Comparisons in passes: the base pairs first for every condition, then arm D's, so the
+    shared random stream gives the base pairs the same intervals whether or not D was run."""
+    return [COMPARISONS] + ([D_COMPARISONS] if "D_noise_injected" in arms else [])
 
 
 def _ratio(x, y):
     return (x.sum() - y.sum()) / y.sum()
 
 
+# Up to this many clusters every sign pattern is enumerated (2^20 rows, ~170 MB); beyond it
+# enumeration does not fit in memory (2^33 for M5's 33 items), so patterns are sampled.
+EXACT_SIGNFLIP_MAX_N = 20
+MC_SIGNFLIP_DRAWS = 200_000
+
+
 def signflip_p(d):
-    """Exact two-sided sign-flip p-value for mean(d) = 0 (all 2^n sign patterns)."""
+    """Two-sided sign-flip p-value for mean(d) = 0: exact (all 2^n sign patterns) for
+    n <= EXACT_SIGNFLIP_MAX_N, otherwise Monte Carlo with a fixed seed,
+    p = (1 + #{sampled |mean| >= observed}) / (1 + draws)."""
     d = np.asarray(d, dtype=float)
     obs = abs(d.mean())
-    flips = np.array(list(itertools.product([1, -1], repeat=len(d))))
-    return float(np.mean(np.abs((flips * d).mean(axis=1)) >= obs - 1e-12))
+    if len(d) <= EXACT_SIGNFLIP_MAX_N:
+        flips = np.array(list(itertools.product([1, -1], repeat=len(d))))
+        return float(np.mean(np.abs((flips * d).mean(axis=1)) >= obs - 1e-12))
+    rng = np.random.default_rng(0)
+    hits = 0
+    for _ in range(MC_SIGNFLIP_DRAWS // 10_000):
+        flips = rng.choice([1.0, -1.0], size=(10_000, len(d)))
+        hits += int(np.sum(np.abs((flips * d).mean(axis=1)) >= obs - 1e-12))
+    return (1 + hits) / (1 + MC_SIGNFLIP_DRAWS)
+
+
+def min_signflip_p(n):
+    """Smallest p-value signflip_p can return for n clusters."""
+    return 2 / 2 ** n if n <= EXACT_SIGNFLIP_MAX_N else 1 / (1 + MC_SIGNFLIP_DRAWS)
 
 
 def clustered_comparison(x, y, seeds, reps, rng):
@@ -80,7 +110,7 @@ def clustered_comparison(x, y, seeds, reps, rng):
         "seed_mean": per_seed.mean(), "seed_t_low": per_seed.mean() - tq * se,
         "seed_t_high": per_seed.mean() + tq * se,
         "seeds_first_cheaper": int((per_seed < 0).sum()), "n_seeds": n,
-        "signflip_p": signflip_p(per_seed), "min_possible_signflip_p": 2 / 2 ** n,
+        "signflip_p": signflip_p(per_seed), "min_possible_signflip_p": min_signflip_p(n),
     }
 
 
@@ -97,12 +127,13 @@ def analyse(sku, reps=2000, seed=12345, cluster="seed", series=None):
     labels = sku.drop_duplicates(["condition", "seed", "sku"]).set_index(
         ["condition", "seed", "sku"])[cluster] if cluster != "seed" else None
     rows = []
-    for cond, g in piv.groupby(level="condition", sort=False):
-        groups = (g.index.get_level_values("seed").values if labels is None
-                  else labels.reindex(g.index).values)
-        for a, b in COMPARISONS:
-            r = clustered_comparison(g[a].values, g[b].values, groups, reps, rng)
-            rows.append({"condition": cond, "comparison": f"{a} vs {b}", "cluster_by": cluster, **r})
+    for pairs in comparison_passes(piv.columns):
+        for cond, g in piv.groupby(level="condition", sort=False):
+            groups = (g.index.get_level_values("seed").values if labels is None
+                      else labels.reindex(g.index).values)
+            for a, b in pairs:
+                r = clustered_comparison(g[a].values, g[b].values, groups, reps, rng)
+                rows.append({"condition": cond, "comparison": f"{a} vs {b}", "cluster_by": cluster, **r})
     return pd.DataFrame(rows)
 
 
@@ -120,8 +151,9 @@ def to_markdown(df, src):
                  f"{f(r.cluster_low, r.cluster_high)} | {f(r.twostage_low, r.twostage_high)} | "
                  f"{f(r.seed_t_low, r.seed_t_high)} | {r.seeds_first_cheaper}/{r.n_seeds} | {r.signflip_p:.3f} |")
     n = int(df.n_seeds.iloc[0])
-    L += ["", f"With {n} clusters the smallest attainable two-sided sign-flip p-value is "
-          f"{2 / 2 ** n:.4f}. A cluster bootstrap with only {n} clusters also tends to "
+    method = "exact" if n <= EXACT_SIGNFLIP_MAX_N else f"Monte Carlo, {MC_SIGNFLIP_DRAWS:,} draws"
+    L += ["", f"With {n} clusters the smallest attainable two-sided sign-flip p-value ({method}) is "
+          f"{min_signflip_p(n):.2g}. A cluster bootstrap with only {n} clusters also tends to "
           "understate uncertainty, so the per-cluster t-interval is the more conservative summary."]
     return "\n".join(L) + "\n"
 

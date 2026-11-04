@@ -1,0 +1,28 @@
+# Store-clustered intervals for `results/m5`
+
+Relative total-cost difference (negative = first arm cheaper). 95% intervals.
+
+Clusters: store.
+
+| condition | comparison | estimate | iid bootstrap (original) | cluster bootstrap | two-stage bootstrap | per-cluster t-interval | clusters first cheaper | sign-flip p |
+|---|---|---|---|---|---|---|---|---|
+| clean | C_asavailable_trained vs B_clean_trained | +0.0% | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | 0/3 | 1.000 |
+| clean | C_asavailable_trained vs A_blind | -5.3% | [-6.0%, -4.8%] | [-10.5%, +0.0%] | [-10.2%, -0.0%] | [-17.9%, +8.4%] | 2/3 | 0.500 |
+| clean | B_clean_trained vs A_blind | -5.3% | [-6.0%, -4.7%] | [-10.5%, +0.0%] | [-10.2%, -0.1%] | [-17.9%, +8.4%] | 2/3 | 0.500 |
+| false_alarm | C_asavailable_trained vs B_clean_trained | -1.7% | [-2.0%, -1.4%] | [-2.3%, -1.2%] | [-2.4%, -1.1%] | [-3.1%, -0.3%] | 3/3 | 0.250 |
+| false_alarm | C_asavailable_trained vs A_blind | -2.9% | [-3.4%, -2.5%] | [-5.6%, +0.2%] | [-5.5%, +0.1%] | [-9.8%, +4.6%] | 2/3 | 0.500 |
+| false_alarm | B_clean_trained vs A_blind | -1.2% | [-1.7%, -0.7%] | [-4.4%, +1.8%] | [-4.3%, +1.7%] | [-8.8%, +7.1%] | 1/3 | 1.000 |
+| imperfect | C_asavailable_trained vs B_clean_trained | -0.7% | [-1.1%, -0.3%] | [-1.3%, +0.7%] | [-1.5%, +0.7%] | [-3.2%, +2.1%] | 2/3 | 0.500 |
+| imperfect | C_asavailable_trained vs A_blind | -0.7% | [-1.1%, -0.3%] | [-1.5%, +0.4%] | [-1.5%, +0.4%] | [-2.9%, +1.8%] | 2/3 | 0.500 |
+| imperfect | B_clean_trained vs A_blind | +0.0% | [-0.4%, +0.5%] | [-0.3%, +0.5%] | [-0.6%, +0.7%] | [-1.1%, +1.2%] | 2/3 | 1.000 |
+| clean | D_noise_injected vs B_clean_trained | +0.0% | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | 0/3 | 1.000 |
+| clean | D_noise_injected vs A_blind | -5.3% | [-6.0%, -4.7%] | [-10.5%, +0.0%] | [-10.2%, -0.1%] | [-17.9%, +8.4%] | 2/3 | 0.500 |
+| clean | D_noise_injected vs C_asavailable_trained | +0.0% | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | [+0.0%, +0.0%] | 0/3 | 1.000 |
+| false_alarm | D_noise_injected vs B_clean_trained | -1.3% | [-1.6%, -1.0%] | [-2.0%, -0.9%] | [-2.0%, -0.8%] | [-2.7%, +0.1%] | 3/3 | 0.250 |
+| false_alarm | D_noise_injected vs A_blind | -2.5% | [-3.1%, -2.0%] | [-5.3%, +0.7%] | [-5.2%, +0.6%] | [-9.7%, +5.3%] | 2/3 | 0.500 |
+| false_alarm | D_noise_injected vs C_asavailable_trained | +0.4% | [+0.1%, +0.7%] | [+0.3%, +0.5%] | [+0.1%, +0.7%] | [+0.1%, +0.7%] | 0/3 | 0.250 |
+| imperfect | D_noise_injected vs B_clean_trained | -1.3% | [-1.6%, -0.9%] | [-2.1%, +0.2%] | [-2.2%, +0.1%] | [-4.1%, +1.9%] | 2/3 | 0.500 |
+| imperfect | D_noise_injected vs A_blind | -1.2% | [-1.6%, -0.8%] | [-1.7%, -0.1%] | [-1.9%, -0.2%] | [-3.3%, +1.1%] | 3/3 | 0.250 |
+| imperfect | D_noise_injected vs C_asavailable_trained | -0.6% | [-0.9%, -0.2%] | [-1.1%, -0.1%] | [-1.1%, -0.0%] | [-1.7%, +0.6%] | 3/3 | 0.250 |
+
+With 3 clusters the smallest attainable two-sided sign-flip p-value (exact) is 0.25. A cluster bootstrap with only 3 clusters also tends to understate uncertainty, so the per-cluster t-interval is the more conservative summary.
