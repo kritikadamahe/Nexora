@@ -1,12 +1,8 @@
 \begin{filecontents*}{references.bib}
-% Verified reference list for "Event Signal Quality and Inventory Cost".
-% Every entry was checked against a DOI resolver (doi.org / Crossref / OpenAlex),
-% the publisher page, or the official proceedings page. See references_verification.md.
+% Reference list for "Event Signal Quality and Inventory Cost". Every entry was checked
+% against its DOI record (Crossref / OpenAlex) or publisher page; see references_verification.md.
+% references_verified.bib holds the full pool of verified candidates.
 
-% ---------------------------------------------------------------------------
-% The 8 entries already embedded in paper.tex (verified; corrections noted in
-% references_verification.md)
-% ---------------------------------------------------------------------------
 @article{nahmias1982perishable,
   author  = {Nahmias, Steven},
   title   = {Perishable Inventory Theory: A Review},
@@ -17,6 +13,7 @@
   year    = {1982},
   doi     = {10.1287/opre.30.4.680}
 }
+
 @article{koenker1978regression,
   author  = {Koenker, Roger and Bassett, Jr., Gilbert},
   title   = {Regression Quantiles},
@@ -27,6 +24,7 @@
   year    = {1978},
   doi     = {10.2307/1913643}
 }
+
 @article{friedman2001gbm,
   author  = {Friedman, Jerome H.},
   title   = {Greedy Function Approximation: A Gradient Boosting Machine},
@@ -37,6 +35,7 @@
   year    = {2001},
   doi     = {10.1214/aos/1013203451}
 }
+
 @article{pedregosa2011sklearn,
   author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
   title   = {Scikit-learn: Machine Learning in {P}ython},
@@ -47,6 +46,7 @@
   year    = {2011},
   url     = {https://jmlr.org/papers/v12/pedregosa11a.html}
 }
+
 @article{holm1979simple,
   author  = {Holm, Sture},
   title   = {A Simple Sequentially Rejective Multiple Test Procedure},
@@ -57,6 +57,7 @@
   year    = {1979},
   url     = {https://www.jstor.org/stable/4615733}
 }
+
 @book{efron1993bootstrap,
   author    = {Efron, Bradley and Tibshirani, Robert J.},
   title     = {An Introduction to the Bootstrap},
@@ -67,6 +68,7 @@
   year      = {1993},
   doi       = {10.1007/978-1-4899-4541-9}
 }
+
 @article{makridakis2022m5,
   author  = {Makridakis, Spyros and Spiliotis, Evangelos and Assimakopoulos, Vassilios},
   title   = {{M5} Accuracy Competition: Results, Findings, and Conclusions},
@@ -77,6 +79,7 @@
   year    = {2022},
   doi     = {10.1016/j.ijforecast.2021.11.013}
 }
+
 @misc{favorita2018kaggle,
   author       = {{Corporaci{\'o}n Favorita}},
   title        = {Corporaci{\'o}n Favorita Grocery Sales Forecasting},
@@ -85,19 +88,6 @@
   url          = {https://www.kaggle.com/c/favorita-grocery-sales-forecasting}
 }
 
-% ---------------------------------------------------------------------------
-% Perishable inventory
-% ---------------------------------------------------------------------------
-@article{nandakumar1993near,
-  author  = {Nandakumar, Purushottaman and Morton, Thomas E.},
-  title   = {Near Myopic Heuristics for the Fixed-Life Perishability Problem},
-  journal = {Management Science},
-  volume  = {39},
-  number  = {12},
-  pages   = {1490--1498},
-  year    = {1993},
-  doi     = {10.1287/mnsc.39.12.1490}
-}
 @article{broekmeulen2009heuristic,
   author  = {Broekmeulen, Rob A. C. M. and van Donselaar, Karel H.},
   title   = {A Heuristic to Manage Perishable Inventory with Batch Ordering, Positive Lead-Times, and Time-Varying Demand},
@@ -108,6 +98,7 @@
   year    = {2009},
   doi     = {10.1016/j.cor.2009.01.017}
 }
+
 @article{bakker2012review,
   author  = {Bakker, Monique and Riezebos, Jan and Teunter, Ruud H.},
   title   = {Review of Inventory Systems with Deterioration since 2001},
@@ -118,28 +109,7 @@
   year    = {2012},
   doi     = {10.1016/j.ejor.2012.03.004}
 }
-@article{janssen2016literature,
-  author  = {Janssen, Larissa and Claus, Thorsten and Sauer, J{\"u}rgen},
-  title   = {Literature Review of Deteriorating Inventory Models by Key Topics from 2012 to 2015},
-  journal = {International Journal of Production Economics},
-  volume  = {182},
-  pages   = {86--112},
-  year    = {2016},
-  doi     = {10.1016/j.ijpe.2016.08.019}
-}
-@article{haijema2019improved,
-  author  = {Haijema, Ren{\'e} and Minner, Stefan},
-  title   = {Improved Ordering of Perishables: The Value of Stock-Age Information},
-  journal = {International Journal of Production Economics},
-  volume  = {209},
-  pages   = {316--324},
-  year    = {2019},
-  doi     = {10.1016/j.ijpe.2018.03.008}
-}
 
-% ---------------------------------------------------------------------------
-% Retail forecasting with calendar, event and promotion effects
-% ---------------------------------------------------------------------------
 @article{fildes2022retail,
   author  = {Fildes, Robert and Ma, Shaohui and Kolassa, Stephan},
   title   = {Retail Forecasting: Research and Practice},
@@ -150,16 +120,7 @@
   year    = {2022},
   doi     = {10.1016/j.ijforecast.2019.06.004}
 }
-@article{trapero2015identification,
-  author  = {Trapero, Juan R. and Kourentzes, Nikolaos and Fildes, Robert},
-  title   = {On the Identification of Sales Forecasting Models in the Presence of Promotions},
-  journal = {Journal of the Operational Research Society},
-  volume  = {66},
-  number  = {2},
-  pages   = {299--307},
-  year    = {2015},
-  doi     = {10.1057/jors.2013.174}
-}
+
 @article{vandonselaar2016analysis,
   author  = {van Donselaar, Karel H. and Peters, J. and de Jong, A. and Broekmeulen, Rob A. C. M.},
   title   = {Analysis and Forecasting of Demand during Promotions for Perishable Items},
@@ -169,6 +130,7 @@
   year    = {2016},
   doi     = {10.1016/j.ijpe.2015.10.022}
 }
+
 @article{huber2020daily,
   author  = {Huber, Jakob and Stuckenschmidt, Heiner},
   title   = {Daily Retail Demand Forecasting Using Machine Learning with Emphasis on Calendric Special Days},
@@ -179,6 +141,7 @@
   year    = {2020},
   doi     = {10.1016/j.ijforecast.2020.02.005}
 }
+
 @article{makridakis2022m5background,
   author  = {Makridakis, Spyros and Spiliotis, Evangelos and Assimakopoulos, Vassilios},
   title   = {The {M5} Competition: Background, Organization, and Implementation},
@@ -189,20 +152,7 @@
   year    = {2022},
   doi     = {10.1016/j.ijforecast.2021.07.007}
 }
-@article{steinker2017value,
-  author  = {Steinker, Sebastian and Hoberg, Kai and Thonemann, Ulrich W.},
-  title   = {The Value of Weather Information for E-Commerce Operations},
-  journal = {Production and Operations Management},
-  volume  = {26},
-  number  = {10},
-  pages   = {1854--1874},
-  year    = {2017},
-  doi     = {10.1111/poms.12721}
-}
 
-% ---------------------------------------------------------------------------
-% Forecast errors and inventory performance
-% ---------------------------------------------------------------------------
 @article{gardner1990evaluating,
   author  = {Gardner, Everette S.},
   title   = {Evaluating Forecast Performance in an Inventory Control System},
@@ -213,6 +163,7 @@
   year    = {1990},
   doi     = {10.1287/mnsc.36.4.490}
 }
+
 @article{kourentzes2020optimising,
   author  = {Kourentzes, Nikolaos and Trapero, Juan R. and Barrow, Devon K.},
   title   = {Optimising Forecasting Models for Inventory Planning},
@@ -223,9 +174,6 @@
   doi     = {10.1016/j.ijpe.2019.107597}
 }
 
-% ---------------------------------------------------------------------------
-% Data-driven newsvendor and boosting
-% ---------------------------------------------------------------------------
 @article{ban2019big,
   author  = {Ban, Gah-Yi and Rudin, Cynthia},
   title   = {The Big Data Newsvendor: Practical Insights from Machine Learning},
@@ -236,16 +184,7 @@
   year    = {2019},
   doi     = {10.1287/opre.2018.1757}
 }
-@article{huber2019data,
-  author  = {Huber, Jakob and M{\"u}ller, Sebastian and Fleischmann, Moritz and Stuckenschmidt, Heiner},
-  title   = {A Data-Driven Newsvendor Problem: From Data to Decision},
-  journal = {European Journal of Operational Research},
-  volume  = {278},
-  number  = {3},
-  pages   = {904--915},
-  year    = {2019},
-  doi     = {10.1016/j.ejor.2019.04.043}
-}
+
 @article{bertsimas2020predictive,
   author  = {Bertsimas, Dimitris and Kallus, Nathan},
   title   = {From Predictive to Prescriptive Analytics},
@@ -256,6 +195,7 @@
   year    = {2020},
   doi     = {10.1287/mnsc.2018.3253}
 }
+
 @inproceedings{ke2017lightgbm,
   author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
   title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
@@ -265,9 +205,6 @@
   url       = {https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html}
 }
 
-% ---------------------------------------------------------------------------
-% Noisy inputs, dataset shift, augmentation, privileged information, leakage
-% ---------------------------------------------------------------------------
 @article{bishop1995training,
   author  = {Bishop, Chris M.},
   title   = {Training with Noise is Equivalent to {T}ikhonov Regularization},
@@ -278,6 +215,7 @@
   year    = {1995},
   doi     = {10.1162/neco.1995.7.1.108}
 }
+
 @book{quinonero2009dataset,
   editor    = {Qui{\~n}onero-Candela, Joaquin and Sugiyama, Masashi and Schwaighofer, Anton and Lawrence, Neil D.},
   title     = {Dataset Shift in Machine Learning},
@@ -286,6 +224,7 @@
   year      = {2009},
   doi       = {10.7551/mitpress/9780262170055.001.0001}
 }
+
 @article{vapnik2009new,
   author  = {Vapnik, Vladimir and Vashist, Akshay},
   title   = {A New Learning Paradigm: Learning Using Privileged Information},
@@ -296,6 +235,7 @@
   year    = {2009},
   doi     = {10.1016/j.neunet.2009.06.042}
 }
+
 @inproceedings{wen2021time,
   author    = {Wen, Qingsong and Sun, Liang and Yang, Fan and Song, Xiaomin and Gao, Jingkun and Wang, Xue and Xu, Huan},
   title     = {Time Series Data Augmentation for Deep Learning: A Survey},
@@ -304,6 +244,7 @@
   year      = {2021},
   doi       = {10.24963/ijcai.2021/631}
 }
+
 @article{kaufman2012leakage,
   author  = {Kaufman, Shachar and Rosset, Saharon and Perlich, Claudia and Stitelman, Ori},
   title   = {Leakage in Data Mining: Formulation, Detection, and Avoidance},
@@ -315,70 +256,6 @@
   doi     = {10.1145/2382577.2382579}
 }
 
-@book{nahmias2011perishable,
-  author  = {Nahmias, Steven},
-  title   = {Perishable Inventory Systems},
-  publisher= {Springer US},
-  series  = {International Series in Operations Research \& Management Science},
-  year    = {2011},
-  doi     = {10.1007/978-1-4419-7999-5}
-}
-
-@article{huang2014value,
-  author  = {Huang, Tao and Fildes, Robert and Soopramanien, Didier},
-  title   = {The Value of Competitive Information in Forecasting FMCG Retail Product Sales and the Variable Selection Problem},
-  journal = {European Journal of Operational Research},
-  volume  = {237},
-  number  = {2},
-  pages   = {738--748},
-  year    = {2014},
-  doi     = {10.1016/j.ejor.2014.02.022}
-}
-
-@article{ma2016demand,
-  author  = {Ma, Shaohui and Fildes, Robert and Huang, Tao},
-  title   = {Demand Forecasting with High Dimensional Data: The Case of SKU Retail Sales Forecasting with Intra- and Inter-Category Promotional Information},
-  journal = {European Journal of Operational Research},
-  volume  = {249},
-  number  = {1},
-  pages   = {245--257},
-  year    = {2016},
-  doi     = {10.1016/j.ejor.2015.08.029}
-}
-
-@article{ali2009sku,
-  author  = {Ali, {\"O}zden G{\"u}r and Say{\i}n, Serpil and van Woensel, Tom and Fransoo, Jan},
-  title   = {SKU Demand Forecasting in the Presence of Promotions},
-  journal = {Expert Systems with Applications},
-  volume  = {36},
-  number  = {10},
-  pages   = {12340--12348},
-  year    = {2009},
-  doi     = {10.1016/j.eswa.2009.04.052}
-}
-
-@article{makridakis2022m5uncertainty,
-  author  = {Makridakis, Spyros and Spiliotis, Evangelos and Assimakopoulos, Vassilios and Chen, Zhi and Gaba, Anil and Tsetlin, Ilia and Winkler, Robert L.},
-  title   = {The M5 Uncertainty Competition: Results, Findings and Conclusions},
-  journal = {International Journal of Forecasting},
-  volume  = {38},
-  number  = {4},
-  pages   = {1365--1385},
-  year    = {2022},
-  doi     = {10.1016/j.ijforecast.2021.10.009}
-}
-
-@article{sanders2009quantifying,
-  author  = {Sanders, Nada R. and Graman, Gregory A.},
-  title   = {Quantifying Costs of Forecast Errors: A Case Study of the Warehouse Environment},
-  journal = {Omega},
-  volume  = {37},
-  number  = {1},
-  pages   = {116--125},
-  year    = {2009},
-  doi     = {10.1016/j.omega.2006.10.004}
-}
-
 @article{prak2019general,
   author  = {Prak, Dennis and Teunter, Ruud},
   title   = {A General Method for Addressing Forecasting Uncertainty in Inventory Models},
@@ -388,83 +265,6 @@
   pages   = {224--238},
   year    = {2019},
   doi     = {10.1016/j.ijforecast.2017.11.004}
-}
-
-@article{petropoulos2022forecasting,
-  author  = {Petropoulos, Fotios and others},
-  title   = {Forecasting: Theory and Practice},
-  journal = {International Journal of Forecasting},
-  volume  = {38},
-  number  = {3},
-  pages   = {705--871},
-  year    = {2022},
-  doi     = {10.1016/j.ijforecast.2021.11.001}
-}
-
-@article{taylor2007forecasting,
-  author  = {Taylor, James W.},
-  title   = {Forecasting Daily Supermarket Sales Using Exponentially Weighted Quantile Regression},
-  journal = {European Journal of Operational Research},
-  volume  = {178},
-  number  = {1},
-  pages   = {154--167},
-  year    = {2007},
-  doi     = {10.1016/j.ejor.2006.02.006}
-}
-
-@article{ulrich2021distributional,
-  author  = {Ulrich, Matthias and Jahnke, Hermann and Langrock, Roland and Pesch, Robert and Senge, Robin},
-  title   = {Distributional Regression for Demand Forecasting in E-Grocery},
-  journal = {European Journal of Operational Research},
-  volume  = {294},
-  number  = {3},
-  pages   = {831--842},
-  year    = {2021},
-  doi     = {10.1016/j.ejor.2019.11.029}
-}
-
-@article{gneiting2007strictly,
-  author  = {Gneiting, Tilmann and Raftery, Adrian E.},
-  title   = {Strictly Proper Scoring Rules, Prediction, and Estimation},
-  journal = {Journal of the American Statistical Association},
-  volume  = {102},
-  number  = {477},
-  pages   = {359--378},
-  year    = {2007},
-  doi     = {10.1198/016214506000001437}
-}
-
-@article{januschowski2022forecasting,
-  author  = {Januschowski, Tim and Wang, Yuyang and Torkkola, Kari and Erkkil{\"a}, Timo and Hasson, Hilaf and Gasthaus, Jan},
-  title   = {Forecasting with Trees},
-  journal = {International Journal of Forecasting},
-  volume  = {38},
-  number  = {4},
-  pages   = {1473--1481},
-  year    = {2022},
-  doi     = {10.1016/j.ijforecast.2021.10.004}
-}
-
-@article{morenotorres2012unifying,
-  author  = {Moreno-Torres, Jose G. and Raeder, Troy and Alaiz-Rodr{\'i}guez, Roc{\'i}o and Chawla, Nitesh V. and Herrera, Francisco},
-  title   = {A Unifying View on Dataset Shift in Classification},
-  journal = {Pattern Recognition},
-  volume  = {45},
-  number  = {1},
-  pages   = {521--530},
-  year    = {2012},
-  doi     = {10.1016/j.patcog.2011.06.019}
-}
-
-@article{iwana2021empirical,
-  author  = {Iwana, Brian Kenji and Uchida, Seiichi},
-  title   = {An Empirical Survey of Data Augmentation for Time Series Classification with Neural Networks},
-  journal = {PLOS ONE},
-  volume  = {16},
-  number  = {7},
-  pages   = {e0254841},
-  year    = {2021},
-  doi     = {10.1371/journal.pone.0254841}
 }
 
 @inproceedings{globerson2006nightmare,
@@ -638,13 +438,13 @@ The claims concern operational cost under one heuristic replenishment policy, an
 \section{Related Work}
 \label{sec:related}
 
-\textbf{Perishable inventory control.} Fixed-shelf-life inventory has a long theoretical tradition \cite{nahmias1982perishable, nahmias2011perishable}. Optimal policies are hard to compute because the state must record the age profile of the stock, which has motivated near-myopic and heuristic policies \cite{nandakumar1993near}. Broekmeulen and van Donselaar \cite{broekmeulen2009heuristic} give a heuristic for the retail case with batch ordering, positive lead times and time-varying demand, and Haijema and Minner \cite{haijema2019improved} quantify the value of using stock-age information when ordering. Reviews of deteriorating-inventory models cover the wider literature \cite{bakker2012review, janssen2016literature}. We do not propose a new policy. We fix a simple order-up-to rule with first-in-first-out issuing and use it as a common yardstick for the forecasts.
+\textbf{Perishable inventory control.} Fixed-shelf-life inventory has a long theoretical tradition \cite{nahmias1982perishable}, and reviews of deteriorating-inventory models cover the wider literature \cite{bakker2012review}. Optimal policies are hard to compute because the state must record the age profile of the stock, which has motivated heuristics such as that of Broekmeulen and van Donselaar \cite{broekmeulen2009heuristic} for the retail case with batch ordering, positive lead times and time-varying demand. We do not propose a new policy. We fix a simple order-up-to rule with first-in-first-out issuing and use it as a common yardstick for the forecasts.
 
-\textbf{Calendar, event and promotion effects in retail forecasting.} Holidays, promotions and other special days are among the main drivers of retail demand, and their treatment is a recurring topic in reviews of retail forecasting \cite{fildes2022retail} and of forecasting practice more broadly \cite{petropoulos2022forecasting}. Promotional forecasting has been studied with regression-type models \cite{trapero2015identification, ali2009sku} and with high-dimensional models that add competitive and cross-category promotional information \cite{huang2014value, ma2016demand}, including for perishable items, where promotional uplift interacts with waste \cite{vandonselaar2016analysis}. Huber and Stuckenschmidt \cite{huber2020daily} compare machine-learning forecasters for daily retail demand with a focus on calendric special days. Public benchmarks supply event calendars as features: the Favorita data include a holiday calendar \cite{favorita2018kaggle}, and the M5 data include calendar events and SNAP days \cite{makridakis2022m5background}. In M5, methods built on gradient-boosted trees \cite{friedman2001gbm, ke2017lightgbm} performed strongly in the point-forecast track \cite{makridakis2022m5, januschowski2022forecasting}, and the competition also evaluated quantile forecasts \cite{makridakis2022m5uncertainty}. External signals such as weather have also been shown to carry operational value \cite{steinker2017value}. In these studies the event inputs are usually treated as known and correct; how errors in them affect results is rarely examined.
+\textbf{Calendar, event and promotion effects in retail forecasting.} Holidays, promotions and other special days are among the main drivers of retail demand, and their treatment is a recurring topic in reviews of retail forecasting \cite{fildes2022retail}. For perishable items, promotional uplift interacts with waste \cite{vandonselaar2016analysis}, and Huber and Stuckenschmidt \cite{huber2020daily} compare machine-learning forecasters for daily retail demand with a focus on calendric special days. Public benchmarks supply event calendars as features: the Favorita data include a holiday calendar \cite{favorita2018kaggle}, and the M5 data include calendar events and SNAP days \cite{makridakis2022m5background}. In M5, methods built on gradient-boosted trees \cite{friedman2001gbm, ke2017lightgbm} performed strongly \cite{makridakis2022m5}. In these studies the event inputs are usually treated as known and correct; how errors in them affect results is rarely examined.
 
-\textbf{Forecast quality judged by inventory outcomes.} Several authors argue that forecasts for replenishment should be judged by the inventory performance they produce, not only by accuracy. Gardner \cite{gardner1990evaluating} evaluates forecasting methods through inventory trade-off curves, and Kourentzes et al. \cite{kourentzes2020optimising} show that standard accuracy measures can be poorly aligned with inventory outcomes and propose optimising forecasting models for inventory planning. Sanders and Graman \cite{sanders2009quantifying} quantify the operational cost of forecast errors in a warehouse, and Prak and Teunter \cite{prak2019general} show how forecast uncertainty should enter inventory models. A related line connects forecasting and decisions directly. Quantile regression \cite{koenker1978regression} gives the critical-fractile quantile that a newsvendor order requires, quantile and distributional forecasts have been applied to supermarket and grocery demand \cite{taylor2007forecasting, ulrich2021distributional}, and proper scoring rules such as the pinball loss evaluate them \cite{gneiting2007strictly}. Feature-based or data-driven newsvendor models learn order quantities from covariates \cite{ban2019big, huber2019data, bertsimas2020predictive}. Our forecasters follow this pattern: a gradient-boosted quantile model sets the order-up-to level, and the arms are compared by simulated cost.
+\textbf{Forecast quality judged by inventory outcomes.} Several authors argue that forecasts for replenishment should be judged by the inventory performance they produce, not only by accuracy. Gardner \cite{gardner1990evaluating} evaluates forecasting methods through inventory trade-off curves, Kourentzes et al. \cite{kourentzes2020optimising} show that standard accuracy measures can be poorly aligned with inventory outcomes, and Prak and Teunter \cite{prak2019general} show how forecast uncertainty should enter inventory models. A related line connects forecasting and decisions directly: quantile regression \cite{koenker1978regression} gives the critical-fractile quantile that a newsvendor order requires, and data-driven newsvendor models learn order quantities from covariates \cite{ban2019big, bertsimas2020predictive}. Our forecasters follow this pattern: a gradient-boosted quantile model sets the order-up-to level, and the arms are compared by simulated cost.
 
-\textbf{Imperfect inputs and train--serve mismatch.} When the distribution of inputs at deployment differs from that seen in training, a model fitted on one can perform poorly on the other; this is the general problem of dataset shift \cite{quinonero2009dataset, morenotorres2012unifying}. A clean, after-the-fact event calendar used for training but not available at ordering time is closely related to data leakage, in which a model is built with information that will not exist when predictions are made \cite{kaufman2012leakage}. Learning using privileged information \cite{vapnik2009new} studies the opposite design choice, deliberately exploiting information that is present only during training. Missed announcements resemble features deleted at test time, against which classifiers can be trained to be robust \cite{globerson2006nightmare}. Two remedies for noisy inputs are also relevant. Adding noise to inputs during training acts as a regulariser \cite{bishop1995training}, and data augmentation for time series is an active area \cite{wen2021time, iwana2021empirical}. Our arm D, trained on the clean calendar with simulated signal errors injected at estimated rates, is an instance of this idea applied to event features.
+\textbf{Imperfect inputs and train--serve mismatch.} When the distribution of inputs at deployment differs from that seen in training, a model fitted on one can perform poorly on the other; this is the general problem of dataset shift \cite{quinonero2009dataset}. A clean, after-the-fact event calendar used for training but not available at ordering time is closely related to data leakage, in which a model is built with information that will not exist when predictions are made \cite{kaufman2012leakage}. Learning using privileged information \cite{vapnik2009new} studies the opposite design choice, deliberately exploiting information that is present only during training. Missed announcements resemble features deleted at test time, against which classifiers can be trained to be robust \cite{globerson2006nightmare}. Two remedies for noisy inputs are also relevant. Adding noise to inputs during training acts as a regulariser \cite{bishop1995training}, and data augmentation for time series is an active area \cite{wen2021time}. Our arm D, trained on the clean calendar with simulated signal errors injected at estimated rates, is an instance of this idea applied to event features.
 
 \textbf{Positioning.} This paper combines these threads in one setting. Rather than asking whether event features improve accuracy, we ask how the quality of the event signal available at ordering time changes the cost of a perishable replenishment policy. We compare training on the clean calendar, on the signals as they would have been available, and on the clean calendar with injected noise, and we vary the error rates used in training and in serving separately. We also vary event strength independently of signal quality, so that results are reported as a map of regimes rather than a single effect size. To our knowledge, the effect of imperfect event signals on perishable inventory cost, and the choice of training signal under such errors, has received little attention in the literature reviewed above.
 
