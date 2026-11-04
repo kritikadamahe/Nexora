@@ -26,6 +26,11 @@ Rows with transferred == True are skipped (the holiday was observed on its Trans
 instead), "Work Day" rows are not events, and descriptions matching `exclude_events` are
 dropped (default: the April 2016 earthquake, which could not have been announced).
 Consecutive days with the same type form one event occurrence.
+
+The PLANNED calendar is the one a retailer could fix in advance from the statutory dates:
+transferred holidays stay on their official date, and the government's Transfer and Bridge
+days, decreed during the year, are absent. Its differences from the observed calendar are
+real signal errors (a holiday expected but not observed, and one observed but not expected).
 """
 import hashlib
 import json
@@ -88,12 +93,15 @@ def select_items(sales, store_ids, open_days, n_items, min_selling_share):
     return sorted(units.sort_values(ascending=False).index[:n_items].tolist())
 
 
-def build_event_calendar(holidays, dates, city, state, exclude_events):
+def build_event_calendar(holidays, dates, city, state, exclude_events, planned=False):
     """Daily event type (0 = none) aligned to `dates`, plus the list of occurrences
-    (start_index, duration, type)."""
+    (start_index, duration, type). planned=True gives the calendar as officially planned."""
     h = holidays.copy()
     h["date"] = pd.to_datetime(h["date"])
-    h = h[~h.transferred.astype(bool) & (h.type != "Work Day")]
+    if planned:
+        h = h[~h.type.isin(["Transfer", "Bridge", "Work Day"])]
+    else:
+        h = h[~h.transferred.astype(bool) & (h.type != "Work Day")]
     for pat in exclude_events:
         h = h[~h.description.str.contains(pat, case=False, regex=False)]
     nat = h.locale == "National"
@@ -185,13 +193,24 @@ def suspect_stockout(demand, flag_mean, window=28):
     return out
 
 
+def planned_events(dcfg, dates):
+    d = dcfg["data_dir"]
+    stores = pd.read_csv(os.path.join(d, "stores.csv"))
+    state = stores.loc[stores.city == dcfg["city"], "state"].iloc[0]
+    holidays = pd.read_csv(os.path.join(d, "holidays_events.csv"))
+    _, events = build_event_calendar(holidays, pd.DatetimeIndex(dates), dcfg["city"], state,
+                                     dcfg.get("exclude_events", ["Terremoto"]), planned=True)
+    return events
+
+
 def load_world(dcfg, train_end, verbose=True):
     p = load_panel(dcfg, verbose)
     demand, event_type = p["demand"], p["event_type"]
     events = [tuple(int(x) for x in e) for e in p["events"]]
     return World(demand=demand, event_type=event_type, events=events,
                  uplift=training_log_uplift(demand, event_type, train_end),
-                 base=demand[:, :train_end].mean(axis=1)), p
+                 base=demand[:, :train_end].mean(axis=1),
+                 planned_events=planned_events(dcfg, p["dates"])), p
 
 
 def describe(dcfg, train_end, val_end):

@@ -155,8 +155,14 @@ def run(cfg, out_dir):
 
         model_A, model_B = fit(None), fit(clean)
         for ci, (cname, scfg) in enumerate(cfg["conditions"].items()):
-            ann = generate_signals(world.events, T, K, cfg["world"]["event_type_log_uplift"],
-                                   scfg, seed=seed * 1000 + ci + 1)
+            if scfg.get("source") == "planned_calendar":
+                # real signal errors: the calendar as officially planned, served as it was known
+                if world.planned_events is None:
+                    raise ValueError(f"condition {cname!r} needs a data source with a planned calendar")
+                ann = clean_calendar(world.planned_events, cfg["clean_lead_days"])
+            else:
+                ann = generate_signals(world.events, T, K, cfg["world"]["event_type_log_uplift"],
+                                       scfg, seed=seed * 1000 + ci + 1)
             n_true_te = sum(1 for (s, d, k) in world.events if va_end <= s < T)
             n_ann_te = sum(1 for a in ann if va_end <= a[1] < T)
             sig_rows.append({"seed": seed, "condition": cname, "true_events_test": n_true_te,
@@ -164,7 +170,7 @@ def run(cfg, out_dir):
             arm_models = {"A_blind": (model_A, None),
                           "B_clean_trained": (model_B, ann),
                           "C_asavailable_trained": (fit(ann), ann)}
-            if cfg.get("arm_D", False):
+            if cfg.get("arm_D", False) and "source" not in scfg:
                 # D: the clean calendar corrupted by an independent draw of the same error
                 # process (error rates assumed known); needs no archive of past announcements.
                 injected = generate_signals(world.events, T, K, cfg["world"]["event_type_log_uplift"],

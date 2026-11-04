@@ -43,6 +43,10 @@ real_data() {
     run favorita_ci_$c $PY -m esi.clustered_ci --results results/favorita_v3 --cluster $c \
         --out results/validation_clustered_ci/favorita_v3_$c
   done
+  run favorita_planned $PY -m esi.experiment --config configs/favorita_planned.json \
+      --out results/favorita_planned
+  run favorita_planned_ci $PY -m esi.clustered_ci --results results/favorita_planned --cluster item \
+      --out results/validation_clustered_ci/favorita_planned_item
   run favorita_windows $PY -m esi.event_windows --results results/favorita_v3
   run m5_windows $PY -m esi.event_windows --results results/m5
 }
