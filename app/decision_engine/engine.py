@@ -18,12 +18,10 @@
 import os
 import json
 import asyncio
-import pandas as pd
-import numpy as np
 from datetime import datetime
-from typing import Optional
-import json
+
 import numpy as np
+import pandas as pd
 from app.decision_engine.unified_signal    import UnifiedSignal, build_unified_signal
 from app.decision_engine.priority_score    import compute_action_priority_score
 from app.decision_engine.routing_rules     import determine_action_types
@@ -259,7 +257,7 @@ class DecisionEngine:
         # ── Step 8: Return results ────────────────────────────────────────────
         elapsed = (datetime.now() - start).total_seconds()
         # ── Step 8: M7 XAI — explain and save recommendations ───────────────
-       
+
 
                 # 🔥 Merge XAI into each recommendation
         xai_results = []
@@ -319,25 +317,55 @@ class DecisionEngine:
         shelf_life   = int(shelf_life) if shelf_life == shelf_life else 9999
 
         return row_dict, product_name, shelf_life
-    
+
     def _clean_xai(self, xai):
-        
+        """Safely extract display fields from an XAI recommendation."""
+        if not isinstance(xai, dict):
+            xai = {}
+
+        raw_reason = xai.get("reason_json", "{}")
 
         try:
-            reason = json.loads(xai.get("reason_json", "{}"))
-        except:
+            reason = json.loads(raw_reason) if isinstance(raw_reason, str) else raw_reason
+        except (TypeError, ValueError):
             reason = {}
+
+        if not isinstance(reason, dict):
+            reason = {}
+
+        trigger = reason.get("trigger")
+        evidence = reason.get("evidence")
+
+        if not isinstance(trigger, dict):
+            trigger = {}
+
+        if not isinstance(evidence, dict):
+            evidence = {}
+
+        pain_points = trigger.get("pain_points", [])
+        if not isinstance(pain_points, list):
+            pain_points = []
+
+        urgency = evidence.get("urgency_score", 0)
+
+        try:
+            urgency = float(urgency)
+        except (TypeError, ValueError):
+            urgency = 0.0
+
+        if not np.isfinite(urgency):
+            urgency = 0.0
 
         return {
             "summary": xai.get("rationale"),
-            "key_factors": reason.get("trigger", {}).get("pain_points", []),
-            # NOTE: this label reflects external news urgency only, not forecast quality
-            "confidence": "HIGH" if reason.get("evidence", {}).get("urgency_score", 0) > 0.5 else "MEDIUM",
+            "key_factors": pain_points,
+            "confidence": "HIGH" if urgency > 0.5 else "MEDIUM",
             "confidence_basis": "news_urgency"
         }
-    
+
+
     def _convert_numpy(self, obj):
-        
+
         if isinstance(obj, dict):
             return {k: self._convert_numpy(v) for k, v in obj.items()}
 
@@ -354,8 +382,8 @@ class DecisionEngine:
             return obj.tolist()
 
         return obj
-    
-    
+
+
 
     def _build_response(self, product_id, product_name, signal,
                         action_types, module_results, conflicts,
@@ -397,5 +425,5 @@ class DecisionEngine:
 
             # Module outputs (M5/M6/M7 — stubbed, real values when modules built)
             "recommendations":       list(module_results),
-           
+
         }

@@ -160,3 +160,55 @@ def test_pricing_respects_hard_price_bounds(engine, urgency, path):
     assert res["path"] == path
     lo, hi = p["cost_price"] * 1.02, p["base_selling_price"] * 1.5
     assert lo - 0.01 <= res["recommended_price"] <= hi + 0.01
+
+# --- XAI response robustness ---------------------------------------------------
+
+def test_clean_xai_handles_valid_reason_json():
+    from app.decision_engine.engine import DecisionEngine
+
+    engine = DecisionEngine.__new__(DecisionEngine)
+
+    result = engine._clean_xai({
+        "rationale": "Restocking is recommended.",
+        "reason_json": json.dumps({
+            "trigger": {"pain_points": ["LOW_STOCK"]},
+            "evidence": {"urgency_score": 0.8},
+        }),
+    })
+
+    assert result["key_factors"] == ["LOW_STOCK"]
+    assert result["confidence"] == "HIGH"
+    assert result["summary"] == "Restocking is recommended."
+
+
+@pytest.mark.parametrize("reason_json", [
+    "invalid json",
+    "[]",
+    '{"trigger": null, "evidence": null}',
+    '{"trigger": [], "evidence": []}',
+    '{"trigger": {"pain_points": "LOW_STOCK"}, "evidence": {"urgency_score": "invalid"}}',
+])
+def test_clean_xai_handles_malformed_reason_json(reason_json):
+    from app.decision_engine.engine import DecisionEngine
+
+    engine = DecisionEngine.__new__(DecisionEngine)
+
+    result = engine._clean_xai({
+        "rationale": "Fallback explanation",
+        "reason_json": reason_json,
+    })
+
+    assert result["key_factors"] == []
+    assert result["confidence"] == "MEDIUM"
+    assert result["summary"] == "Fallback explanation"
+
+
+def test_clean_xai_handles_non_dictionary_input():
+    from app.decision_engine.engine import DecisionEngine
+
+    engine = DecisionEngine.__new__(DecisionEngine)
+
+    result = engine._clean_xai(None)
+
+    assert result["key_factors"] == []
+    assert result["confidence"] == "MEDIUM"
