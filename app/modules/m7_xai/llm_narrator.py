@@ -15,15 +15,14 @@
 # Uses Gemini API (same as M6). Fallback to template-based sentence.
 
 import os
-import json
-from typing import List
-from app.core.config import GROQ_API_KEY, GROQ_MODEL_NAME, LLM_TIMEOUT
-from groq import Groq
+import json 
 import logging
+from typing import List 
+from groq import Groq
+from app.core.config import GROQ_API_KEY, GROQ_MODEL_NAME, LLM_TIMEOUT
 
 logger = logging.getLogger("LLM_NARRATOR")
 logger.setLevel(logging.INFO)
-
 
 
 def generate_rationale(
@@ -120,29 +119,42 @@ Be specific about numbers. Use simple language. No jargon."""
 
 def _call_llm(prompt: str) -> str:
     """
-    Calls LLM provider.
-    Falls back to rule-based response if API unavailable.
+    Calls Groq LLM with a configured timeout.
+    Falls back to a template-based response if unavailable.
     """
     try:
-        
+        if not GROQ_API_KEY:
+            logger.warning("Groq API key is not configured. Using fallback.")
+            return _template_rationale(prompt)
 
-        
         logger.info(f"Calling XAI LLM Model: {GROQ_MODEL_NAME}")
 
-        client = Groq(api_key=GROQ_API_KEY)
+        client = Groq(
+            api_key=GROQ_API_KEY,
+            timeout=LLM_TIMEOUT,
+        )
 
         response = client.chat.completions.create(
             model=GROQ_MODEL_NAME,
             messages=[
                 {
                     "role": "user",
-                    "content": prompt
+                    "content": prompt,
                 }
-            ]
+            ],
         )
-        logger.info("XAILLM API Response received")
-        return response.choices[0].message.content.strip()
-    except Exception:
+
+        content = response.choices[0].message.content
+
+        if not content or not content.strip():
+            logger.warning("Groq returned an empty response. Using fallback.")
+            return _template_rationale(prompt)
+
+        logger.info("XAI LLM response received.")
+        return content.strip()
+
+    except Exception as exc:
+        logger.warning("Groq request failed: %s. Using fallback.", exc)
         return _template_rationale(prompt)
 
 
