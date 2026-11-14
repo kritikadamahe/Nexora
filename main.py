@@ -15,6 +15,7 @@ import pandas as pd
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from inventory_painpoints_service.app.services.nightly_pipeline import run_nightly_pipeline
 from app.decision_engine.engine import DecisionEngine
@@ -83,7 +84,16 @@ app = FastAPI(
     lifespan    = lifespan,
 )
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # ─────────────────────────────────────────────────────────────────────────────
 # HELPERS
 # ─────────────────────────────────────────────────────────────────────────────

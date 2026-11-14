@@ -1,0 +1,814 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora | Smart Inventory Dashboard</title>
+
+<style>
+:root {
+    --navy: #172554;
+    --blue: #3157D5;
+    --bg: #F5F7FC;
+    --text: #202B45;
+    --muted: #718096;
+    --border: #E5EAF3;
+    --green: #16845B;
+    --red: #D94343;
+    --orange: #D88925;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 235px;
+    background: var(--navy);
+    color: white;
+    padding: 28px 18px;
+    flex-shrink: 0;
+}
+
+.brand {
+    font-size: 27px;
+    font-weight: 750;
+    letter-spacing: -1px;
+    margin: 0 10px 8px;
+}
+
+.brand-sub {
+    color: #B9C8F5;
+    font-size: 12px;
+    margin: 0 10px 38px;
+}
+
+.nav-label {
+    color: #9EACD1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    margin: 25px 10px 12px;
+}
+
+.nav-item {
+    padding: 12px;
+    border-radius: 9px;
+    margin: 5px 0;
+    color: #DCE5FF;
+    font-size: 14px;
+}
+
+.nav-item.active {
+    background: #30447D;
+    color: white;
+}
+
+.main {
+    flex: 1;
+    padding: 32px 38px;
+    min-width: 0;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 27px;
+    margin: 0 0 7px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.status {
+    background: #E4F5EC;
+    color: var(--green);
+    border-radius: 30px;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.section {
+    margin: 28px 0 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.section h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 21px;
+    box-shadow: 0 3px 12px rgba(25, 45, 90, 0.035);
+}
+
+.card-label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.card-value {
+    font-size: 29px;
+    font-weight: 750;
+}
+
+.card-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 22px;
+    margin-top: 18px;
+    box-shadow: 0 3px 12px rgba(25, 45, 90, 0.035);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 17px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover { opacity: 0.88; }
+
+.primary {
+    background: var(--blue);
+    color: white;
+}
+
+.secondary {
+    background: #EDF1FC;
+    color: var(--blue);
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+input, select {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 13px;
+    font-size: 13px;
+    background: white;
+    color: var(--text);
+}
+
+input { flex: 1; min-width: 120px; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin-top: 17px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 650px;
+}
+
+th, td {
+    text-align: left;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+th {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.pill {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.high { background: #FCE8E8; color: var(--red); }
+.medium { background: #FFF2DD; color: #A76B12; }
+.low { background: #E3F5EC; color: var(--green); }
+
+.message {
+    padding: 13px 15px;
+    background: #F0F4FF;
+    border-radius: 9px;
+    color: #38518E;
+    font-size: 13px;
+    margin-top: 14px;
+}
+
+.error {
+    background: #FFF0F0;
+    color: #A83232;
+}
+
+.hidden { display: none; }
+
+.product-details {
+    line-height: 1.8;
+    font-size: 13px;
+}
+
+footer {
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+    padding: 30px 0 10px;
+}
+
+@media(max-width: 900px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .sidebar { width: 180px; }
+    .main { padding: 25px 20px; }
+}
+
+@media(max-width: 600px) {
+    .sidebar { display: none; }
+    .main { padding: 22px 14px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .search-row { flex-wrap: wrap; }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">NEXORA</div>
+        <div class="brand-sub">SMART INVENTORY INTELLIGENCE</div>
+
+        <div class="nav-label">WORKSPACE</div>
+        <div class="nav-item active">▦ &nbsp; Overview</div>
+        <div class="nav-item">◉ &nbsp; Product Insights</div>
+        <div class="nav-item">↗ &nbsp; Replenishment</div>
+        <div class="nav-item">⚑ &nbsp; Risk Monitoring</div>
+
+        <div class="nav-label">ABOUT</div>
+        <div class="nav-item">ℹ &nbsp; How Nexora Works</div>
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div>
+                <h1>Inventory Overview</h1>
+                <div class="subtitle">
+                    Understand your store's inventory and know what needs attention.
+                </div>
+            </div>
+            <div class="status" id="connectionStatus">● Connecting...</div>
+        </div>
+
+        <div class="section">
+            <h2>Your Store at a Glance</h2>
+            <span class="muted">Based on the latest inventory analysis</span>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-label">Products Analysed</div>
+                <div class="card-value" id="totalProducts">—</div>
+                <div class="card-note">Products checked by Nexora</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Need Attention</div>
+                <div class="card-value" id="flaggedProducts">—</div>
+                <div class="card-note">Products with identified concerns</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">High Risk Products</div>
+                <div class="card-value" id="highRisk">—</div>
+                <div class="card-note">Products requiring priority attention</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Products to Recheck</div>
+                <div class="card-value" id="recheckProducts">—</div>
+                <div class="card-note">Run a fresh analysis to update this view</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Let's analyse your inventory</h2>
+            <p class="muted">
+                Nexora checks stock levels, expiry dates and sales patterns
+                to identify products that may need attention.
+            </p>
+
+            <div class="actions">
+                <button class="primary" onclick="runAnalysis()">
+                    Analyse My Inventory
+                </button>
+                <button class="secondary" onclick="loadDashboard()">
+                    Refresh Dashboard
+                </button>
+            </div>
+
+            <div id="analysisMessage" class="message hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>Find a Product</h2>
+            <span class="muted">Look up an individual product</span>
+        </div>
+
+        <div class="panel">
+            <div class="search-row">
+                <input id="productId" type="number" placeholder="Enter product ID">
+                <button class="primary" onclick="searchProduct()">View Product</button>
+            </div>
+            <div id="productDetails" class="message hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>Products That Need Attention</h2>
+            <span class="muted">Prioritised inventory concerns</span>
+        </div>
+
+        <div class="panel">
+            <div class="search-row">
+                <select id="riskFilter" onchange="renderProducts()">
+                    <option value="all">All products</option>
+                    <option value="high">High risk</option>
+                    <option value="medium">Other flagged products</option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Concern</th>
+                            <th>Risk Level</th>
+                            <th>Stock Available</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr><td colspan="5">Run an inventory analysis to view products here.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>How Nexora Helps</h2>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-label">01 · Identify</div>
+                <strong>Spot inventory problems</strong>
+                <p class="muted">Find low stock, expiry concerns and unusual sales patterns.</p>
+            </div>
+            <div class="card">
+                <div class="card-label">02 · Predict</div>
+                <strong>Understand demand</strong>
+                <p class="muted">Use sales patterns to anticipate upcoming inventory needs.</p>
+            </div>
+            <div class="card">
+                <div class="card-label">03 · Recommend</div>
+                <strong>Know what to do</strong>
+                <p class="muted">Get guidance on which products may need replenishment.</p>
+            </div>
+            <div class="card">
+                <div class="card-label">04 · Explain</div>
+                <strong>Understand the reason</strong>
+                <p class="muted">See why Nexora has identified a product as needing attention.</p>
+            </div>
+        </div>
+
+        <footer>
+            NEXORA · AI-Powered Retail Inventory Intelligence
+        </footer>
+
+    </main>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+let products = [];
+
+async function api(path, options = {}) {
+    const response = await fetch(API + path, options);
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.detail || data.error || "Something went wrong.");
+    }
+
+    return data;
+}
+
+function showMessage(id, message, isError = false) {
+    const element = document.getElementById(id);
+    element.textContent = message;
+    element.classList.remove("hidden", "error");
+    if (isError) element.classList.add("error");
+}
+
+function getArray(data) {
+    if (Array.isArray(data)) return data;
+
+    for (const key of ["flagged_products", "products", "results", "rows", "data"]) {
+        if (Array.isArray(data?.[key])) return data[key];
+    }
+
+    return [];
+}
+
+function getRisk(product) {
+    const score = Number(
+        product.composite_risk_score ??
+        product.risk_score ??
+        product.urgency ??
+        0
+    );
+
+    if (product.risk_level) {
+        return String(product.risk_level).toLowerCase();
+    }
+
+    if (score >= 0.5) return "high";
+    if (score > 0) return "medium";
+    return "low";
+}
+
+function getConcern(product) {
+    let concern = product.pain_points_triggered ?? product.pain_points ?? product.reason ?? "Needs review";
+
+    if (Array.isArray(concern)) return concern.join(", ");
+    if (typeof concern === "string") {
+        try {
+            const parsed = JSON.parse(concern);
+            if (Array.isArray(parsed)) return parsed.join(", ");
+        } catch (_) {}
+        return concern.replace(/[\[\]"]/g, "");
+    }
+
+    return "Needs review";
+}
+
+function getStock(product) {
+    return product.current_stock ?? product.stock ?? product.available_stock ?? "—";
+}
+
+async function loadDashboard() {
+    try {
+        const health = await api("/health");
+        document.getElementById("connectionStatus").textContent = "● System Connected";
+
+        const result = await api("/results");
+        products = getArray(result);
+
+        const total = result.total_products ?? result.total ?? products.length;
+        const flagged = result.flagged_count ?? result.total_flagged ?? products.length;
+        const high = result.high_risk_count ??
+            products.filter(p => getRisk(p) === "high").length;
+
+        document.getElementById("totalProducts").textContent = total ?? "—";
+        document.getElementById("flaggedProducts").textContent = flagged ?? "—";
+        document.getElementById("highRisk").textContent = high ?? "—";
+        document.getElementById("recheckProducts").textContent = "—";
+
+        renderProducts();
+
+    } catch (error) {
+        document.getElementById("connectionStatus").textContent = "● Connection issue";
+        showMessage("analysisMessage",
+            "Nexora could not load the latest results. Make sure the backend is running and run an inventory analysis.",
+            true);
+    }
+}
+
+async function runAnalysis() {
+    const button = document.querySelector(".primary");
+    button.disabled = true;
+    button.textContent = "Analysing...";
+
+    try {
+        const result = await api("/run-pipeline", { method: "POST" });
+
+        document.getElementById("totalProducts").textContent = result.total_products ?? "—";
+        document.getElementById("flaggedProducts").textContent = result.flagged_count ?? "—";
+        document.getElementById("highRisk").textContent = result.high_risk_count ?? "—";
+
+        products = getArray(result);
+        document.getElementById("recheckProducts").textContent = "Updated";
+
+        renderProducts();
+
+        showMessage("analysisMessage",
+            `Analysis completed successfully. Nexora checked ${result.total_products ?? "your"} products and identified ${result.flagged_count ?? "the"} products needing attention.`);
+
+        await loadDashboard();
+
+    } catch (error) {
+        showMessage("analysisMessage", "Analysis could not be completed: " + error.message, true);
+    } finally {
+        button.disabled = false;
+        button.textContent = "Analyse My Inventory";
+    }
+}
+
+function renderProducts() {
+    const table = document.getElementById("productsTable");
+    const filter = document.getElementById("riskFilter").value;
+
+    const filtered = products.filter(product => {
+        const risk = getRisk(product);
+        if (filter === "high") return risk === "high";
+        if (filter === "medium") return risk !== "high";
+        return true;
+    });
+
+    if (!filtered.length) {
+        table.innerHTML = `<tr><td colspan="5">No products to display. Run an inventory analysis first.</td></tr>`;
+        return;
+    }
+
+    table.innerHTML = filtered.slice(0, 50).map(product => {
+        const id = product.product_id ?? product.id ?? "—";
+        const risk = getRisk(product);
+        const label = risk === "high" ? "High" : risk === "low" ? "Low" : "Review";
+        const css = risk === "high" ? "high" : risk === "low" ? "low" : "medium";
+
+        return `
+            <tr>
+                <td><strong>${escapeHtml(id)}</strong></td>
+                <td>${escapeHtml(getConcern(product))}</td>
+                <td><span class="pill ${css}">${label}</span></td>
+                <td>${escapeHtml(getStock(product))}</td>
+                <td><button class="secondary" onclick="openProduct('${escapeHtml(id)}')">View details</button></td>
+            </tr>
+        `;
+    }).join("");
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#039;"
+    })[char]);
+}
+
+async function searchProduct() {
+    const id = document.getElementById("productId").value.trim();
+
+    if (!id) {
+        showMessage("productDetails", "Please enter a product ID.", true);
+        return;
+    }
+
+    await openProduct(id);
+}
+
+
+async function openProduct(id) {
+    try {
+        const result = await api("/results/" + encodeURIComponent(id));
+        const decision = await api("/decision/" + encodeURIComponent(id)).catch(() => null);
+        const recommendation = await api("/recommendations/" + encodeURIComponent(id)).catch(() => null);
+
+        const details = {
+            ...result,
+            decision,
+            recommendation
+        };
+
+        function parseValue(value) {
+            if (typeof value === "string") {
+                try {
+                    return JSON.parse(value);
+                } catch (_) {
+                    return value;
+                }
+            }
+            return value;
+        }
+
+        function display(value) {
+            if (value === null || value === undefined || value === "") return "—";
+            if (Array.isArray(value)) return value.join(", ") || "None";
+            if (typeof value === "object") return JSON.stringify(value);
+            return String(value);
+        }
+
+        function getNestedValue(object, key) {
+            return object && typeof object === "object" ? object[key] : undefined;
+        }
+
+        const recommendationData = parseValue(recommendation?.recommended_value);
+        const decisionData = parseValue(decision);
+        const xai = parseValue(
+            recommendation?.xai ??
+            decision?.xai ??
+            decisionData?.xai
+        );
+
+        const reason = parseValue(
+            recommendation?.reason_json ??
+            decision?.reason_json
+        );
+
+        const summary =
+            xai?.summary ??
+            reason?.reasoning?.explanation ??
+            reason?.summary ??
+            "No explanation available.";
+
+        const concerns = parseValue(
+            result.pain_points_triggered ??
+            result.pain_points ??
+            recommendation?.pain_points_triggered
+        );
+
+        const riskScore =
+            result.composite_risk_score ??
+            result.risk_score ??
+            decision?.composite_risk_score;
+
+        const productName =
+            result.product_name ??
+            result.name ??
+            "Product " + id;
+
+        const stock =
+            result.current_stock ??
+            result.stock ??
+            "—";
+
+        const forecast =
+            result.forecast_7d ??
+            result.ttf_forecast_7d ??
+            "—";
+
+        const forecastP90 =
+            result.forecast_7d_p90 ??
+            "—";
+
+        const quantity =
+            recommendationData?.quantity ??
+            recommendation?.quantity ??
+            decision?.restock_quantity ??
+            "—";
+
+        const detailsHTML = `
+            <h2>${escapeHtml(productName)}</h2>
+
+            <div class="cards" style="margin:18px 0;">
+                <div class="card">
+                    <div class="card-label">Product ID</div>
+                    <div class="card-value">${escapeHtml(id)}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Current Stock</div>
+                    <div class="card-value">${escapeHtml(stock)}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Risk Score</div>
+                    <div class="card-value">${escapeHtml(riskScore ?? "—")}</div>
+                </div>
+            </div>
+
+            <h3>Demand Forecast</h3>
+            <p>7-day forecast: <strong>${escapeHtml(forecast)}</strong></p>
+            <p>P90 forecast: <strong>${escapeHtml(forecastP90)}</strong></p>
+            <p>Forecast method: <strong>${escapeHtml(result.forecast_method ?? "—")}</strong></p>
+
+            <h3>Risk Assessment</h3>
+            <p>Identified concerns: <strong>${escapeHtml(display(concerns))}</strong></p>
+            <p>Days to expiry: <strong>${escapeHtml(result.days_to_expiry ?? "—")}</strong></p>
+            <p>Expiry risk score: <strong>${escapeHtml(result.expiry_risk_score ?? "—")}</strong></p>
+
+            <h3>Replenishment Recommendation</h3>
+            <p>Recommended quantity: <strong>${escapeHtml(quantity)}</strong></p>
+            <p>Reorder level: <strong>${escapeHtml(result.reorder_level ?? "—")}</strong></p>
+            <p>Recommendation action: <strong>${escapeHtml(
+                recommendation?.action ??
+                decision?.replenishment_action ??
+                "—"
+            )}</strong></p>
+
+            <h3>Why This Recommendation?</h3>
+            <p>${escapeHtml(summary)}</p>
+
+            <h3>Important Assumptions</h3>
+<div>
+    ${(() => {
+        const assumptions =
+            reason?.assumptions ??
+            recommendation?.assumptions;
+
+        if (!assumptions) {
+            return "<p>No additional assumptions provided.</p>";
+        }
+
+        const items = Array.isArray(assumptions)
+            ? assumptions
+            : typeof assumptions === "object"
+                ? Object.entries(assumptions).map(
+                    ([key, value]) => key + ": " + (
+                        typeof value === "object"
+                            ? JSON.stringify(value)
+                            : String(value)
+                    )
+                )
+                : [assumptions];
+
+        return "<ul>" +
+            items.map(item =>
+                "<li>" + escapeHtml(String(item)) + "</li>"
+            ).join("") +
+            "</ul>";
+    })()}
+</div>
+        `;
+
+        const element = document.getElementById("productDetails");
+        element.innerHTML = detailsHTML;
+        element.classList.remove("hidden", "error");
+
+    } catch (error) {
+        showMessage(
+            "productDetails",
+            "Could not find this product: " + error.message,
+            true
+        );
+    }
+}
+
+
+loadDashboard();
+</script>
+</body>
+</html>
